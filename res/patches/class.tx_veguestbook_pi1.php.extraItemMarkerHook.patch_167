@@ -1,0 +1,46 @@
+--- class.tx_veguestbook_pi1.php	Sun Apr 10 03:48:40 2005
++++ d:\Projects\Extensions\ve_guestbook\pi1\class.tx_veguestbook_pi1.php	Sun Apr 10 03:46:32 2005
+@@ -283,6 +283,14 @@
+ 			$entry = $GLOBALS['TSFE']->cObj->getSubpart($list, '###ENTRY###');
+ 			$subpartArray['###CONTENT###'] = $this->getListContent($res, $entry);
+ 
++			// Adds hook for processing of extra item markers
++			if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ve_guestbook']['extraItemMarkerHook'])) {
++				foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ve_guestbook']['extraItemMarkerHook'] as $_classRef) {
++					$_procObj = & t3lib_div::getUserObj($_classRef);
++					$markerArray = $_procObj->extraItemMarkerProcessor($markerArray, $row, $this->config, $this);
++				}
++			}
++
+ 			return $this->cObj->substituteMarkerArrayCached($list, $markerArray, $subpartArray, $wrappedSubpartArray);
+ 		}
+ 		else {
+@@ -469,6 +477,14 @@
+ 		$markerArray['###GUESTBOOK_ENTRY###'] = $this->substituteEmoticons($markerArray['###GUESTBOOK_ENTRY###']);
+ 		$markerArray['###GUESTBOOK_ENTRYCOMMENT###'] = $this->substituteEmoticons(nl2br($row['entrycomment']));
+ 
++		// Adds hook for processing of extra item markers
++		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ve_guestbook']['extraItemMarkerHook'])) {
++			foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ve_guestbook']['extraItemMarkerHook'] as $_classRef) {
++				$_procObj = & t3lib_div::getUserObj($_classRef);
++				$markerArray = $_procObj->extraItemMarkerProcessor($markerArray, $row, $this->config, $this);
++			}
++		}
++
+ 		return $markerArray;
+ 	}
+ 
+@@ -653,6 +669,13 @@
+             }
+ 
+ 			$markerArray = $this->markObligationFields($markerArray);
++
++			// Adds hook for processing of extra item markers
++			if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ve_guestbook']['extraItemMarkerHook'])) {
++				foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ve_guestbook']['extraItemMarkerHook'] as $_classRef) {
++					$_procObj = & t3lib_div::getUserObj($_classRef);
++					$markerArray = $_procObj->extraItemMarkerProcessor($markerArray, $row, $this->config, $this);
++			
+ 
+ 			$form = $this->cObj->substituteMarkerArrayCached($form, $markerArray, array(), array());
+ 

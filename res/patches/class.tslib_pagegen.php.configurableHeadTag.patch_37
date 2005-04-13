@@ -1,0 +1,17 @@
+--- d:\Projects\kosi-online.de\bak_v2\html\tslib\class.tslib_pagegen.php	Fri Sep 24 06:06:12 2004
++++ class.tslib_pagegen.php	Sat Apr 09 01:45:54 2005
+@@ -412,8 +412,12 @@
+ 		} else {
+ 			$_attr = '';
+ 		}
+-		$GLOBALS['TSFE']->content.='<html'.($_attr ? ' '.$_attr : '').'>
+-<head>';
++		$GLOBALS['TSFE']->content.='<html'.($_attr ? ' '.$_attr : '').'>';
++		
++			// Headtag:
++		$headTag = $GLOBALS['TSFE']->pSetup['headTag'] ? $GLOBALS['TSFE']->pSetup['headTag'] : '<head>';
++		$GLOBALS['TSFE']->content.= chr(10).$headTag;
++		
+ 			// Setting charset meta tag:
+ 		$GLOBALS['TSFE']->content.='
+ 	<meta http-equiv="Content-Type" content="text/html; charset='.$theCharset.'" />';

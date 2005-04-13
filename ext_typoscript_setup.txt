@@ -1,0 +1,5 @@
+plugin.tx_timtab.clearPageCacheOnComment = 0
+plugin.tx_timtab_pi1 {
+  header_stdWrap.wrap = <li><h2>Blogroll</h2>|</li>
+  dontWrapInDiv = 1  
+}

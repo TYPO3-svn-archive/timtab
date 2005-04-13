@@ -1,0 +1,128 @@
+# tt_news
+plugin.tt_news {
+
+  templateFile = {$page.file.template_tt_news}
+  
+  displayList.date_stdWrap.strftime = %B %d, %Y
+  displaySingle.date_stdWrap.strftime =  %A, %B %d, %Y at %I:%M %p
+
+  dontUseBackPid = 1
+  catTextMode = 3
+  newsAmenuUserFunc =
+
+  _LOCAL_LANG.default {
+    archiveHeader = Archives
+  }
+}
+
+
+
+# ve_guestbook
+plugin.tx_veguestbook_pi1 {
+
+  templateFile = {$page.file.template_ve_guestbook}
+
+  _LOCAL_LANG.default {
+    form_firstname = Name
+    form_submit = Submit Comment
+    form_email = Mail
+    form_homepage = Website
+  }
+
+  _CSS_DEFAULT_STYLE =  
+}
+
+# pagenav, default: 2 levels
+temp.pagenav = HMENU
+temp.pagenav.wrap = <li id="pagenav"><h2>Pages</h2>|</li>
+temp.pagenav.1 = TMENU
+temp.pagenav.1 {
+  wrap = <ul>|</ul>
+  expAll = 1
+  noBlur = 1
+
+  NO {
+    wrapItemAndSub = <li class="page_item">|</li>
+    ATagTitle.field = abstract // description // title
+  }
+}
+temp.pagenav.2 = TMENU
+temp.pagenav.2 {
+  wrap = <ul> | </ul>
+  noBlur = 1
+  
+  NO {
+    allWrap = <li class="page_item">|</li>
+    ATagTitle.field = abstract // description // title
+  }
+}
+
+# filling markers
+temp.blogTitle = TEXT
+temp.blogTitle.value = {$plugin.tx_timtab.title}
+temp.blogTagline = TEXT
+temp.blogTagline.value = {$plugin.tx_timtab.tagline}
+temp.blogHomepage = TEXT
+temp.blogHomepage.value = {$plugin.tx_timtab.homepage}
+
+# page cObject
+page >
+page = PAGE
+page {
+  typeNum = 0
+  headTag = <head profile="http://gmpg.org/xfn/11">
+  bodyTag = <body>
+  includeCSS.file001 = {$page.file.css}
+
+  10 = TEMPLATE
+  10 {
+    template = FILE
+    template.file = {$page.file.template}
+    
+    workOnSubpart = DOCUMENT_BODY
+  
+    marks {    
+      PAGENAV < temp.pagenav
+      BLOG_TITLE < temp.blogTitle
+      BLOG_TAGLINE < temp.blogTagline
+      BLOG_HOME < temp.blogHomepage
+      BLOG_CONTENT < styles.content.get
+      BLOG_CONTENT_RIGHT < styles.content.getRight
+    } # end marks
+  } # end page.10 (TEMPLATE)
+  
+  # add some 'dynamic' css
+  CSS_inlineStyle (
+    body { background: url("{$page.file.kubrickbgcolor}"); }
+    #page { background: url("{$page.file.kubrickbgwide}") repeat-y top; border: none; }
+    #header { background: url("{$page.file.kubrickheader}") no-repeat bottom center; margin: 0 !important; margin: 0 0 0 1px; padding: 1px; height: 198px; width: 758px; }
+    #headerimg { margin: 7px 9px 0; height: 192px; width: 740px; }
+    #footer { background: url("{$page.file.kubrickfooter}") no-repeat bottom; border: none;}
+  )
+  
+  config {
+    # get XHTML compliant output
+    xmlprologue = none
+    doctype = xhtml_trans
+    xhtml_cleaning = all
+  
+    # Spamprotection
+    spamProtectEmailAddresses = -3
+    spamProtectEmailAddresses_atSubst = <span>&#064;</span>
+  
+    # targets
+    intTarget = {$PAGE_TARGET}
+    extTarget = _blank
+  
+    # externalize js and css
+    removeDefaultJS = external
+  
+    # Admin Panel
+    admPanel = 1
+  } # end page.config
+  
+} # end page (PAGE)
+
+#remove cleargif
+content.headerSpace = 0|0
+content.space = 0|0
