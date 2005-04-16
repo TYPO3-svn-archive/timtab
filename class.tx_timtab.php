@@ -51,8 +51,7 @@ class tx_timtab extends tslib_pibase {
 	 * @param conf the configuration coming from tt_news
 	 * @return the modified marker array
 	 */
-	function main($markerArray, $conf)
-	{		
+	function main($markerArray, $conf) {		
 		$this->local_cObj = t3lib_div::makeInstance('tslib_cObj'); // Local cObj.
 		$this->init($markerArray, $conf);
 		$this->substituteMarkers();
@@ -66,8 +65,7 @@ class tx_timtab extends tslib_pibase {
 	 * @param markerArray an array of markers coming from tt_news
 	 * @param conf the configuration coming from tt_news
 	 */
-	function init($markerArray, $conf)
-	{
+	function init($markerArray, $conf) {
 		$this->pi_loadLL(); // Loading language-labels
 		#$this->cObj = t3lib_div::makeInstance('tslib_cObj'); // get a cObj.
 		
@@ -85,8 +83,7 @@ class tx_timtab extends tslib_pibase {
 	/**
 	 * substitutes markers like count of comments
 	 */
-	function substituteMarkers()
-	{
+	function substituteMarkers() {
 		if($this->calledBy == 'tt_news') {
 			$comment_count = $this->count_comments();
 			if($comment_count == 0) {
@@ -121,6 +118,16 @@ class tx_timtab extends tslib_pibase {
 				$this->markerArray['###BLOG_RESPONSES###']	= $this->pi_getLL('multiple_responses');
 			}
 			$this->markerArray['###BLOG_POST_TITLE###'] = $this->getPostTitle();
+			$this->markerArray['###BLOG_COMMENT_GRAVATAR###'] = $this->getGravatar();
+			
+			if(!empty($this->conf['data']['homepage'])) {
+				$this->markerArray['###BLOG_COMMENTER_NAME###'] = '<a href="'.$this->conf['data']['homepage'].'" rel="external nofollow">'.$this->conf['data']['firstname'].'</a>';
+			} else {
+				$this->markerArray['###BLOG_COMMENTER_NAME###'] = $this->conf['data']['firstname'];
+			}
+			
+			
+			#debug($this->conf['data']);
 		}
 	}
 	
@@ -129,8 +136,7 @@ class tx_timtab extends tslib_pibase {
 	 * 
 	 * @return number of comments for the current post
 	 */
-	function count_comments()
-	{
+	function count_comments() {
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery( 
 			'uid',
 			'tx_veguestbook_entries',
@@ -171,6 +177,42 @@ class tx_timtab extends tslib_pibase {
 		);
 		
 		return $this->local_cObj->typolink($title, $conf);
+	}
+	
+	/**
+	 * builds the URL to get the gravatar from for the comments
+	 * 
+	 * @param email the email of the person who left a comment
+	 * @return the img tag for the gravatar
+	 * @see http://www.gravatar.com
+	 */
+	function getGravatar() {
+		$gravatar  = '<img src="http://www.gravatar.com/avatar.php?gravatar_id=';
+		$gravatar .= md5($this->conf['data']['email']);
+		
+		if($this->conf['gravatar.']['defaultImg'] != 0) {
+			$gravatar .= '&amp;default='.urlencode($this->conf['gravatar.']['defaultImg']);
+		}
+		
+		if($this->conf['gravatar.']['size'] != 80) {
+			$gravatar .= '&amp;size='.$this->conf['gravatar.']['size'];
+		}
+		
+		if($this->conf['gravatar.']['rating'] != 0) {
+			$gravatar .= '&amp;rating='.$this->conf['gravatar.']['rating'];
+		}
+		
+		if($this->conf['gravatar.']['border'] != 0) {
+			$gravatar .= '&amp;border='.$this->conf['gravatar.']['border'];
+		}
+		
+		$gravatar .= '"'; //closing href attribute
+		
+		if(!empty($this->conf['gravatar.']['class'])) {
+			$gravatar .= ' class="'.$this->conf['gravatar.']['class'].'"';
+		}
+		
+		return $gravatar.' alt="" />';
 	}
 		
 	/**

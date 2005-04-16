@@ -1,4 +1,23 @@
-plugin.tx_timtab.clearPageCacheOnComment = 0
+plugin.tx_timtab {
+  clearPageCacheOnComment = 0
+  
+  gravatar {
+    # values for rating are: [ G | PG | R | X | 0 = none]
+    # G is suitable for display on all sites
+    # PG may contain disputably offensive imagery
+    # R things as harsh profanity, intense violence, explicit sexual content, and drug use 
+    # X will contain hardcore sexual imagery or extremely disturbing violence
+    # see http://www.gravatar.com/rating.php
+    rating = 0
+    size = 80
+    #default image if no gravatar for the email was found
+    defaultImg = http://timtab.ingo-renner.loc/clear.gif
+    #border drwas a 1px border around the gravatar, define as HEX color: FF0000
+    border = 0
+    class = gravatar
+  }
+}
+
 plugin.tx_timtab_pi1 {
   header_stdWrap.wrap = <li><h2>Blogroll</h2>|</li>
   dontWrapInDiv = 1  
