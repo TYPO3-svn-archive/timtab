@@ -27,7 +27,10 @@ require_once(PATH_t3lib.'class.t3lib_tcemain.php');
 /**
  * class.tx_timtab.php
  *
- * Suite of tools and classes to build a blog using TYPO3
+ * A class which implements methods to connect between tt_news and ve_guestbook 
+ * and hooks for filling custom markers in these extensions an their templates.
+ * The extraItemMarkerProcessor can be called by both, tt_news and ve_guestbook.
+ * 
  * $Id$
  *
  * @author Ingo Renner <typo3@ingo-renner.com>
@@ -67,8 +70,7 @@ class tx_timtab extends tslib_pibase {
 	 */
 	function init($markerArray, $conf) {
 		$this->pi_loadLL(); // Loading language-labels
-		#$this->cObj = t3lib_div::makeInstance('tslib_cObj'); // get a cObj.
-		
+				
 		// pi_setPiVarDefaults() does not work since we are in a code library 
 		// and don't get called as a plugin, so we're getting our conf this way:
 		// $this->conf might be set already, so we have to merge both arrays
@@ -76,7 +78,7 @@ class tx_timtab extends tslib_pibase {
 		
 		$this->markerArray = $markerArray;
 		
-		#debug($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_timtab.'], 'TSFE');
+		#debug($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_timtab.'], 'TSFE config for timtab');
 		#debug($this->conf, '$this->conf');
 	}	
 	
@@ -190,12 +192,14 @@ class tx_timtab extends tslib_pibase {
 		$gravatar  = '<img src="http://www.gravatar.com/avatar.php?gravatar_id=';
 		$gravatar .= md5($this->conf['data']['email']);
 		
-		if($this->conf['gravatar.']['defaultImg'] != 0) {
+		if(!empty($this->conf['gravatar.']['defaultImg'])) {
 			$gravatar .= '&amp;default='.urlencode($this->conf['gravatar.']['defaultImg']);
 		}
 		
+		$size = '';
 		if($this->conf['gravatar.']['size'] != 80) {
 			$gravatar .= '&amp;size='.$this->conf['gravatar.']['size'];
+			$size = ' width="'.$this->conf['gravatar.']['size'].'" height="'.$this->conf['gravatar.']['size'].'"';
 		}
 		
 		if($this->conf['gravatar.']['rating'] != 0) {
@@ -212,11 +216,11 @@ class tx_timtab extends tslib_pibase {
 			$gravatar .= ' class="'.$this->conf['gravatar.']['class'].'"';
 		}
 		
-		return $gravatar.' alt="" />';
+		return $gravatar.$size.' alt="" />';
 	}
 		
 	/**
-	 * connects into tt_news item marker processing hook and fills our markers
+	 * connects into tt_news and ve_guestbook item marker processing hook and fills our markers
 	 * 
 	 * @param markerArray an array of markers coming from tt_news
 	 * @param row the current tt_news record
@@ -227,7 +231,7 @@ class tx_timtab extends tslib_pibase {
 	function extraItemMarkerProcessor($markerArray, $row, $lConf, $callingObject) {
 		$this->conf['data'] = $row;
 		$this->callingObj = $callingObject;
-		$this->calledBy = $callingObject->extKey;
+		$this->calledBy = $callingObject->extKey; //who is calling?
 		
 		#debug($callingObject->extKey);		
 		#debug($callingObject, 'calling parent object in timtab');

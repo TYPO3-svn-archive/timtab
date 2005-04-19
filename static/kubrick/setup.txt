@@ -9,6 +9,8 @@ plugin.tt_news {
   dontUseBackPid = 1
   catTextMode = 3
   newsAmenuUserFunc =
+  useHRDates = 1
+  useHRDatesSingle = 1
 
   _LOCAL_LANG.default {
     archiveHeader = Archives
@@ -64,6 +66,11 @@ temp.blogTagline = TEXT
 temp.blogTagline.value = {$plugin.tx_timtab.tagline}
 temp.blogHomepage = TEXT
 temp.blogHomepage.value = {$plugin.tx_timtab.homepage}
+temp.blogRoll =< plugin.tx_timtab_pi1
+temp.blogRoll {
+  header_stdWrap.wrap = <li><h2>Blogroll</h2>|</li>
+  dontWrapInDiv = 1
+}
 
 # page cObject
 page >
@@ -88,6 +95,7 @@ page {
       BLOG_HOME < temp.blogHomepage
       BLOG_CONTENT < styles.content.get
       BLOG_CONTENT_RIGHT < styles.content.getRight
+      BLOG_BLOGROLL < temp.blogRoll
     } # end marks
   } # end page.10 (TEMPLATE)
   

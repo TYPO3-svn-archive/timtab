@@ -6,7 +6,6 @@ $TCA["tx_timtab_blogroll"] = Array (
 	"interface" => Array (
 		"showRecordFieldList" => "hidden,url,name,description,rel_identity,rel_friendship,rel_physical,rel_professional,rel_geographical,rel_family,rel_romantic,img_uri,rss_uri,notes,rating,target"
 	),
-	"feInterface" => $TCA["tx_timtab_blogroll"]["feInterface"],
 	"columns" => Array (
 		"hidden" => Array (		
 			"exclude" => 1,

@@ -2,6 +2,8 @@
 if (!defined ('TYPO3_MODE')) 	die ('Access denied.');
 
 t3lib_extMgm::allowTableOnStandardPages('tx_timtab_blogroll');
+// finding the rel path takes time, so we store it in a variable
+$thisExtRelPath = t3lib_extMgm::extRelPath($_EXTKEY); 
 
 $TCA['tx_timtab_blogroll'] = Array (
 	'ctrl' => Array (
@@ -17,7 +19,7 @@ $TCA['tx_timtab_blogroll'] = Array (
 			'disabled' => 'hidden',
 		),
 		'dynamicConfigFile' => t3lib_extMgm::extPath($_EXTKEY).'tca.php',
-		'iconfile' => t3lib_extMgm::extRelPath($_EXTKEY).'icon_tx_timtab_blogroll.gif',
+		'iconfile' => $thisExtRelPath.'icon_tx_timtab_blogroll.gif',
 	),
 	'feInterface' => Array (
 		'fe_admin_fieldList' => 'hidden, url, name, description, rel_identity, rel_friendship, rel_physical, rel_professional, rel_geographical, rel_family, rel_romantic, img_uri, rss_uri, notes, rating, target',
@@ -62,7 +64,7 @@ t3lib_extMgm::addPlugin(Array('LLL:EXT:timtab/locallang_db.php:tt_content.list_t
 
 t3lib_div::loadTCA('tt_news');
 t3lib_extMgm::addTCAcolumns('tt_news',$tempColumns,1);
-$TCA['tt_news']['ctrl']['typeicons'][] = t3lib_extMgm::extRelPath($_EXTKEY).'icon_tx_timtab_post.gif';
+$TCA['tt_news']['ctrl']['typeicons'][] = $thisExtRelPath.'icon_tx_timtab_post.gif';
 $TCA['tt_news']['columns']['type']['config']['items'][] = Array('LLL:EXT:timtab/locallang_db.php:tt_news.type.I.timtab', 3);
 $TCA['tt_news']['interface']['showRecordFieldList'] .= ',tx_timtab_trackbacks,tx_timtab_tb2,tx_timtab_tb3';
 $TCA['tt_news']['types'][] = array();
