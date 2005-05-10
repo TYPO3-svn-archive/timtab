@@ -1,4 +1,8 @@
-2005-04-19	Ingo Renenr  <typo3@ingo-renner.com>
+2005-05-09	Ingo Renner  <typo3@ingo-renner.com>
+
+	* FIX found the typo which kept new fields from appearing in the new blog post tab in tt_news
+	
+2005-04-19	Ingo Renner  <typo3@ingo-renner.com>
 
 	* FIX smaller fixes on Kubrick, blogroll and configuration
 
