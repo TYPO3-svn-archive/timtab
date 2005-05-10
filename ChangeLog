@@ -1,6 +1,7 @@
 2005-05-09	Ingo Renner  <typo3@ingo-renner.com>
 
 	* FIX found the typo which kept new fields from appearing in the new blog post tab in tt_news
+	* ADD pi2 - this will be the XML-RPC interface, "listens" and responds on index.php?type=200
 	
 2005-04-19	Ingo Renner  <typo3@ingo-renner.com>
 
