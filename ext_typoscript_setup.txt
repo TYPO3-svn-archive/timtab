@@ -26,3 +26,8 @@ plugin.tx_timtab_pi1 {
   dontWrapInDiv = 0  
   pid_list = 0
 }
+
+plugin.tx_timtab_pi2 {  
+  pidStore = {$plugin.tx_timtab_pi2.pidStore}
+  enableMetaWeblog = {$plugin.tx_timtab_pi2.enableMetaWeblog}
+}

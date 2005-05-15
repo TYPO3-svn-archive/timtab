@@ -1,2 +1,8 @@
-
-#CONSTANTS
+plugin.tx_timtab_pi2 {
+  
+	# cat=plugin.tx_timtab/webservices/10; type=int+; label= pid to store the posts in: The page or sysfolder where your posts from external tools will be saved
+  pidStore = 0
+  
+	# cat=plugin.tx_timtab/enable/20; type=boolean; label= MetaWeblog API: Enable Weblogging with external tools which are capable of using the MetaWeblog API
+  enableMetaWeblog = 0
+}
