@@ -1,14 +1,15 @@
 <?php
 
 /* 
-   IXR - The Inutio XML-RPC Library - (c) Incutio Ltd 2002
+   IXR - The Incutio XML-RPC Library - (c) Incutio Ltd 2002
    Version 1.62TYPO3 - Simon Willison, 11th July 2003 (htmlentities -> htmlspecialchars)
 			^^^^^^^^ we've made some changes
    Site:   http://scripts.incutio.com/xmlrpc/
    Manual: http://scripts.incutio.com/xmlrpc/manual.php
    Made available under the BSD License: http://www.opensource.org/licenses/bsd-license.php
 */
-
+define('XMLRPC_DEBUG', true);
+define('DEBUG_FILENAME', 'D:/Projects/ingo-renner.com/www_v2/log/xmlrpc.log');
 
 class IXR_Value {
     var $data;
@@ -272,7 +273,7 @@ class IXR_Message {
 }
 
 
-class IXR_Server {
+class IXR_Server { //maybe extend this class to log with TYPO3 features
     var $data;
     var $callbacks = array();
     var $message;
@@ -293,6 +294,9 @@ class IXR_Server {
             }
             $data = $HTTP_RAW_POST_DATA;
         }
+        
+        $this->debug($data);
+        
         $this->message = new IXR_Message($data);
         if (!$this->message->parse()) {
             $this->error(-32700, 'parse error. not well formed');
@@ -369,6 +373,9 @@ EOD;
         header('Content-Type: text/xml');
         header('Date: '.date('r'));
         echo $xml;
+        
+        $this->debug($xml);
+                
         exit;
     }
     function hasMethod($method) {
@@ -425,6 +432,14 @@ EOD;
             }
         }
         return $return;
+    }
+    
+    function debug($msg) {
+    	if(XMLRPC_DEBUG) {        	
+	        $handle = fopen(DEBUG_FILENAME, 'a');
+	        fwrite($handle, $msg.chr(10));
+	        fclose($handle);
+        }	
     }
 }
 
@@ -619,8 +634,8 @@ class IXR_Date {
     }
     function parseTimestamp($timestamp) {
         $this->year = date('Y', $timestamp);
-        $this->month = date('Y', $timestamp);
-        $this->day = date('Y', $timestamp);
+        $this->month = date('m', $timestamp);
+        $this->day = date('d', $timestamp);
         $this->hour = date('H', $timestamp);
         $this->minute = date('i', $timestamp);
         $this->second = date('s', $timestamp);

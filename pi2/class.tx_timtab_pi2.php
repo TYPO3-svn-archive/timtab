@@ -41,9 +41,11 @@ class tx_timtab_pi2 extends tslib_pibase {
      * main function of pi2 creates an instance of the XML-RPC server
      */
     function main($content, $conf)    {
-        $this->conf=$conf;
+    	$this->conf = array_merge($conf, $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_timtab.']);
         $this->pi_setPiVarDefaults();
         $this->pi_USER_INT_obj=1;    // Configuring so caching is not expected. This value means that no cHash params are ever set. We do this, because it's a USER_INT object!
+    
+    	#debug($this->conf);
     
         #$xmlrpcServer = t3lib_div::makeInstance('xmlrpcServer');
         $xmlrpcServer = new xmlrpcserver($this->conf);

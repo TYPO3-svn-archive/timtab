@@ -1,3 +1,15 @@
+plugin.tx_timtab {
+
+	# cat=plugin.tx_timtab/basic/10; type=string; label= Title: your blog name
+  title = timtab
+  
+	# cat=plugin.tx_timtab/basic/20; type=string; label= Tagline: A short description for your Blog
+  tagline = Blogging with TYPO3
+  
+	# cat=plugin.tx_timtab/basic/30; type=string; label= Blog homepage: the URL to your blog homepage
+  homepage = http://www.example.com
+}
+
 plugin.tx_timtab_pi2 {
   
 	# cat=plugin.tx_timtab/webservices/10; type=int+; label= pid to store the posts in: The page or sysfolder where your posts from external tools will be saved
@@ -5,4 +17,10 @@ plugin.tx_timtab_pi2 {
   
 	# cat=plugin.tx_timtab/enable/20; type=boolean; label= MetaWeblog API: Enable Weblogging with external tools which are capable of using the MetaWeblog API
   enableMetaWeblog = 0
+  
+	# cat=plugin.tx_timtab/enable/30; type=boolean; label= Uploads: Enable file uploads from external tools
+  enableUploads = 0
+  
+	# cat=plugin.tx_timtab/enable/40; type=boolean; label= Strict API: Force the XML-RPC Server to be API compliant instead of behaving the more common way
+  strictAPI = 0
 }

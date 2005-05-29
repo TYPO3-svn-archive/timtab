@@ -19,6 +19,10 @@ plugin.tx_timtab {
     class = gravatar
     size = 60
   }
+  
+  title = {$plugin.tx_timtab.title}
+  tagline = {$plugin.tx_timtab.tagline}
+  homepage = {$plugin.tx_timtab.homepage}
 }
 
 plugin.tx_timtab_pi1 {
@@ -30,4 +34,6 @@ plugin.tx_timtab_pi1 {
 plugin.tx_timtab_pi2 {  
   pidStore = {$plugin.tx_timtab_pi2.pidStore}
   enableMetaWeblog = {$plugin.tx_timtab_pi2.enableMetaWeblog}
+  enableUploads = {$plugin.tx_timtab_pi2.enableUploads}
+  strictAPI = {$plugin.tx_timtab_pi2.strictAPI}  
 }
