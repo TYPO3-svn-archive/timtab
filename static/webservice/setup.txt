@@ -1,0 +1,18 @@
+blogWebservice = PAGE
+blogWebservice {
+  typeNum = 200
+
+  10 < plugin.tx_timtab_pi2
+  10.enableMetaWeblog = {$plugin.tx_timtab_pi2.enableMetaWeblog}
+  10.pidStore = {$plugin.tx_timtab_pi2.pidStore}
+  10.enableUploads = {$plugin.tx_timtab_pi2.enableUploads}
+  10.strictAPI = {$plugin.tx_timtab_pi2.strictAPI}
+  
+  config {
+    disableAllHeaderCode = 1
+    additionalHeaders = Content-type:application/xml
+    xhtml_cleaning = 0
+    admPanel = 0
+  }
+
+}
