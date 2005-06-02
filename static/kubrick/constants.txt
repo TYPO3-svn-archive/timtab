@@ -13,10 +13,4 @@ page.file {
   kubrickfooter = EXT:timtab/res/kubrick/images/kubrickfooter.jpg
 }
 
-plugin.tx_timtab {
-  title = timtab
-  tagline = Blogging with TYPO3
-  homepage = http://timtab.ingo-renner.loc
-}
-
 PAGE_TARGET = 
