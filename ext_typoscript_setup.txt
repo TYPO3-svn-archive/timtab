@@ -33,7 +33,9 @@ plugin.tx_timtab_pi1 {
 
 plugin.tx_timtab_pi2 {  
   pidStore = {$plugin.tx_timtab_pi2.pidStore}
+  enableBlogger = {$plugin.tx_timtab_pi2.enableBlogger}
   enableMetaWeblog = {$plugin.tx_timtab_pi2.enableMetaWeblog}
+  enableMovableType = {$plugin.tx_timtab_pi2.enableMovableType}
   enableUploads = {$plugin.tx_timtab_pi2.enableUploads}
   strictAPI = {$plugin.tx_timtab_pi2.strictAPI}  
 }
