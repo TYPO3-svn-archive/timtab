@@ -1,5 +1,12 @@
 2005-05-30	Ingo Renner  <typo3@ingo-renner.com>
 
+	* CHG !!! renamed classes and files for XML-RPC Server, now meets naming conventions
+	* ADD Authentification class, thanks a lot to René Fritz for his help
+	* ADD configuration variables for Blooger and Movable Type APIs
+	* CHG code clean up and comments added in XML-RPC server
+	
+2005-05-30	Ingo Renner  <typo3@ingo-renner.com>
+
 	* ADD added metaWeblog API
 	* ADD some new configuration variables
 	* FIX date in IXR library wasn't returned right
