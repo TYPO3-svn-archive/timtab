@@ -30,7 +30,7 @@
 
 
 require_once(PATH_tslib.'class.tslib_pibase.php');
-require_once(t3lib_extMgm::extPath('timtab').'pi2/class.xmlrpcserver.php');
+require_once(t3lib_extMgm::extPath('timtab').'pi2/class.tx_timtab_pi2_xmlrpcserver.php');
 
 class tx_timtab_pi2 extends tslib_pibase {
     var $prefixId = 'tx_timtab_pi2';        // Same as class name
@@ -47,7 +47,7 @@ class tx_timtab_pi2 extends tslib_pibase {
     
     	#debug($this->conf);
     
-        $xmlrpcServer = new xmlrpcserver($this->conf);
+        $xmlrpcServer = new tx_timtab_pi2_xmlrpcServer($this->conf);
     }
 }
 
