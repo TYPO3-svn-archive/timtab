@@ -1,4 +1,4 @@
-2005-05-30	Ingo Renner  <typo3@ingo-renner.com>
+2005-06-03	Ingo Renner  <typo3@ingo-renner.com>
 
 	* CHG !!! renamed classes and files for XML-RPC Server, now meets naming conventions
 	* ADD Authentification class, thanks a lot to René Fritz for his help
