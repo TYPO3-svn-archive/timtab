@@ -47,7 +47,6 @@ class tx_timtab_pi2 extends tslib_pibase {
     
     	#debug($this->conf);
     
-        #$xmlrpcServer = t3lib_div::makeInstance('xmlrpcServer');
         $xmlrpcServer = new xmlrpcserver($this->conf);
     }
 }
