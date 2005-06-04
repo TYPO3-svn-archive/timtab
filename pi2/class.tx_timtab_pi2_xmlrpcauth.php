@@ -38,6 +38,13 @@ class tx_timtab_pi2_xmlrpcAuth extends t3lib_beuserauth {
 	var $writeAttemptLog = true;
 	var $writeDevLog = true;
 
+	/**
+	 * authentify user with username, password
+	 * 
+	 * @param string username the username
+	 * @param string password clear text password
+	 * @return boolean 
+	 */
 	function authUser($username, $password) {
 		
 		$OK = false;
@@ -55,10 +62,10 @@ class tx_timtab_pi2_xmlrpcAuth extends t3lib_beuserauth {
 			$serviceObj->initAuth('getUserBE', $loginData, $authInfo, $this);
 			
 			//get a login user
-			if(!$this->xmlrpcUser = $serviceObj->getUser()) {
-				$OK = false;
+			if($this->xmlrpcUser = $serviceObj->getUser()) {
+				$OK = true;
 			} else {
-				$OK = true;	
+				$OK = false;	
 			}			
 		} else {
 			$OK = false;
@@ -69,18 +76,12 @@ class tx_timtab_pi2_xmlrpcAuth extends t3lib_beuserauth {
 			$serviceObj->initAuth('authUserBE', $loginData, $authInfo, $this);
 			
 			//auth user
-			$ret = $serviceObj->authUser($this->xmlrpcUser);
-			if($ret) {
-				$OK = true;
-			} else {
-				$OK = false;
-			}					
+			$OK = $serviceObj->authUser($this->xmlrpcUser);								
 		} else {
 			$OK = false;
 		}
 		
 		return $OK;
-
 	}
 }
 
