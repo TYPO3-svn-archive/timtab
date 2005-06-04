@@ -34,51 +34,65 @@ require_once(PATH_t3lib.'class.t3lib_beuserauth.php');
 class tx_timtab_pi2_xmlrpcAuth extends t3lib_beuserauth {
 	var $loginType = 'BE';
 	var $security_level = 'normal';
-	var $xmlrpcUser;
 	var $writeAttemptLog = true;
 	var $writeDevLog = true;
+	
+	var $xmlrpcLoginData;
+	var $xmlrpcAuthInfo;
+	var $xmlrpcUser;
+	
 
 	/**
-	 * authentify user with username, password
+	 * initialize login data
 	 * 
 	 * @param string username the username
 	 * @param string password clear text password
-	 * @return boolean 
+	 * @return void
 	 */
-	function authUser($username, $password) {
-		
-		$OK = false;
-		
-		$loginData = array(
+	function initAuth($username, $password) {
+		$this->xmlrpcLoginData = array(
 			'uname'  => $username,
 			'uident' => md5($password),
 			'status' => 'login',
 		);
 		
-		$authInfo = $this->getAuthInfoArray();
+		$this->xmlrpcAuthInfo = $this->getAuthInfoArray();
+	}
 
+	/**
+	 * get a BE user, will return false on failure
+	 * 
+	 * @return user object on success, false otherwise
+	 */
+	function getUser() {
+		
 		if(is_object($serviceObj = t3lib_div::makeInstanceService('auth', 'getUserBE'))) {
 		
-			$serviceObj->initAuth('getUserBE', $loginData, $authInfo, $this);
+			$serviceObj->initAuth('getUserBE', $this->xmlrpcLoginData, $this->xmlrpcAuthInfo, $this);
 			
 			//get a login user
 			if($this->xmlrpcUser = $serviceObj->getUser()) {
-				$OK = true;
-			} else {
-				$OK = false;	
-			}			
-		} else {
-			$OK = false;
-		}
+				return $this->xmlrpcUser;
+			} 		
+		} 
 		
-		if($OK && is_object($serviceObj = t3lib_div::makeInstanceService('auth', 'authUserBE'))) {
+		return false;
+	}
+
+	/**
+	 * authentify user with username, password
+	 * 
+	 * @return boolean 
+	 */
+	function authUser() {
+		$OK = false;
 		
-			$serviceObj->initAuth('authUserBE', $loginData, $authInfo, $this);
+		if(is_object($serviceObj = t3lib_div::makeInstanceService('auth', 'authUserBE'))) {
+		
+			$serviceObj->initAuth('authUserBE', $this->xmlrpcLoginData, $this->xmlrpcAuthInfo, $this);
 			
 			//auth user
 			$OK = $serviceObj->authUser($this->xmlrpcUser);								
-		} else {
-			$OK = false;
 		}
 		
 		return $OK;
