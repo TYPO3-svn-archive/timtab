@@ -37,10 +37,11 @@ require_once($path_timtab.'pi2/class.tx_timtab_pi2_xmlrpcauth.php');
 
 class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 	var $conf;
-	var $user;
+	var $xmlrpcUser;
 
-	function tx_timtab_pi2_xmlrpcServer($conf) {
-		$this->conf = $conf;			
+	function tx_timtab_pi2_xmlrpcServer(&$pObj) {
+		$this->conf = $pObj->conf;	
+		$this->pObj = $pObj;		
 		
 		// Blogger API
 		$blggr = array();
@@ -78,7 +79,7 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 		// Movable Type API
 		$mt = array();
 		if($this->conf['enableMovableType']) {
-			$mt = array();	
+			$mt = array();	//nothing yet
 		}
 		
 		// PingBack
@@ -93,9 +94,7 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 			'demo.addTwoNumbers' => 'this:demoAddTwoNumbers',
 		);
 		
-		$services = array_merge($blggr, $mw, $mt, $pb, $demo);
-		
-		$this->IXR_Server( $services );	
+		$this->IXR_Server( array_merge($blggr, $mw, $mt, $pb, $demo) );	
 	}
 	
 	//MetaWeblog
@@ -133,7 +132,7 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 			'pid'      => $this->conf['pidStore'],
 			'hidden'   => $publish,
 			'title'    => $content['title'],
-			'bodytext' => $content['description'], //TODO content->DB transformation
+			'bodytext' => $content['description'], //TODO RTE->DB transformation
 			'author'   => $username,
 			'tstamp'   => $time,
 			'crdate'   => $time,
@@ -173,7 +172,7 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 		$updateArray = array(
 			'hidden'    => $publish,
 			'title'     => addslashes($content['title']),
-			'bodytext'  => addslashes($content['description']),//TODO content->DB transformation
+			'bodytext'  => addslashes($content['description']),//TODO RTE->DB transformation
 			'author'    => '', //$username, //let's see what we can do with the author field
 			'tstamp'    => $time,
 			'datetime'  => $content['dateCreated']->getTimestamp(),
@@ -329,7 +328,7 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 					'dateCreated' => new IXR_Date($post['datetime']),
 					'userid'      => 0, //??? post author uid
 					'postid'      => $post['uid'],
-					'description' => $post['bodytext'], //TODO DB->content tansformation
+					'description' => $post['bodytext'], //TODO DB->RTE tansformation
 					'title'       => $post['title'],
 					'link'        => '', //unused
 					'permalink'   => '', //unused
@@ -528,15 +527,23 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 	/**
 	 *  authenticates a BE user by using auth services
 	 * 
-	 * @param string username the users name
-	 * @param string password the users password
+	 * @param string username the username
+	 * @param string password the users password in clear text
 	 * @return bool
 	 */
 	function authUser($username, $password) {
 		
-		$auth = t3lib_div::makeInstance('tx_timtab_pi2_xmlrpcAuth');
+		//init
+		$auth = t3lib_div::makeInstance('tx_timtab_pi2_xmlrpcAuth');		
+		$auth->initAuth($username, $password);
 		
-		return $auth->authUser($username, $password);
+		//get user
+		if(!$this->xmlrpcUser = $auth->getUser()) {
+			return false;
+		}		
+			
+		//auth user
+		return $auth->authUser();
 	}
 }
 
