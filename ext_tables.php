@@ -70,7 +70,7 @@ $TCA['tt_news']['columns']['type']['config']['items'][] = Array('LLL:EXT:timtab/
 $TCA['tt_news']['interface']['showRecordFieldList'] .= ',tx_timtab_trackbacks,tx_timtab_tb2,tx_timtab_tb3';
 $TCA['tt_news']['types'][] = array();
 
-t3lib_extMgm::addToAllTCAtypes('tt_news', 'title;;1;;,datetime;;2;;1-1-1,author;;3;;,short,bodytext;;4;richtext[paste|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|table|image]:rte_transform[flag=rte_enabled|mode=ts];4-4-4,no_auto_pb,--div--;Relations,category,image;;;;1-1-1,imagecaption;;5;;,links;;;;2-2-2,related;;;;3-3-3,news_files;;;;4-4-4,--div--;Blog Post,tx_timtab_trackbacks;;;;1-1-1, tx_timtab_tb2, tx_timtab_tb3', 3);
+t3lib_extMgm::addToAllTCAtypes('tt_news', 'title;;1;;,type;;;;,editlock;;;;,datetime;;2;;1-1-1,author;;3;;,short,bodytext;;4;richtext[paste|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|table|image]:rte_transform[flag=rte_enabled|mode=ts];4-4-4,no_auto_pb,--div--;Relations,category,image;;;;1-1-1,imagecaption;;5;;,links;;;;2-2-2,related;;;;3-3-3,news_files;;;;4-4-4,--div--;Blog Post,tx_timtab_trackbacks;;;;1-1-1, tx_timtab_tb2, tx_timtab_tb3', 3);
 
 t3lib_extMgm::addStaticFile($_EXTKEY,'static/kubrick/','Kubrick (default weblog template)');
 t3lib_extMgm::addStaticFile($_EXTKEY,'static/kubrick_single/','Kubrick Single View (default weblog template)');
