@@ -1,7 +1,7 @@
 #
 # Table structure for table 'tt_news'
 #
-#CREATE TABLE tt_news (
+CREATE TABLE tt_news (
 	tx_timtab_trackbacks blob NOT NULL,
 	tx_timtab_tb2 tinytext NOT NULL,
 	tx_timtab_tb3 text NOT NULL
