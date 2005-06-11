@@ -1,3 +1,8 @@
+2005-06-11	Ingo Renner  <typo3@ingo-renner.com>
+
+	* ADD now transformations between blog client and DB are supported like between RTE and DB
+	* CHG renamed TS variable clearPageCacheOnComment into clearPageCacheOnUpdate
+
 2005-06-03	Ingo Renner  <typo3@ingo-renner.com>
 
 	* CHG !!! renamed classes and files for XML-RPC Server, now meets naming conventions
