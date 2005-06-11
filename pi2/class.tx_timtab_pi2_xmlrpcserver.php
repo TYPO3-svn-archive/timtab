@@ -30,10 +30,11 @@
  */
  
  
-$path_timtab = t3lib_extMgm::extPath('timtab');
-require_once($path_timtab.'lib.ixr.php');
-require_once($path_timtab.'pi2/class.tx_timtab_pi2_xmlrpcauth.php');
-//require_once(PATH_tslib.'class.tslib_content.php');
+$PATH_timtab = t3lib_extMgm::extPath('timtab');
+require_once($PATH_timtab.'lib.ixr.php');
+require_once($PATH_timtab.'pi2/class.tx_timtab_pi2_xmlrpcauth.php');
+require_once(PATH_t3lib.'class.t3lib_befunc.php');
+require_once(PATH_t3lib.'class.t3lib_parsehtml_proc.php');
 
 class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 	var $conf;
@@ -132,7 +133,7 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 			'pid'      => $this->conf['pidStore'],
 			'hidden'   => $publish,
 			'title'    => $content['title'],
-			'bodytext' => $content['description'], //TODO RTE->DB transformation
+			'bodytext' => $this->transformContent('db', $content['description']),
 			'author'   => $username,
 			'tstamp'   => $time,
 			'crdate'   => $time,
@@ -172,7 +173,7 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 		$updateArray = array(
 			'hidden'    => $publish,
 			'title'     => addslashes($content['title']),
-			'bodytext'  => addslashes($content['description']),//TODO RTE->DB transformation
+			'bodytext'  => $this->transformContent('db', $content['description']),
 			'author'    => '', //$username, //let's see what we can do with the author field
 			'tstamp'    => $time,
 			'datetime'  => $content['dateCreated']->getTimestamp(),
@@ -184,6 +185,8 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 			'uid = '.$GLOBALS['TYPO3_DB']->fullQuoteStr($postId, 'tt_news'), 
 			$updateArray
 		); 	
+		
+		//TODO clear cache for blog page
 	
 		if(!$res) {
 			return new IXR_Error(500, 'Internal Server Error. Couldn\'t connect to database.'); 
@@ -224,7 +227,7 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 				'dateCreated' => new IXR_Date($post['datetime']),
 				'userid'      => 0, //??? post author uid
 				'postid'      => $post['uid'],
-				'description' => $post['bodytext'],
+				'description' => $this->transformContent('rte', $post['bodytext']),
 				'title'       => $post['title'],
 				'link'        => '', //unused
 				'permalink'   => '', //unused
@@ -328,7 +331,7 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 					'dateCreated' => new IXR_Date($post['datetime']),
 					'userid'      => 0, //??? post author uid
 					'postid'      => $post['uid'],
-					'description' => $post['bodytext'], //TODO DB->RTE tansformation
+					'description' => $this->transformContent('rte', $post['bodytext']),
 					'title'       => $post['title'],
 					'link'        => '', //unused
 					'permalink'   => '', //unused
@@ -532,7 +535,6 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 	 * @return bool
 	 */
 	function authUser($username, $password) {
-		
 		//init
 		$auth = t3lib_div::makeInstance('tx_timtab_pi2_xmlrpcAuth');		
 		$auth->initAuth($username, $password);
@@ -544,6 +546,60 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 			
 		//auth user
 		return $auth->authUser();
+	}
+	
+	/**
+	 * Performs transformation of content to/from Client. The argument $dirRTE determines the direction.
+	 * This function is called in two situations:
+	 * a) Right before content from database is sent to the Client it needs transformation
+	 * b) When content is sent from the Client into the database it needs transformation back again
+	 *
+	 * @param	string		Keyword: "rte" means direction from DB to client, "db" means direction from client to DB
+	 * @param	string		Value to transform.
+	 * @param	string		Relative path for images/links in RTE; this is used when the Client edits content from static files where the path of such media has to be transformed forth and back!
+	 * @return string transformed content
+	 */
+	function transformContent($dirRTE, $value) {
+		$table      = 'tt_news';
+		$field      = 'bodytext';
+		$pid        = $this->conf['pidStore'];
+		$RTErelPath = '';
+		
+		//start getting $specConf --- taken from t3lib_BEfunc::getTCAtypes()
+		$specConf = array();
+		$_EXTKEY = $this->pObj->extKey;
+				
+		include($GLOBALS['PATH_timtab'].'ext_tables.php');
+		$fieldList = explode(',', $GLOBALS['TCA'][$table]['types']['3']['showitem']); // 0 should be 3!?
+		
+		foreach($fieldList as $k => $v)	{
+			list($pFieldName, $pAltTitle, $pPalette, $pSpec) = t3lib_div::trimExplode(';', $v);
+			if($pFieldName == $field) {
+				$defaultExtras = is_array($TCA[$table]['columns'][$field]) ? $TCA[$table]['columns'][$field]['defaultExtras'] : '';
+				$specConf      = t3lib_BEfunc::getSpecConfParts($pSpec, $defaultExtras);
+				break;
+			}
+		}
+		//end getting $specConf
+		
+		$pageTSconfig = t3lib_BEfunc::getPagesTSconfig($this->conf['pidStore']);
+		$thisConfig   = $pageTSconfig['RTE.']['default.'];//$thisConfig is OK!
+		
+		if ($specConf['rte_transform'])	{
+			$p = t3lib_BEfunc::getSpecConfParametersFromArray($specConf['rte_transform']['parameters']);
+			if ($p['mode'])	{	// There must be a mode set for transformation
+
+					// Initialize transformation:
+				$parseHTML = t3lib_div::makeInstance('t3lib_parsehtml_proc');
+				$parseHTML->init($table.':'.$field, $pid);
+				$parseHTML->setRelPath($RTErelPath);
+
+					// Perform transformation:
+				$value = $parseHTML->RTE_transform($value, $specConf, $dirRTE, $thisConfig);
+			}
+		}
+
+		return $value;
 	}
 }
 
