@@ -1,5 +1,6 @@
 plugin.tx_timtab {
-  clearPageCacheOnComment = 0
+  #here update means new comments or when a post was edited with an external tool
+  clearPageCacheOnUpdate = 0
   
   gravatar {
     # values for rating are: [ G | PG | R | X | 0 = none]

@@ -252,7 +252,7 @@ class tx_timtab extends tslib_pibase {
 		$tce = t3lib_div::makeInstance('t3lib_TCEmain');
 		$tce->admin = 1;
 		
-		$clearCachePages = split(',', $this->conf['clearPageCacheOnComment']);
+		$clearCachePages = split(',', $this->conf['clearPageCacheOnUpdate']);
 		foreach($clearCachePages as $page) {
 			$tce->clear_cacheCmd($page);
 		}		
