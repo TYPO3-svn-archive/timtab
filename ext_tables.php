@@ -31,29 +31,11 @@ $tempColumns = Array (
 		'exclude' => 1,		
 		'label' => 'LLL:EXT:timtab/locallang_db.php:tt_news.tx_timtab_trackbacks',		
 		'config' => Array (
-			'type' => 'group',	
-			'internal_type' => 'db',	
-			'allowed' => 'tt_news',	
-			'size' => 10,	
-			'minitems' => 0,
-			'maxitems' => 100,
-		)
-	),
-	'tx_timtab_tb2' => Array (		
-		'exclude' => 1,		
-		'label' => 'LLL:EXT:timtab/locallang_db.php:tt_news.tx_timtab_tb2',		
-		'config' => Array (
-			'type' => 'none',
-		)
-	),
-	'tx_timtab_tb3' => Array (		
-		'exclude' => 1,		
-		'label' => 'LLL:EXT:timtab/locallang_db.php:tt_news.tx_timtab_tb3',		
-		'config' => Array (
 			'type' => 'text',
 			'cols' => '30',	
 			'rows' => '7',
-		)
+		),
+		'defaultExtras' => 'nowrap'
 	),
 );
 
@@ -64,13 +46,13 @@ $TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY.'_pi2']='la
 t3lib_extMgm::addPlugin(Array('LLL:EXT:timtab/locallang_db.php:tt_content.list_type_pi1', $_EXTKEY.'_pi1'),'list_type');
 
 t3lib_div::loadTCA('tt_news');
-t3lib_extMgm::addTCAcolumns('tt_news',$tempColumns,1);
+t3lib_extMgm::addTCAcolumns('tt_news', $tempColumns, 1);
 $TCA['tt_news']['ctrl']['typeicons'][] = $thisExtRelPath.'icon_tx_timtab_post.gif';
 $TCA['tt_news']['columns']['type']['config']['items'][] = Array('LLL:EXT:timtab/locallang_db.php:tt_news.type.I.timtab', 3);
-$TCA['tt_news']['interface']['showRecordFieldList'] .= ',tx_timtab_trackbacks,tx_timtab_tb2,tx_timtab_tb3';
-$TCA['tt_news']['types'][] = array();
+$TCA['tt_news']['interface']['showRecordFieldList'] .= ',tx_timtab_trackbacks';
+$TCA['tt_news']['types']['3'] = array();
 
-t3lib_extMgm::addToAllTCAtypes('tt_news', 'title;;1;;,type;;;;,editlock;;;;,datetime;;2;;1-1-1,author;;3;;,short,bodytext;;4;richtext[paste|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|table|image]:rte_transform[flag=rte_enabled|mode=ts];4-4-4,no_auto_pb,--div--;Relations,category,image;;;;1-1-1,imagecaption;;5;;,links;;;;2-2-2,related;;;;3-3-3,news_files;;;;4-4-4,--div--;Blog Post,tx_timtab_trackbacks;;;;1-1-1, tx_timtab_tb2, tx_timtab_tb3', 3);
+t3lib_extMgm::addToAllTCAtypes('tt_news', 'title;;1;;,type,editlock,datetime;;2;;1-1-1,author;;3;;,short,bodytext;;4;richtext[paste|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|table|image]:rte_transform[flag=rte_enabled|mode=ts];4-4-4,no_auto_pb,--div--;Relations,category,image;;;;1-1-1,imagecaption;;5;;,links;;;;2-2-2,related;;;;3-3-3,news_files;;;;4-4-4,--div--;Blog Post,tx_timtab_trackbacks;;;;1-1-1', 3);
 
 t3lib_extMgm::addStaticFile($_EXTKEY,'static/kubrick/','Kubrick (default weblog template)');
 t3lib_extMgm::addStaticFile($_EXTKEY,'static/kubrick_single/','Kubrick Single View (default weblog template)');

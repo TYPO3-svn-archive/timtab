@@ -7,9 +7,7 @@
 
 $LOCAL_LANG = Array (
 	'default' => Array (
-		'tt_news.tx_timtab_trackbacks' => 'trackbacks',	
-		'tt_news.tx_timtab_tb2' => 'tb2',	
-		'tt_news.tx_timtab_tb3' => 'tb3',
+		'tt_news.tx_timtab_trackbacks' => 'Trackbacks',	
 		'tt_news.type.I.timtab' => 'Blog Post',
 		'tx_timtab_blogroll' => 'link',	
 		'tx_timtab_blogroll.url' => 'URL',	
