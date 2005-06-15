@@ -142,7 +142,7 @@ class tx_timtab extends tslib_pibase {
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery( 
 			'uid',
 			'tx_veguestbook_entries',
-			'uid_tt_news = '.$this->conf['data']['uid'].' AND deleted = 0' 
+			'uid_tt_news = '.$this->conf['data']['uid'].$this->local_cObj->enableFields('tx_veguestbook_entries') 
 		);
 		
 		return $GLOBALS['TYPO3_DB']->sql_num_rows($res);
@@ -157,7 +157,7 @@ class tx_timtab extends tslib_pibase {
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows( 
 			'title',
 			'tt_news',
-			'uid = '.$this->callingObj->tt_news['tx_ttnews[tt_news]'].' AND deleted = 0' 
+			'uid = '.$this->callingObj->tt_news['tx_ttnews[tt_news]'].$this->local_cObj->enableFields('tt_news') 
 		);
 	
 		return $res[0]['title'];
@@ -243,11 +243,11 @@ class tx_timtab extends tslib_pibase {
 	 * connects to the hook in ve_guestbook to post process a comment entry
 	 * we'll just clear the cache of some pages to keep the comment count updated
 	 * 
-	 * @param parentObject the calling ve_guestbook object
+	 * @param pObj parentObject the calling ve_guestbook object
 	 * @return void
 	 */
-	function postEntryInsertedProcessor($parentObject) {
-		#$this->cObj = $parentObject->cObj;
+	function postEntryInsertedProcessor($pObj) {
+		#$this->cObj = $pObj->cObj;
 		$this->init(array(), array());		
 		$tce = t3lib_div::makeInstance('t3lib_TCEmain');
 		$tce->admin = 1;
@@ -255,7 +255,8 @@ class tx_timtab extends tslib_pibase {
 		$clearCachePages = split(',', $this->conf['clearPageCacheOnUpdate']);
 		foreach($clearCachePages as $page) {
 			$tce->clear_cacheCmd($page);
-		}		
+		}	
+		$tce->admin = 0;	
 	}
 }
 
