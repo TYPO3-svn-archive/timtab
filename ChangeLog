@@ -1,3 +1,7 @@
+2005-06-15	Ingo Renner  <typo3@ingo-renner.com>
+
+	* CHG changed Incutio XML-RPC library to version 1.7 beta
+
 2005-06-11	Ingo Renner  <typo3@ingo-renner.com>
 
 	* ADD now transformations between blog client and DB are supported like between RTE and DB
