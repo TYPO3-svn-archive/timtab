@@ -3,6 +3,8 @@
  * Language labels for database tables/fields belonging to extension "timtab"
  *
  * This file is detected by the translation tool.
+ * 
+ * $Id$
  */
 
 $LOCAL_LANG = Array (

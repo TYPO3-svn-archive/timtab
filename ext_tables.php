@@ -1,4 +1,8 @@
 <?php
+//
+//	$Id$
+//
+
 if (!defined ('TYPO3_MODE')) 	die ('Access denied.');
 
 t3lib_extMgm::allowTableOnStandardPages('tx_timtab_blogroll');

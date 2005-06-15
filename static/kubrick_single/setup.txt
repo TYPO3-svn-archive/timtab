@@ -1,2 +1,5 @@
+
+#	$Id$
+
 # different template for page cObject
 page.10.template.file = {$page.file.template_single}

@@ -23,6 +23,8 @@
 ***************************************************************/
 /**
  * Plugin 'blogroll' for the 'timtab' extension.
+ * 
+ * $Id$
  *
  * @author	Ingo Renner <typo3@ingo-renner.com>
  */

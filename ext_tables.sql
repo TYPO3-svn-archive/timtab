@@ -1,4 +1,8 @@
 #
+#	$Id$
+#
+
+#
 # Table structure for table 'tt_news'
 #
 CREATE TABLE tt_news (

@@ -21,20 +21,21 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
-require_once(PATH_tslib.'class.tslib_pibase.php');
-require_once(PATH_t3lib.'class.t3lib_tcemain.php');
-
 /**
  * class.tx_timtab.php
  *
  * A class which implements methods to connect between tt_news and ve_guestbook 
- * and hooks for filling custom markers in these extensions an their templates.
+ * hooks for filling custom markers in these extensions an their templates.
  * The extraItemMarkerProcessor can be called by both, tt_news and ve_guestbook.
  * 
  * $Id$
  *
  * @author Ingo Renner <typo3@ingo-renner.com>
  */
+ 
+require_once(PATH_tslib.'class.tslib_pibase.php');
+require_once(PATH_t3lib.'class.t3lib_tcemain.php');
+ 
 class tx_timtab extends tslib_pibase {
 	var $cObj; // The backReference to the mother cObj object set at call time
 	// Default plugin variables:

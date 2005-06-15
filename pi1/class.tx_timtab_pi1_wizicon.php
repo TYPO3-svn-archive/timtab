@@ -23,6 +23,8 @@
 ***************************************************************/
 /**
  * Class that adds the wizard icon.
+ * 
+ * $Id$
  *
  * @author	Ingo Renner <typo3@ingo-renner.com>
  */
@@ -45,6 +47,8 @@ class tx_timtab_pi1_wizicon {
 		return $wizardItems;
 	}
 	function includeLocalLang()	{
+		global $LOCAL_LANG;
+		
 		include(t3lib_extMgm::extPath('timtab').'locallang.php');
 		return $LOCAL_LANG;
 	}

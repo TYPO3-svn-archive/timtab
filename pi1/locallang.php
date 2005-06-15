@@ -1,6 +1,8 @@
 <?php
 /**
  * Language labels for plugin "tx_timtab_pi1"
+ * 
+ * $Id$
  *
  * This file is detected by the translation tool.
  */

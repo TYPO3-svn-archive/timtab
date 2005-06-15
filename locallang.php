@@ -3,6 +3,8 @@
  * Language labels for plugin "tx_timtab"
  * 
  * This file is detected by the translation tool.
+ * 
+ * $Id$
  */
 
 $LOCAL_LANG = Array (
