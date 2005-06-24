@@ -19,16 +19,19 @@ plugin.tx_timtab_pi2 {
 	# cat=plugin.tx_timtab/webservices/10; type=int+; label= pid to store the posts in: The page or sysfolder where your posts from external tools will be saved
   pidStore = 0
   
-	# cat=plugin.tx_timtab/enable/20; type=boolean; label= Blogger API: Enable Weblogging with external tools which are capable of using the Blogger API
+	# cat=plugin.tx_timtab/webservices/20; type=int+; label= This sets the timout for XML-RPC Server connections in seconds
+  connectionTimeout = 30
+  
+	# cat=plugin.tx_timtab/enable/30; type=boolean; label= Blogger API: Enable Weblogging with external tools which are capable of using the Blogger API
   enableBlogger = 0
   
-	# cat=plugin.tx_timtab/enable/30; type=boolean; label= MetaWeblog API: Enable Weblogging with external tools which are capable of using the MetaWeblog API
+	# cat=plugin.tx_timtab/enable/40; type=boolean; label= MetaWeblog API: Enable Weblogging with external tools which are capable of using the MetaWeblog API
   enableMetaWeblog = 0
   
-	# cat=plugin.tx_timtab/enable/40; type=boolean; label= Movable Type API: Enable Weblogging with external tools which are capable of using the Movable Type API
+	# cat=plugin.tx_timtab/enable/50; type=boolean; label= Movable Type API: Enable Weblogging with external tools which are capable of using the Movable Type API
   enableMovableType = 0
   
-	# cat=plugin.tx_timtab/enable/50; type=boolean; label= Uploads: Enable file uploads from external tools
+	# cat=plugin.tx_timtab/enable/60; type=boolean; label= Uploads: Enable file uploads from external tools
   enableUploads = 0
   
 	# cat=plugin.tx_timtab/enable/60; type=boolean; label= Strict API: Force the XML-RPC Server to be API compliant instead of behaving the more common way
