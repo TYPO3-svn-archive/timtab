@@ -26,7 +26,8 @@ plugin.tt_news {
 plugin.tx_veguestbook_pi1 {
 
   templateFile = {$page.file.template_ve_guestbook}
-
+  limit = 1000
+  
   _LOCAL_LANG.default {
     form_firstname = Name
     form_submit = Submit Comment
