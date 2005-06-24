@@ -7,6 +7,8 @@
 #
 CREATE TABLE tt_news (
 	tx_timtab_trackbacks text NOT NULL,
+	tx_timtab_comments_allowed tinyint(4) unsigned DEFAULT '1' NOT NULL,
+	tx_timtab_ping_allowed tinyint(4) unsigned DEFAULT '1' NOT NULL,
 );
 
 #
