@@ -520,7 +520,10 @@ class IXR_Client {
         $request .= "User-Agent: {$this->useragent}$r";
         $request .= "Content-length: {$length}$r$r";
         $request .= $xml;
+        
         // Now send the request
+        $errno  = 0;
+        $errstr = 0;
         if ($this->debug) {
             echo '<pre>'.htmlspecialchars($request)."\n</pre>\n\n";
         }
@@ -554,6 +557,9 @@ class IXR_Client {
                 $contents .= trim($line);
             }
         }
+        
+        fclose($fp);
+        
         if ($this->debug) {
             echo '<pre>'.htmlspecialchars($contents)."\n</pre>\n\n";
         }
