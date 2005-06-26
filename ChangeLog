@@ -1,5 +1,9 @@
 2005-06-15	Ingo Renner  <typo3@ingo-renner.com>
 
+	* ADD added sending trackbacks (only works from the BE for now, still needs to get implemented for FE so that it works even from external tools)
+
+2005-06-15	Ingo Renner  <typo3@ingo-renner.com>
+
 	* ADD category support (getCategories)
 	* ADD function index
 	* FIX wrong WHERE clause in metaweblog.getPost
