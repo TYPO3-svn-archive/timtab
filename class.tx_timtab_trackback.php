@@ -48,47 +48,36 @@ class tx_timtab_trackback {
 	var $conf;
 	var $pObj;
 
-	var $blogName;
-	var $author;
 	var $encoding;
-	var $url;
-	var $title;
-	var $excerpt;
 	var $timeout;
+	var $blogName;
+	var $tt_news;
 
-	function init($pObj) {
+	function init($pObj, $tt_news) {
 		$this->conf = $pObj->conf;
 		$this->pObj = $pObj;
 		
 		$this->encoding = 'UTF-8';
 		$this->timeout  = $this->conf['connectionTimeout'];
 		$this->blogName = $this->conf['title'];
+		$this->tt_news  = $tt_news; 
 	}
 
 	/**
 	 * Sends a trackback ping to a specified trackback URL.
 	 * allowing clients to auto-discover the TrackBack Ping URL.
 	 * 
-	 * <code><?php
-	 * include('trackback_cls.php');
-	 * $trackback = new Trackback('BLOGish', 'Ran Aroussi', 'UTF-8');
-	 * if ($trackback->ping('http://tracked-blog.com', 'http://your-url.com', 'Your entry title')) {
-	 * 	echo "Trackback sent successfully...";
-	 * } else {
-	 * 	echo "Error sending trackback....";
-	 * }
-	 * ?></code>
-	 * 
 	 * @param string trackback target 
-	 * @param string source url 
 	 * @param string post title 
 	 * @param string post excerpt 
 	 * @return boolean 
 	 */
-	function ping($target, $source, $title, $excerpt)
+	function ping($target)
 	{
 		$response = '';
-		$reason = ''; 
+		$result   = array(); 
+		$source   = $this->buildSourceURL();
+		$excerpt  = $this->getExcerpt();
 
 		// Parse target URL
 		$bits = parse_url($target);
@@ -104,7 +93,7 @@ class tx_timtab_trackback {
 		}
 
 		$ping  = 'url='.rawurlencode($source);
-		$ping .= '&title='.rawurlencode($title);
+		$ping .= '&title='.rawurlencode($this->tt_news['title']);
 		$ping .= '&blog_name='.rawurlencode($this->blogName);
 		$ping .= '&excerpt='.rawurlencode($excerpt);
 
@@ -127,7 +116,7 @@ class tx_timtab_trackback {
 		}
 		
 		if(!$fp) {
-			return 'Trackback: Can not connect to '.$target.'.';
+			return array(false, 'Could not connect to '.$target.'.');
 		}
 		
 		//send trackback
@@ -143,7 +132,7 @@ class tx_timtab_trackback {
 			if (!$gotFirstLine) {
 				// Check line for '200'
 				if (strstr($line, '200') === false) {
-					return 'Trackback: HTTP status code was not 200';
+					return array(false, 'HTTP status code was not 200');
 				}
 				$gotFirstLine = true;
 			}
@@ -158,9 +147,18 @@ class tx_timtab_trackback {
 		fclose($fp);
 		
 		// Did the trackback ping work?
-		strpos($contents, '<error>0</error>') ? $return = true : $return = false;
-debug($contents, 'returned msg');
-		return $return;
+		if(strpos($contents, '<error>0</error>')) {
+			$result = array(true, '');
+		} elseif(strpos($contents, '<error>1</error>')) {
+			$start = strpos($contents, '<message>') + 9;
+			$end   = strpos($contents, '</message>');
+			
+			$result = array(false, substr($contents, $start, $end - $start));
+		} else {
+			$result = array(false, trim($contents));
+		}
+
+		return $result;
 	}
 	
 	/**
@@ -272,67 +270,42 @@ debug($contents, 'returned msg');
 	/**
 	 * Search text for links, and searches links for trackback URLs.
 	 * 
-	 * <code><?php
-	 * 
-	 * include('trackback_cls.php');
-	 * $trackback = new Trackback('BLOGish', 'Ran Aroussi', 'UTF-8');
-	 * 
-	 * if ($tb_array = $trackback->auto_discovery(string TEXT)) {
-	 * 	// Found trackbacks in TEXT. Looping...
-	 * 	foreach($tb_array as $tb_key => $tb_url) {
-	 * 	// Attempt to ping each one...
-	 * 		if ($trackback->ping($tb_url, string URL, [string TITLE], [string EXPERT])) {
-	 * 			// Successful ping...
-	 * 			echo "Trackback sent to <i>$tb_url</i>...\n";
-	 * 		} else {
-	 * 			// Error pinging...
-	 * 			echo "Trackback to <i>$tb_url</i> failed....\n";
-	 * 		}
-	 * 	}
-	 * } else {
-	 * 	// No trackbacks in TEXT...
-	 * 	echo "No trackbacks were auto-discover...\n"
-	 * }
-	 * ?></code>
-	 * 
 	 * @param string content to parse for trackback links 
 	 * @return array Trackback URLs.
 	 */
 	function tbAutoDiscovery($content)
 	{ 
 		// Get a list of UNIQUE links from text...
-		// ---------------------------------------
-		// RegExp to look for (0=>link, 4=>host in 'replace')
 		#$reg_exp = '/(http)+(s)?:(\\/\\/)((\\w|\\.)+)(\\/)?(\\S+)?/i';
 		$reg_exp = '/(http|https)(:\/\/)([^\s<>]+)/i';
+		
 		// Make sure each link ends with [space]
 		$content = eregi_replace('www.', 'http://www.', $content);
 		$content = eregi_replace('http://http://', 'http://', $content);
 		$content = eregi_replace('"', ' "', $content);
 		$content = eregi_replace('\'', ' \'', $content);
 		$content = eregi_replace('>', ' >', $content); 
+		
 		// Create an array with unique links
 		$uri_array = array();
 		$subpatterns = array();
 		if (preg_match_all($reg_exp, strip_tags($content, '<a><link><LINK>'), $subpatterns, PREG_PATTERN_ORDER)) {
-#debug($subpatterns[0], 'regex subpatterns');
+
 			foreach($subpatterns[0] as $key => $link) {
 				$uri_array[] = trim($link, " \t\n\r\0\x0B,.:;");
 			}
 			$uri_array = array_unique($uri_array);
 		}
 		unset($key, $link);
-#debug($uri_array, 'URI array');
+
 		
 		// Get the trackback URIs from those links...
-		// ------------------------------------------
-		// Loop through the URIs array and extract RDF segments
-		$rdf_array = array(); // holds list of RDF segments
+		$rdf_array = array();
 		foreach($uri_array as $key => $link) {
 			if ($link_content = implode('', file($link))) {
 				$link_rdf = array();
 				preg_match_all('/(<rdf:RDF.*?<\/rdf:RDF>)/sm', $link_content, $link_rdf, PREG_SET_ORDER);
-#debug($link_rdf, 'link rdf');
+
 				for ($i = 0; $i < count($link_rdf); $i++) {
 					if (preg_match('|dc:identifier="' . preg_quote($link) . '"|ms', $link_rdf[$i][1])) {
 						$rdf_array[] = trim($link_rdf[$i][1]);
@@ -341,13 +314,13 @@ debug($contents, 'returned msg');
 			} 
 		}
 		
-		// Loop through the RDFs array and extract trackback URIs
-		$tb_array = array(); // holds list of trackback URIs
+		// extract trackback URIs
+		$tb_array = array();
 		$subpatterns = array();
 		if (!empty($rdf_array)) {
 			for ($i = 0; $i < count($rdf_array); $i++) {
 				if (preg_match('/trackback:ping="([^"]+)"/', $rdf_array[$i], $subpatterns)) {
-					$tb_array[] = trim($subpatterns[1]);
+					$tb_array[] = (string) trim($subpatterns[1]);
 				} 
 			} 
 		} 
@@ -361,6 +334,46 @@ debug($contents, 'returned msg');
 	 * Supporting methods
 	 *
 	 **********************************************/
+	
+	/**
+	 * builds the source URL for thetrackback - the URL where the original author
+	 * can find our post
+	 * 
+	 * @param integer the tt_news uid we are building the URL for
+	 * @return string
+	 */
+	function buildSourceURL() {
+		$urlParameters = array(
+			'tx_ttnews[year]'    => date('Y', $this->tt_news['datetime']),
+			'tx_ttnews[month]'   => date('m', $this->tt_news['datetime']),
+			'tx_ttnews[day]'     => date('d', $this->tt_news['datetime']),
+			'tx_ttnews[tt_news]' => $this->tt_news['uid']
+		);
+ 		
+		return t3lib_div::getIndpEnv('TYPO3_SITE_URL').$this->pObj->cObj->getTypoLink_URL($this->conf['blogPid'], $urlParameters);
+	}
+	
+	/**
+	 * creates a short excerpt of our post for sending it as trackback excerpt
+	 * 
+	 * @return string an excerpt of the current post
+	 */
+	function getExcerpt() {
+		$excerpt = '';
+		$max_length = 255; //is not limited by spec but we do
+	 	
+		if(!empty($this->tt_news['short'])) {
+			$excerpt = $this->tt_news['short'];
+	 	} else {
+			$excerpt = $this->tt_news['bodytext'];
+		}
+	 	
+		if(strlen($excerpt) > $max_length) {
+			$excerpt = substr($excerpt, 0, $max_length - 3).'...';
+		}
+	 	
+		return $excerpt;
+	}
 	 
 	/**
 	 * converts the given timestamp into a RFC 2822 compliant date
