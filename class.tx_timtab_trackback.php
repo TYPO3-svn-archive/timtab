@@ -53,6 +53,13 @@ class tx_timtab_trackback {
 	var $blogName;
 	var $tt_news;
 
+	/**
+	 * initialization of this class
+	 * 
+	 * @param	object	the parent object with our configuration
+	 * @param	array	the tt_ews record - or parts of it - which is being processed
+	 * @return	void
+	 */
 	function init($pObj, $tt_news) {
 		$this->conf = $pObj->conf;
 		$this->pObj = $pObj;
@@ -146,7 +153,7 @@ class tx_timtab_trackback {
 		
 		fclose($fp);
 		
-		// Did the trackback ping work?
+		// Did the ping succeed?
 		if(strpos($contents, '<error>0</error>')) {
 			$result = array(true, '');
 		} elseif(strpos($contents, '<error>1</error>')) {
@@ -162,7 +169,7 @@ class tx_timtab_trackback {
 	}
 	
 	/**
-	 * Produces XML response for trackbackers with ok/error message.
+	 * Produces XML response for trackbackers with success/error message.
 	 * 
 	 * <code><?php
 	 * // Set page header to XML
@@ -224,15 +231,6 @@ class tx_timtab_trackback {
 	 * Produces embedded RDF representing metadata for the post,
 	 * allowing clients to auto-discover the TrackBack Ping URL.
 	 * 
-	 * NOTE: DATE should be string in RFC822 Format - Use RFC822_from_datetime().
-	 * 
-	 * <code><?php
-	 * include('trackback_cls.php');
-	 * $trackback = new Trackback('BLOGish', 'Ran Aroussi', 'UTF-8');
-	 * 
-	 * echo $trackback->rdf_autodiscover(string DATE, string TITLE, string EXPERT, string PERMALINK, string TRACKBACK [, string AUTHOR]);
-	 * ?></code>
-	 * 
 	 * @param string $RFC822_date 
 	 * @param string $title 
 	 * @param string $expert 
@@ -268,7 +266,7 @@ class tx_timtab_trackback {
 	}
 
 	/**
-	 * Search text for links, and searches links for trackback URLs.
+	 * Search content for links, and search found links for trackback URLs.
 	 * 
 	 * @param string content to parse for trackback links 
 	 * @return array Trackback URLs.

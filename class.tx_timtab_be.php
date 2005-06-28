@@ -70,6 +70,34 @@ class tx_timtab_be {
 	var $status;
 
 	/**
+	 * perform some checks before doing the big init
+	 *
+	 * @param	string	the current status of the operation: eather 'new' or 'update'
+	 * @return	array
+	 */
+	function preInit($status, $id, $fieldArray, $pObj) {
+		$tt_news      = array();
+		$isBlogPost   = false;
+		$this->status = $status;
+		
+		if($status == 'new') { //new record
+			if(!$id = $pObj->substNEWwithIDs[$id]) {
+				$id = 0;
+			}		
+		}
+		
+		if($id) {
+			$isBlogPost  = $this->isBlogPost($id, $tt_news);
+			$isBlogPost ? $tt_news = $this->getCurrentPost($id) : $tt_news = array();
+			
+		} else {
+			$isBlogPost  = $this->isBlogPost($id, $fieldArray);
+		}
+		
+		return array($isBlogPost, $tt_news);
+	}
+
+	/**
 	 * initializes the configuration for the extension as we need the TS setup
 	 * like blog title and timouts for trackback in the BE, too
 	 *
@@ -105,13 +133,13 @@ class tx_timtab_be {
 		$this->conf = array_merge(
 			$TSFE->tmpl->setup['plugin.']['tx_timtab.'], 
 			$TSFE->tmpl->setup['plugin.']['tx_timtab_pi2.']
-		);
-		
-		$this->status == 'new' ? $this->status = 'new' : $this->status = 'update'; 
+		); 
 	}
 	
 	/**
-	 * pre processing of tt_news entries, detecting pings
+	 * pre processing of tt_news entries, detecting trackback URLs and saving 
+	 * them into $fieldsArray so that they get stored into the DB an we can ping 
+	 * them afterwards 
 	 *
 	 * @param	string		$status: ...
 	 * @param	string		$table: ...
@@ -123,10 +151,8 @@ class tx_timtab_be {
 	function processDatamap_postProcessFieldArray($status, $table, $id, &$fieldArray, $pObj) {
 		//only do something when we get a tt_news record and the bodytext is changed
 		if($table == 'tt_news' && $fieldArray['bodytext']) {
-			if(substr($id, 0, 3) == 'NEW') { //new record
-				$id = 0;
-				$this->status = 'new';
-			}
+			$result = $this->preInit($status, $id, $fieldArray, $pObj);
+			if(!$result[0]) { return; }
 			$this->init();
 			
 			//initialize processing of trackbacks
@@ -193,22 +219,19 @@ class tx_timtab_be {
 	function processDatamap_afterDatabaseOperations($status, $table, $id, $fieldArray, $pObj) {
 		//only do something when we get a tt_news record and the bodytext is changed
 		if($table == 'tt_news' && $fieldArray['bodytext']) {
-			if(substr($id, 0, 3) == 'NEW') { //new record
-				$id = $pObj->substNEWwithIDs[$id];
-				$this->status = 'new';
-			}
+			$result = $this->preInit($status, $id, $fieldArray, $pObj);
+			if(!$result[0]) { return; } else { $tt_news = $result[1]; }
 			$this->init();
-			$tt_news = $this->getCurrentPost($id);			
-			
+
+			//processing trackbacks
 			$tbObj = t3lib_div::makeInstance('tx_timtab_trackback');
 			$tbObj->init($this, $tt_news);
 			$TBstatus = $this->getTrackbackStatus($tt_news['tx_timtab_trackbacks']);
-			
-			//processing trackbacks
+						
 			if(is_array($TBstatus)) {
 				foreach($TBstatus as $k => $TB) {
 					// Attempt to ping each trackback URL
-					if($TB['status'] == 0) {
+					if(!empty($TB['url']) && $TB['status'] == 0) {
 						$result = $tbObj->ping($TB['url']);
 						if($result[0]) { 
 							//success
@@ -221,14 +244,14 @@ class tx_timtab_be {
 					}	
 				}				
 			}
-			//end processing trackbacks
-			
+						
 			//update trackback status in tt_news record
 			$GLOBALS['TYPO3_DB']->exec_UPDATEquery(
 				'tt_news',
 				'uid = '.$tt_news['uid'],
 				array('tx_timtab_trackbacks' => $this->setTrackbackStatus($TBstatus))
 			);
+			//end processing trackbacks
 		}
 	}
 	
@@ -298,6 +321,18 @@ class tx_timtab_be {
 		}
 		
 		return trim($TBlist);
+	}
+	
+	function isBlogPost($id, $tt_news = '') {
+		$result = false;
+		if(isset($tt_news['type']) && $tt_news['type'] == 3) {			
+			$result = true;
+		} elseif(!isset($tt_news['type']) && $this->status == 'update') {
+			$tt_news = $this->getCurrentPost($id);
+			$tt_news['type'] == 3 ? $result = true : $result = false;
+		}
+
+		return $result;
 	}
 }
 
