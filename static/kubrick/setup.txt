@@ -14,6 +14,7 @@ plugin.tt_news {
   newsAmenuUserFunc =
   useHRDates = 1
   useHRDatesSingle = 1
+  useSubCategories = 1
 
   _LOCAL_LANG.default {
     archiveHeader = Archives
