@@ -153,6 +153,7 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 	 * @return	string		representation of the post id
 	 */
 	function mwNewPost($args) {
+		$this->escape($args);
 		$blogId   = $args[0]; //unused
 		$username = $args[1];
 		$password = $args[2];
@@ -205,6 +206,7 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 	 * @return	boolean
 	 */
 	function mwEditPost($args) {
+		$this->escape($args);
 		$postId     = $args[0];
 		$username   = $args[1];
 		$password   = $args[2];
@@ -249,6 +251,7 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 	 * @return	struct
 	 */
 	function mwGetPost($args) {
+		$this->escape($args);
 		$postId   = $args[0];
 		$username = $args[1];
 		$password = $args[2];
@@ -293,6 +296,7 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 	 * @return	struct
 	 */
 	function mwGetCategories($args) {
+		$this->escape($args);
 		$blogId   = $args[0]; //unused
 		$username = $args[1];
 		$password = $args[2];
@@ -349,6 +353,7 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 	 * @return	array
 	 */
 	function mwGetRecentPosts($args) {
+		$this->escape($args);
 		$blogId   = $args[0]; //unused
 		$username = $args[1];
 		$password = $args[2];
@@ -403,6 +408,7 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 	 * @return	struct
 	 */
 	function mwNewMediaObject($args) {
+		$this->escape($args);
 		$postid      = $args[0];
 		$username    = $args[1];
 		$password    = $args[2];
@@ -440,6 +446,7 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 	 * @return	string
 	 */
 	function blggrNewPost($args) {
+		$this->escape($args);
 		$appKey   = $args[0]; //unused
 		$blogId   = $args[1];
 		$username = $args[2];
@@ -457,6 +464,7 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 	 * @return	boolean
 	 */
 	function blggrEditPost($args) {
+		$this->escape($args);
 		$appKey   = $args[0]; //unused
 		$postId   = $args[1];
 		$username = $args[2];
@@ -477,6 +485,7 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 	 * @return	boolean
 	 */
 	function blggrDeletePost($args) {
+		$this->escape($args);
 		$appKey   = $args[0]; //unused
 		$postId   = $args[1];
 		$username = $args[2];
@@ -507,6 +516,7 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 	 * @return	array
 	 */
 	function blggrGetUsersBlogs($args) {
+		$this->escape($args);
 		$appKey   = $args[0]; //unused
 		$username = $args[1];
 		$password = $args[2];
@@ -531,6 +541,7 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 	 * @return	struct
 	 */
 	function blggrGetUserInfo($args) {
+		$this->escape($args);
 		$appKey   = $args[0]; //unused
 		$username = $args[1];
 		$password = $args[2];
@@ -564,6 +575,7 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 	 * @return	[type]		...
 	 */
 	function pbPing($args) {
+		$this->escape($args);
 		//taken from wordpress
 
 
@@ -576,7 +588,8 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 	 * @return	[type]		...
 	 */
 	function pbGetPingbacks($args) {
-
+		$this->escape($args);
+		
 	}
 
 	/***********************************************
@@ -602,6 +615,7 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 	 * @return	[type]		...
 	 */
 	function demoAddTwoNumbers($args) {
+		$this->escape($args);
 		$number1 = $args[0];
 		$number2 = $args[1];
 
@@ -722,6 +736,21 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 		}
 
 		return $value;
+	}
+	
+	/**
+	 * taken from wordpress
+	 */
+	function escape(&$array) {
+		foreach ($array as $k => $v) {
+			if (is_array($v)) {
+				$this->escape($array[$k]);
+			} else if (is_object($v)) {
+				//skip
+			} else {
+				$array[$k] = addslashes($v);
+			}
+		}
 	}
 }
 
