@@ -22,6 +22,9 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 /**
+ *
+ * $Id$
+ *
  * Plugin 'webservices' for the 'timtab' extension.
  *
  * @author    Ingo Renner <typo3@ingo-renner.com>

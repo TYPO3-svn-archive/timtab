@@ -97,6 +97,22 @@ class tx_timtab_pi2_xmlrpcAuth extends t3lib_beuserauth {
 		
 		return $OK;
 	}
+	
+	//maybe we'll do it like this later, for now it's ok what we have
+	function authLikeInInit() {
+		global $TYPO3_CONF_VARS;
+
+		$XMLRPC_USER = t3lib_div::makeInstance('t3lib_beUserAuth');	// New backend user object
+		$XMLRPC_USER->name               = 'xmlrpc_typo_user';
+		$XMLRPC_USER->security_level     = 'normal';
+
+		$XMLRPC_USER->warningEmail       = $TYPO3_CONF_VARS['BE']['warning_email_addr'];
+		$XMLRPC_USER->lockIP             = $TYPO3_CONF_VARS['BE']['lockIP'];
+		$XMLRPC_USER->auth_timeout_field = intval($TYPO3_CONF_VARS['BE']['sessionTimeout']);
+		$XMLRPC_USER->OS                 = TYPO3_OS;
+		$XMLRPC_USER->start();			// Object is initialized
+		$XMLRPC_USER->backendCheckLogin();	// Checking if there's a user logged in
+	}
 }
 
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/timtab/pi2/class.tx_timtab_pi2_xmlrpcauth.php'])    {
