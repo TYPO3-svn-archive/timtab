@@ -1,0 +1,53 @@
+--- D:\Projects\typo3\TYPO3\packages\typo3_src-3.8.0\t3lib\class.t3lib_parsehtml.php	Mon May 23 02:41:10 2005
++++ D:\Projects\ingo-renner.com\www_v2\html\t3lib\class.t3lib_parsehtml.php	Sat Jul 16 14:44:11 2005
+@@ -598,6 +598,25 @@
+ 	 * @return	string		Processed HTML content
+ 	 */
+ 	function HTMLcleaner($content, $tags=array(),$keepAll=0,$hSC=0,$addConfig=array())	{
++		
++		//protect HTML comments from getting cleaned
++		//find HTML comments in $content
++		$comments       = array();
++		$commentsHashed = array();
++		preg_match_all('/<!--.*?-->/s', $content, $comments);
++		for($i = 0; $i < count($comments[0]); $i++) {			
++			$comment = $comments[0][$i];
++			
++			//make hash for each comment 
++			$hash = t3lib_div::shortMD5($comment);
++			
++			//insert comment into array, hash is used as key
++			$commentsHashed[$hash] = $comment;
++			
++			//replace comment with marker ###hash### in $content
++			$content = str_replace($comment, '###'.$hash.'###', $content);
++		}
++		
+ 		$newContent = array();
+ 		$tokArr = explode('<',$content);
+ 		$newContent[] = $this->processContent(current($tokArr),$hSC,$addConfig);
+@@ -776,14 +795,22 @@
+ 
+ 			// Unsetting tags:
+ 		reset($tagRegister);
++
+ 		while(list($tag,$positions)=each($tagRegister))	{
+ 			reset($positions);
+ 			while(list(,$pKey)=each($positions))	{
+ 				unset($newContent[$pKey]);
+ 			}
+ 		}
+-
+-		return implode('',$newContent);
++		
++		$newContent = implode('',$newContent);
++		
++		//replace markers with the according comments
++		foreach($commentsHashed as $hash => $comment) {
++			$newContent = str_replace('###'.$hash.'###', $comment, $newContent);	
++		}
++		
++		return $newContent;
+ 	}
+ 
+ 	/**
