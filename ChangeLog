@@ -1,3 +1,11 @@
+2005-07-21	Ingo Renner  <typo3@ingo-renner.com>
+
+	* CHG !!! renamed TS variable pidStore into pidStorePosts
+	* ADD added sending trackbacks - now works from BE and FE (external Tools using XML-RPC interface)
+	* ADD added receiving and logging of Trackback pings coming from other sites
+	* ADD added TS variable pidStoreComments, this defines where to store ve_guestbook entries as Trackbacks are stored like this
+	* ADD ! you need to patch t3lib/class.t3lib_parsehtml.php to receive Trackbacks from other sites, a patch is provided in res/patches
+
 2005-06-15	Ingo Renner  <typo3@ingo-renner.com>
 
 	* ADD added sending trackbacks (only works from the BE for now, still needs to get implemented for FE so that it works even from external tools)
@@ -5,12 +13,12 @@
 2005-06-15	Ingo Renner  <typo3@ingo-renner.com>
 
 	* ADD category support (getCategories)
-	* ADD function index
+	* ADD function indexes for php source files
 	* FIX wrong WHERE clause in metaweblog.getPost
 
 2005-06-15	Ingo Renner  <typo3@ingo-renner.com>
 
-	* CHG changed Incutio XML-RPC library to version 1.7 beta
+	* CHG updated Incutio XML-RPC library to version 1.7 beta
 
 2005-06-11	Ingo Renner  <typo3@ingo-renner.com>
 

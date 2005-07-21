@@ -56,8 +56,10 @@
  *
  */
 
+$PATH_timtab = t3lib_extMgm::extPath('timtab');
 require_once(PATH_tslib.'class.tslib_pibase.php');
 require_once(PATH_t3lib.'class.t3lib_tcemain.php');
+require_once($PATH_timtab.'class.tx_timtab_trackback.php');
 
 class tx_timtab extends tslib_pibase {
 	var $cObj; // The backReference to the mother cObj object set at call time
@@ -79,7 +81,7 @@ class tx_timtab extends tslib_pibase {
 	 * @return	array		modified marker array
 	 */
 	function main($markerArray, $conf) {
-		$this->local_cObj = t3lib_div::makeInstance('tslib_cObj'); // Local cObj.
+		$this->cObj = t3lib_div::makeInstance('tslib_cObj'); // Local cObj.
 		$this->init($markerArray, $conf);
 		$this->substituteMarkers();
 
@@ -102,11 +104,6 @@ class tx_timtab extends tslib_pibase {
 		$this->conf = array_merge($this->conf, $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_timtab.']);
 
 		$this->markerArray = $markerArray;
-
-		#debug($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_timtab.'], 'TSFE config for timtab');
-		#debug($this->conf, '$this->conf');
-		
-		#debug(get_class($GLOBALS['TSFE']->tmpl));
 	}
 
 	/**
@@ -116,6 +113,7 @@ class tx_timtab extends tslib_pibase {
 	 */
 	function substituteMarkers() {
 		if($this->calledBy == 'tt_news') {
+			//comments
 			$comment_count = $this->count_comments();
 			if($comment_count == 0) {
 				$this->markerArray['###BLOG_COMMENTS_COUNT###'] = '';
@@ -129,10 +127,22 @@ class tx_timtab extends tslib_pibase {
 				$this->markerArray['###BLOG_COMMENTS_COUNT###'] = $comment_count;
 				$this->markerArray['###BLOG_TEXT_COMMENTS###'] = $this->pi_getLL('multiple_comments');
 			}
-
+			
+			//trackback
+			$tb = t3lib_div::makeInstance('tx_timtab_trackback');
+			$tb->init($this, $this->conf['data']);			
+			$plink = $tb->getPermalink();
+			$tbURL = $tb->getTrackbackURL();
+			
+			$rdf = $tb->getEmbeddedRdf($plink, $tbURL);
+			$tbLink = $tb->getTrackbackLink();
+			$this->markerArray['###TRACKBACK_RDF###']  = $rdf;
+			$this->markerArray['###TRACKBACK_LINK###'] = $tbLink;
+			
+			//misc
 			$this->markerArray['###BLOG_TEXT_CAT###'] = $this->pi_getLL('textCat');
 			$this->markerArray['###BLOG_POST_TITLE###'] = $this->buildPostTitle($this->conf['data']['title']);
-		} else if($this->calledBy == 've_guestbook') {
+		} elseif($this->calledBy == 've_guestbook') {
 			$this->markerArray['###BLOG_FORM_REQUIRED###'] = $this->pi_getLL('formRequired');
 			$this->markerArray['###BLOG_LEAVE_REPLY###'] = $this->pi_getLL('leaveReply');
 			$this->markerArray['###BLOG_NOT_PUBLISHED###'] = $this->pi_getLL('notPublished');
@@ -154,9 +164,6 @@ class tx_timtab extends tslib_pibase {
 			} else {
 				$this->markerArray['###BLOG_COMMENTER_NAME###'] = $this->conf['data']['firstname'];
 			}
-
-
-			#debug($this->conf['data']);
 		}
 	}
 
@@ -169,7 +176,7 @@ class tx_timtab extends tslib_pibase {
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'uid',
 			'tx_veguestbook_entries',
-			'uid_tt_news = '.$this->conf['data']['uid'].$this->local_cObj->enableFields('tx_veguestbook_entries')
+			'uid_tt_news = '.$this->conf['data']['uid'].$this->cObj->enableFields('tx_veguestbook_entries')
 		);
 
 		return $GLOBALS['TYPO3_DB']->sql_num_rows($res);
@@ -184,7 +191,7 @@ class tx_timtab extends tslib_pibase {
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
 			'title',
 			'tt_news',
-			'uid = '.$this->pObj->tt_news['tx_ttnews[tt_news]'].$this->local_cObj->enableFields('tt_news')
+			'uid = '.$this->pObj->tt_news['tx_ttnews[tt_news]'].$this->cObj->enableFields('tt_news')
 		);
 
 		return $res[0]['title'];
@@ -213,7 +220,7 @@ class tx_timtab extends tslib_pibase {
 			'useCacheHash' => $this->pObj->allowCaching,
 		);
 
-		return $this->local_cObj->typolink($title, $conf);
+		return $this->cObj->typolink($title, $conf);
 	}
 
 	/**
@@ -261,7 +268,8 @@ class tx_timtab extends tslib_pibase {
 	 **********************************************/
 
 	/**
-	 * connects into tt_news and ve_guestbook item marker processing hook and fills our markers
+	 * connects into tt_news and ve_guestbook item marker processing hook 
+	 * and fills our markers
 	 *
 	 * @param	array		an array of markers coming from tt_news
 	 * @param	array		the current tt_news record

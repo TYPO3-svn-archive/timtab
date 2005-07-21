@@ -20,7 +20,10 @@ plugin.tx_timtab {
 plugin.tx_timtab_pi2 {
   
 	# cat=plugin.tx_timtab/webservices/10; type=int+; label= pid to store the posts in: The page or sysfolder where your posts from external tools will be saved
-  pidStore = 0
+  pidStorePosts = 0
+  
+	# cat=plugin.tx_timtab/webservices/15; type=int+; label= pid to store the comments in: The page or sysfolder where your comments and trackbacks will be saved
+  pidStoreComments = 0
   
 	# cat=plugin.tx_timtab/webservices/20; type=int+; label= This sets the timout for XML-RPC Server connections in seconds
   connectionTimeout = 30

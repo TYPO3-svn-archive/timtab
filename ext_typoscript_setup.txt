@@ -2,6 +2,11 @@
 #	$Id$
 #
 
+
+#
+#	general config for use in parts which hook into other EXTs
+#
+
 plugin.tx_timtab {
   #here update means new comments or when a post was edited with an external tool
   clearPageCacheOnUpdate = 0
@@ -11,12 +16,12 @@ plugin.tx_timtab {
     # G is suitable for display on all sites
     # PG may contain disputably offensive imagery
     # R things as harsh profanity, intense violence, explicit sexual content, and drug use 
-    # X will contain hardcore sexual imagery or extremely disturbing violence
+    # X may contain hardcore sexual imagery or extremely disturbing violence
     # see http://www.gravatar.com/rating.php
     rating = 0    
     
     #default image if no gravatar for the email was found
-    defaultImg = http://timtab.ingo-renner.loc/clear.gif
+    defaultImg = http://www.example.com/clear.gif
     
     #border drwas a 1px border around the gravatar, define as HEX color: FF0000
     border = 0
@@ -31,15 +36,27 @@ plugin.tx_timtab {
   blogPid = {$plugin.tx_timtab.blogPid}
 }
 
+
+#
+#	Blogroll config
+#
+
 plugin.tx_timtab_pi1 {
   header_stdWrap.wrap = 
   dontWrapInDiv = 0  
   pid_list = 0
 }
 
+
+#
+#	XML-RPC interface and trackback configuration
+#
+
 plugin.tx_timtab_pi2 {  
-  pidStore = {$plugin.tx_timtab_pi2.pidStore}
+  pidStorePosts = {$plugin.tx_timtab_pi2.pidStorePosts}
+  pidStoreComments = {$plugin.tx_timtab_pi2.pidStoreComments}
   connectionTimeout = {$plugin.tx_timtab_pi2.connectionTimeout}
+  
   enableBlogger = {$plugin.tx_timtab_pi2.enableBlogger}
   enableMetaWeblog = {$plugin.tx_timtab_pi2.enableMetaWeblog}
   enableMovableType = {$plugin.tx_timtab_pi2.enableMovableType}

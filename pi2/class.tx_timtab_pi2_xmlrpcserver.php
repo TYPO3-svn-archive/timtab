@@ -74,6 +74,7 @@
 
 $PATH_timtab = t3lib_extMgm::extPath('timtab');
 require_once($PATH_timtab.'lib.ixr.php');
+require_once($PATH_timtab.'class.tx_timtab_trackback.php');
 require_once($PATH_timtab.'pi2/class.tx_timtab_pi2_xmlrpcauth.php');
 require_once(PATH_t3lib.'class.t3lib_befunc.php');
 require_once(PATH_t3lib.'class.t3lib_parsehtml_proc.php');
@@ -81,10 +82,12 @@ require_once(PATH_t3lib.'class.t3lib_parsehtml_proc.php');
 class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 	var $conf;
 	var $xmlrpcUser;
+	var $status;
 
 	function tx_timtab_pi2_xmlrpcServer(&$pObj) {
 		$this->conf = $pObj->conf;
 		$this->pObj = $pObj;
+		$this->cObj = $pObj->cObj; // needed for sending trackback pings
 
 		// Blogger API
 		$blggr = array();
@@ -159,6 +162,7 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 		$password = $args[2];
 		$content  = $args[3];
 		$publish  = (int) !$args[4];
+		$this->status = 'new';
 
 		if(!$this->authUser($username, $password)) {
 			return new IXR_Error(403, 'Not authorized: Bad username/password combination.');
@@ -177,7 +181,7 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 
 		$time = time();
 		$insertFields = array(
-			'pid'      => $this->conf['pidStore'],
+			'pid'      => $this->conf['pidStorePosts'],
 			'hidden'   => $publish,
 			'title'    => $content['title'],
 			'bodytext' => $this->transformContent('db', $content['description']),
@@ -187,8 +191,15 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 			'datetime' => $time,
 			'type'     => 3,
 		);
+		
+		//processing of trackbacks
+		$this->tbDiscovery($insertFields, 0);
+		
 		$GLOBALS['TYPO3_DB']->exec_INSERTquery('tt_news', $insertFields);
-		$insertID = $GLOBALS['TYPO3_DB']->sql_insert_id();
+		$insertFields['uid'] = $insertID = $GLOBALS['TYPO3_DB']->sql_insert_id();
+		
+		//processing of trackbacks
+		$this->tbSendPings($insertFields);
 
 		if(!$insertID) {
 			return new IXR_Error(500, 'Sorry, your entry could not be posted. Something wrong happened.');
@@ -212,35 +223,39 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 		$password   = $args[2];
 		$content    = $args[3]; //struct
 		$publish    = (int) !$args[4];
+		$this->status = 'update';
 
 		if(!$this->authUser($username, $password)) {
 			return new IXR_Error(403, 'Not authorized: Bad username/password combination.');
 		}
 
-		$time = time();
 		$updateFields = array(
 			'hidden'    => $publish,
 			'title'     => addslashes($content['title']),
 			'bodytext'  => $this->transformContent('db', $content['description']),
 			'author'    => '', //$username, //let's see what we can do with the author field
-			'tstamp'    => $time,
-			'datetime'  => $content['dateCreated']->getTimestamp(),
-			//'starttime' => $time, //???
+			'tstamp'    => time(),
 		);
+		
+		//processing of trackbacks
+		$this->tbDiscovery($updateFields, $postId);
 
 		$res = $GLOBALS['TYPO3_DB']->exec_UPDATEquery(
 			'tt_news',
 			'uid = '.$GLOBALS['TYPO3_DB']->fullQuoteStr($postId, 'tt_news'),
 			$updateFields
 		);
-
-		//TODO clear cache for blog page
+		
+		//TODO clear cache for blog page here
 
 		if(!$res) {
 			return new IXR_Error(500, 'Internal Server Error. Couldn\'t connect to database.');
 		}
+		
+		//processing of trackbacks
+		$updateFields['uid'] = $postId;
+		$this->tbSendPings($updateFields);
 
-		//TODO handle new pingbacks	and trackbacks
 		return true;
 	}
 
@@ -366,7 +381,7 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'uid, datetime, title, bodytext, category',
 			'tt_news',
-			'pid = '.$this->conf['pidStore'].' AND type = 3 AND deleted = 0',
+			'pid = '.$this->conf['pidStorePosts'].' AND type = 3 AND deleted = 0',
 			'',
 			'datetime DESC',
 			$numPosts
@@ -451,6 +466,7 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 		$blogId   = $args[1];
 		$username = $args[2];
 		$password = $args[3];
+		$this->status = 'new';
 
 		if(!$this->authUser($username, $password)) {
 			return new IXR_Error(403, 'Not authorized: Bad username/password combination.');
@@ -472,6 +488,7 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 		$numPosts = $args[4];
 		$content  = $args[5];
 		$publish  = (int) !$args[6];
+		$this->status = 'update';
 
 		if(!$this->authUser($username, $password)) {
 			return new IXR_Error(403, 'Not authorized: Bad username/password combination.');
@@ -560,6 +577,107 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 		);
 
 		return $struct;
+	}
+	
+	/***********************************************
+	 *
+	 * Trackback
+	 *
+	 **********************************************/
+	
+	/**
+	 * pre processing of posts, detecting trackback URLs and saving them into 
+	 * $fieldsArray so that they get stored into the DB and we can ping them 
+	 * afterwards 
+	 *
+	 * @param	array		$fieldArray: ...
+	 * @param	integer		$id: ...
+	 * @return	void
+	 */
+	function tbDiscovery(&$fieldArray, $id) {
+		//initialize processing of trackbacks
+		$tbObj = t3lib_div::makeInstance('tx_timtab_trackback');
+		$tbObj->init($this, $fieldArray);
+		
+		$newTbURLs = '';
+		$foundURLs = $tbObj->tbAutoDiscovery($fieldArray['bodytext']);
+					
+		if($foundURLs && $this->status == 'update') {
+			//update a post, find new trackbacks
+			$tbField = '';
+			if(isset($fieldArray['tx_timtab_trackbacks'])) {
+				$tbField = $fieldArray['tx_timtab_trackbacks'];
+			} else {
+				$tt_news = $this->getCurrentPost($id);
+				$tbField = $tt_news['tx_timtab_trackbacks'];
+			}					
+			$oldTBarray = t3lib_div::trimExplode("\n", $tbField);
+			
+			$temp = array();
+			foreach($oldTBarray as $TB) {
+				$parts = explode('|', $TB);
+				$temp[] = (string) trim($parts[0]);	
+			}
+			//extract new TBs
+			$newTBarray = array_diff($foundURLs, $temp);					
+
+			unset($TB);
+			reset($oldTBarray);
+			$oldTBs = '';
+			foreach($oldTBarray as $TB) {
+				$oldTBs .= $TB.chr(10);
+			}
+
+			foreach($newTBarray as $url) {
+				$newTbURLs .= $url.'|0|new'.chr(10);
+			}
+			$newTbURLs = trim($oldTBs.$newTbURLs);
+
+		} elseif($foundURLs && $this->status == 'new') {
+			//creating a new post			
+			foreach($foundURLs as $url) {
+				$newTbURLs .= $url.'|0|new'.chr(10);
+			}
+			$newTbURLs = trim($newTbURLs);
+		}
+
+		$fieldArray['tx_timtab_trackbacks'] = $newTbURLs;		
+	}
+	
+	/**
+	 * post processing of tt_news entries, sending pings
+	 *
+	 * @param	array		database record
+	 * @return	void
+	 */
+	function tbSendPings($fieldArray) {
+		$tbObj = t3lib_div::makeInstance('tx_timtab_trackback');
+		$tbObj->init($this, $fieldArray);
+		$TBstatus = $tbObj->getTrackbackStatus($fieldArray['tx_timtab_trackbacks'], $this->status);
+					
+		if(is_array($TBstatus)) {
+			foreach($TBstatus as $k => $TB) {
+				// Attempt to ping each trackback URL
+				if(!empty($TB['url']) && $TB['status'] == 0) {
+					$result = $tbObj->ping($TB['url']);
+					if($result[0]) { 
+						//success
+						$TBstatus[$k]['status'] = 1;
+						unset($TBstatus[$k]['reason']);
+					} else {
+						//failed
+						$TBstatus[$k]['reason'] = $result[1];
+					}
+				}	
+			}				
+		}
+					
+		//update trackback status in tt_news record
+		$GLOBALS['TYPO3_DB']->exec_UPDATEquery(
+			'tt_news',
+			'uid = '.$fieldArray['uid'],
+			array('tx_timtab_trackbacks' => $tbObj->setTrackbackStatus($TBstatus))
+		);
 	}
 
 	/***********************************************
@@ -679,7 +797,7 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 		$accessOK = $auth->authUser();
 		#$authOK   = $this->xmlrpcUser->check('tables_modify', 'tt_news');
 		$authOK   = true;	//TODO $this->xmlrpcUser needs to be an object to check table permissions
-		$isObj    = is_object($this->xmlrpcUser); //false
+		#$isObj    = is_object($this->xmlrpcUser); //false, but needs to be true
 
 		return $accessOK && $authOK;
 	}
@@ -699,8 +817,12 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 
 		$table      = 'tt_news';
 		$field      = 'bodytext';
-		$pid        = $this->conf['pidStore'];
+		$pid        = $this->conf['pidStorePosts'];
 		$RTErelPath = '';
+		
+		if($dirRTE == 'db') {
+			$value = stripslashes($value);	
+		}
 
 		//start getting $specConf --- taken from t3lib_BEfunc::getTCAtypes()
 		$specConf = array();
@@ -718,7 +840,7 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 		}
 		//end getting $specConf
 
-		$pageTSconfig = t3lib_BEfunc::getPagesTSconfig($this->conf['pidStore']);
+		$pageTSconfig = t3lib_BEfunc::getPagesTSconfig($this->conf['pidStorePosts']);
 		$thisConfig   = $pageTSconfig['RTE.']['default.'];
 
 		if ($specConf['rte_transform'])	{
@@ -739,7 +861,23 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 	}
 	
 	/**
-	 * taken from wordpress
+	 * gets the current tt_news record we are working on
+	 * 
+	 * @param	integer	the tt_news uid of the record we want to get
+	 * @return	array
+	 */
+	function getCurrentPost($tt_news_uid) {
+		//get the current tt_news record
+		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+ 			'*',
+ 			'tt_news',
+ 			'uid = '.$tt_news_uid
+ 		);
+ 		return $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
+	}
+	
+	/**
+	 * taken from wordpress, thanks!
 	 */
 	function escape(&$array) {
 		foreach ($array as $k => $v) {

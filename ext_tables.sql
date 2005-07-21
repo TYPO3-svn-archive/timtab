@@ -12,6 +12,13 @@ CREATE TABLE tt_news (
 );
 
 #
+# Table structure for table 'tx_veguestbook_entries'
+#
+CREATE TABLE tx_veguestbook_entries (
+	tx_timtab_type tinyint(4) unsigned DEFAULT '0' NOT NULL,
+);
+
+#
 # Table structure for table 'tx_timtab_blogroll'
 #
 CREATE TABLE tx_timtab_blogroll (

@@ -23,7 +23,8 @@
 ***************************************************************/
 /**
  * Trackback class for the timtab extension, the majority of the code
- * is taken from PHP TrackBack, see: http://phptrackback.sourceforge.net
+ * is originaly taken from PHP TrackBack, 
+ * see: http://phptrackback.sourceforge.net
  *
  * $Id$
  *
@@ -83,7 +84,7 @@ class tx_timtab_trackback {
 	{
 		$response = '';
 		$result   = array(); 
-		$source   = $this->buildSourceURL();
+		$source   = $this->getSourceURL();
 		$excerpt  = $this->getExcerpt();
 
 		// Parse target URL
@@ -169,40 +170,13 @@ class tx_timtab_trackback {
 	}
 	
 	/**
-	 * Produces XML response for trackbackers with success/error message.
-	 * 
-	 * <code><?php
-	 * // Set page header to XML
-	 * header('Content-Type: text/xml'); // MUST be the 1st line
-	 * //
-	 * // Instantiate the class
-	 * //
-	 * include('trackback_cls.php');
-	 * $trackback = new Trackback('BLOGish', 'Ran Aroussi', 'UTF-8');
-	 * //
-	 * // Get trackback information
-	 * //
-	 * $tb_id = $trackback->post_id; // The id of the item being trackbacked
-	 * $tb_url = $trackback->url; // The URL from which we got the trackback
-	 * $tb_title = $trackback->title; // Subject/title send by trackback
-	 * $tb_expert = $trackback->expert; // Short text send by trackback
-	 * //  
-	 * // Do whatever to log the trackback (save in DB, flatfile, etc...)
-	 * //
-	 * if (TRACKBACK_LOGGED_SUCCESSFULLY) {
-	 * 	// Logged successfully...
-	 * 	echo $trackback->recieve(true);
-	 * } else {
-	 * 	// Something went wrong...
-	 * 	echo $trackback->recieve(false, 'Explain why you return error');
-	 * }
-	 * ?></code>
+	 * Produces the XML response for trackbackers with success/error message.
 	 * 
 	 * @param boolean $success 
 	 * @param string $err_response 
 	 * @return boolean 
 	 */
-	function recieve($success = false, $err_response = '')
+	function sendResponse($success = false, $err_response = '')
 	{ 
 		// Default error response in case of problems...
 		if (!$success && empty($err_response)) {
@@ -215,11 +189,11 @@ class tx_timtab_trackback {
 		// Send back response...
 		if ($success) {
 			// Trackback received successfully...
-			$response .= '<error>0</error>'.$r;
+			$response .= "\t".'<error>0</error>'.$r;
 		} else {
 			// Something went wrong...
-			$response .= '<error>1</error>'.$r;
-			$response .= '<message>'.$this->xmlSafe($err_response).'</message>'.$r;
+			$response .= "\t".'<error>1</error>'.$r;
+			$response .= "\t".'<message>'.$this->xmlSafe($err_response).'</message>'.$r;
 		} 
 		// End response to trackbacker
 		$response .= '</response>';
@@ -231,29 +205,26 @@ class tx_timtab_trackback {
 	 * Produces embedded RDF representing metadata for the post,
 	 * allowing clients to auto-discover the TrackBack Ping URL.
 	 * 
-	 * @param string $RFC822_date 
-	 * @param string $title 
-	 * @param string $expert 
 	 * @param string $permalink 
-	 * @param string $trackback 
-	 * @param string $author 
+	 * @param string $trackbackURL 
 	 * @return string 
 	 */
-	function getEmbeddedRdf($RFC822_date, $title, $excerpt, $permalink, $trackback, $author = '')
+	function getEmbeddedRdf($permalink, $trackbackURL)
 	{
-		if (!$author || empty($author)) {
-			$author = $this->author;
-		} 
+		$RFC822_date = date('r', $this->tt_news['datetime']);
+		$title       = $this->tt_news['title'];				
+		$excerpt     = $this->getExcerpt();
+		$author      = $this->tt_news['author'];
 
 		$r = "\n";
 		$rdf  = '<!-- '.$r;
-		$rdf .= '<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"'.$r;
-		$rdf .= '	xmlns:dc="http://purl.org/dc/elements/1.1/"'.$r;
-		$rdf .= '	xmlns:trackback="http://madskills.com/public/xml/rss/module/trackback/"">'.$r;
+		$rdf .= '<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" '.$r;
+		$rdf .= '	xmlns:dc="http://purl.org/dc/elements/1.1/" '.$r;
+		$rdf .= '	xmlns:trackback="http://madskills.com/public/xml/rss/module/trackback/">'.$r;
 		$rdf .= '<rdf:Description'.$r;
 		$rdf .= '	rdf:about="'.$this->xmlSafe($permalink).'"'.$r;
 		$rdf .= '	dc:identifier="'.$this->xmlSafe($permalink).'"'.$r;
-		$rdf .= '	trackback:ping="'.$this->xmlSafe($trackback).'"'.$r;
+		$rdf .= '	trackback:ping="'.$this->xmlSafe($trackbackURL).'"'.$r;
 		$rdf .= '	dc:title="'.$this->xmlSafe($title).'"'.$r;
 		$rdf .= '	dc:subject="TrackBack"'.$r;
 		$rdf .= '	dc:description="'.$this->xmlSafe($excerpt).'"'.$r;
@@ -275,14 +246,15 @@ class tx_timtab_trackback {
 	{ 
 		// Get a list of UNIQUE links from text...
 		#$reg_exp = '/(http)+(s)?:(\\/\\/)((\\w|\\.)+)(\\/)?(\\S+)?/i';
-		$reg_exp = '/(http|https)(:\/\/)([^\s<>]+)/i';
+		$reg_exp = '/(?:http|https)(?::\/\/)(?:[^\s<>]+)/i';
 		
 		// Make sure each link ends with [space]
-		$content = eregi_replace('www.', 'http://www.', $content);
-		$content = eregi_replace('http://http://', 'http://', $content);
-		$content = eregi_replace('"', ' "', $content);
-		$content = eregi_replace('\'', ' \'', $content);
-		$content = eregi_replace('>', ' >', $content); 
+		$content = str_replace('www.', 'http://www.', $content);
+		$content = str_replace('http://http://', 'http://', $content);
+		$content = str_replace('https://http://', 'https://', $content);
+		$content = str_replace('"', ' "', $content);
+		$content = str_replace('\'', ' \'', $content);
+		$content = str_replace('>', ' >', $content); 
 		
 		// Create an array with unique links
 		$uri_array = array();
@@ -334,13 +306,12 @@ class tx_timtab_trackback {
 	 **********************************************/
 	
 	/**
-	 * builds the source URL for thetrackback - the URL where the original author
+	 * builds the source URL for the trackback - the URL where the original author
 	 * can find our post
 	 * 
-	 * @param integer the tt_news uid we are building the URL for
 	 * @return string
 	 */
-	function buildSourceURL() {
+	function getSourceURL() {
 		$urlParameters = array(
 			'tx_ttnews[year]'    => date('Y', $this->tt_news['datetime']),
 			'tx_ttnews[month]'   => date('m', $this->tt_news['datetime']),
@@ -348,7 +319,57 @@ class tx_timtab_trackback {
 			'tx_ttnews[tt_news]' => $this->tt_news['uid']
 		);
  		
-		return t3lib_div::getIndpEnv('TYPO3_SITE_URL').$this->pObj->cObj->getTypoLink_URL($this->conf['blogPid'], $urlParameters);
+ 		$link = $this->pObj->cObj->getTypoLink_URL($this->conf['blogPid'], $urlParameters);
+		return t3lib_div::getIndpEnv('TYPO3_SITE_URL').$link;
+	}
+	
+	/**
+	 * builds the URL where trackbacks can be send to. This is used in the rdf
+	 * description of the post
+	 * 
+	 * @return string
+	 */
+	function getTrackbackURL() {
+		$urlParameters = array(
+			'tx_ttnews[year]'    => date('Y', $this->tt_news['datetime']),
+			'tx_ttnews[month]'   => date('m', $this->tt_news['datetime']),
+			'tx_ttnews[day]'     => date('d', $this->tt_news['datetime']),
+			'tx_ttnews[tt_news]' => $this->tt_news['uid'],
+			'type'               => 200,
+			'tx_timtab_pi2[trackback]' => 1
+		);
+		
+		$link = $this->pObj->cObj->getTypoLink_URL($this->conf['blogPid'], $urlParameters);
+		return t3lib_div::getIndpEnv('TYPO3_SITE_URL').$link;
+	}
+	
+	/**
+	 * builds the link where trackbacks can be send to. This could be used to 
+	 * show the link on the website
+	 * 
+	 * @return string
+	 */
+	function getTrackbackLink() {
+		$urlParameters = array(
+			'tx_ttnews[year]'    => date('Y', $this->tt_news['datetime']),
+			'tx_ttnews[month]'   => date('m', $this->tt_news['datetime']),
+			'tx_ttnews[day]'     => date('d', $this->tt_news['datetime']),
+			'tx_ttnews[tt_news]' => $this->tt_news['uid'],
+			'type'               => 200,
+			'tx_timtab_pi2[trackback]' => 1
+		);
+		
+		$link = $this->pObj->pi_linkToPage('trackback', $this->conf['blogPid'], '', $urlParameters);
+		return /*t3lib_div::getIndpEnv('TYPO3_SITE_URL').*/$link;
+	}
+	
+	/**
+	 * creates the permaLink URL
+	 * 
+	 * @return	string
+	 */
+	function getPermalink() {
+		return $this->getSourceURL();	
 	}
 	
 	/**
@@ -365,12 +386,69 @@ class tx_timtab_trackback {
 	 	} else {
 			$excerpt = $this->tt_news['bodytext'];
 		}
+		
+		$excerpt = str_replace(chr(10), ' ', strip_tags($excerpt));
 	 	
 		if(strlen($excerpt) > $max_length) {
 			$excerpt = substr($excerpt, 0, $max_length - 3).'...';
 		}
 	 	
 		return $excerpt;
+	}
+	
+	/**
+	 * builds an array of Trackbacks containing url, status and reason if status 
+	 * is failed
+	 * 
+	 * @param	string	list of Trackbacks
+	 * @return	array	checked and transformed array of trackback URLs enriched with meta information
+	 */
+	function getTrackbackStatus($TBlist, $status) {
+		$tbField = explode("\n", $TBlist);
+
+		$trackbacks = array();
+		foreach($tbField as $line) {
+			$properties = explode('|', $line);
+			
+			if($properties[1] == 1) {
+				$reason = ''; //ping sent
+			} elseif($properties[2]) {
+				$reason = $properties[2]; //might be an existing error message
+			} elseif($status == 'new') {
+				$reason = 'new'; //a TB we just found
+			} elseif(!empty($properties[0])) {
+				$reason = 'unknown'; //something mysterious happend
+			}
+			
+			if($properties[1] == 1 || !empty($reason)) {
+				$trackbacks[] = array(
+					'url'    => $properties[0],
+					'status' => $properties[1],
+					'reason' => $reason
+				);	
+			}
+		}
+		
+		return $trackbacks;
+	}
+	
+	/**
+	 * reverse function of getTrackbackStatus, builds a string to store in the DB
+	 * from an array containing URL, status and an optional message
+	 * 
+	 * @param	array	Trackback status array, with URL, status and errormessage
+	 * @return	string
+	 */
+	function setTrackbackStatus($TBstatus) {
+		$TBlist = '';
+		
+		foreach($TBstatus as $TB) {
+			$TBlist .= $TB['url'].'|'.$TB['status'];
+			$TBlist .= $TB['reason'] ? '|'.$TB['reason'] : '';
+			$TBlist .= chr(10);
+		}
+		
+		return trim($TBlist);
 	}
 	 
 	/**

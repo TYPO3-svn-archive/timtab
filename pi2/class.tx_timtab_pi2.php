@@ -31,26 +31,133 @@
  * @author    Ingo Schommer <me@chillu.com>
  */
 
-
+$PATH_timtab = t3lib_extMgm::extPath('timtab');
 require_once(PATH_tslib.'class.tslib_pibase.php');
-require_once(t3lib_extMgm::extPath('timtab').'pi2/class.tx_timtab_pi2_xmlrpcserver.php');
+require_once($PATH_timtab.'pi2/class.tx_timtab_pi2_xmlrpcserver.php');
+require_once($PATH_timtab.'class.tx_timtab_trackback.php');
 
 class tx_timtab_pi2 extends tslib_pibase {
     var $prefixId = 'tx_timtab_pi2';        // Same as class name
     var $scriptRelPath = 'pi2/class.tx_timtab_pi2.php';    // Path to this script relative to the extension dir.
     var $extKey = 'timtab';    // The extension key.
     
+    var $tt_news;
+    
     /**
-     * main function of pi2 creates an instance of the XML-RPC server
+     * main function of pi2 decides whether to process a XML-RPC request or Trackbacks
+     * 
+     * @param	string	content
+     * @param	array	configuration array
+     * @return	string
      */
     function main($content, $conf)    {
+    	$this->init($conf);
+
+    	if($this->piVars['trackback'] == '1') {
+    		$content = $this->processTrackback();
+    	} else {
+    		$xmlrpcServer = new tx_timtab_pi2_xmlrpcServer($this);
+    	}
+    	
+    	return $content;
+    }
+    
+    /**
+	 * initializes the configuration for the extension
+	 *
+	 * @param	array	configuration array
+	 * @return	void
+	 */
+    function init($conf) {
     	$this->conf = array_merge($conf, $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_timtab.']);
         $this->pi_setPiVarDefaults();
         $this->pi_USER_INT_obj=1;    // Configuring so caching is not expected. This value means that no cHash params are ever set. We do this, because it's a USER_INT object!
+        
+    	if($this->piVars['trackback'] == '1') {
+    		$tt_news = t3lib_div::_GP('tx_ttnews');
+    		$this->tt_news = intval($tt_news['tt_news']);
+    	}
+    }
     
-    	#debug($this->conf);
-    
-        $xmlrpcServer = new tx_timtab_pi2_xmlrpcServer($this);
+    /**
+     * processing of tracbacks, checks for a tt_news uid, whether pings are enabled
+     * for this post, the URL of the backtracker and whether we already have a 
+     * ping from that URL
+     * 
+     * @return	string
+     */
+    function processTrackback() {
+    	$tb = t3lib_div::makeInstance('tx_timtab_trackback');
+    	$tb->encoding = 'UTF-8';
+    	
+    	if(!$this->tt_news || !is_int($this->tt_news)) {
+    		return $tb->sendResponse(false, 'I really need an ID for this to work.');
+    	}	
+    	
+    	//process trackback
+    	$tbURL    = (string) t3lib_div::_POST('url');
+		$title    = t3lib_div::_POST('title');
+		$excerpt  = t3lib_div::_POST('excerpt');
+		$blogName = t3lib_div::_POST('blog_name');
+		
+		if (!empty($tbURL)) {
+			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+				'*',
+				'tt_news',
+				'uid = '.$this->tt_news
+			);
+			$tt_news = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
+			
+			//ping disabled
+			if(!$tt_news['tx_timtab_ping_allowed']) {
+				return $tb->sendResponse(false, 'Sorry, trackbacks are closed for this item.');
+			}
+			
+			$title   = htmlspecialchars(strip_tags($title));
+			$title   = (strlen($title) > 250) ? substr($title, 0, 250).'...' : $title;
+		
+			$excerpt = strip_tags($excerpt);
+			$excerpt = (strlen($excerpt) > 255) ? substr($excerpt, 0, 252).'...' : $excerpt;
+		
+			//do we have a ping, already?
+			unset($res);
+			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+				'uid',
+				'tx_veguestbook_entries',
+				'uid_tt_news = '.$tt_news['uid'].' AND homepage = \''.$tbURL.'\''
+			);
+			$tbEntry = $GLOBALS['TYPO3_DB']->sql_num_rows($res);
+			if($tbEntry) {
+				return $tb->sendResponse(false, 'We already have a ping from that URI for this post.');
+			} else {
+				unset($res);
+				$time = time();
+				$insertFields = array(
+					'pid' => $this->conf['pidStoreComments'],
+					'uid_tt_news' => $tt_news['uid'],
+					'tstamp' => $time,
+					'crdate' => $time,
+					'firstname' => $blogName,
+					'homepage' => $tbURL,
+					'entry' => $excerpt,
+					'remote_addr' => $_SERVER['REMOTE_ADDR'],
+					'tx_timtab_type' => 1 //1 = Trackback
+				);
+				$res = $GLOBALS['TYPO3_DB']->exec_INSERTquery(
+					'tx_veguestbook_entries',
+					$insertFields
+				);
+				$insertId = $GLOBALS['TYPO3_DB']->sql_insert_id($res);
+				
+				if($insertId) {
+					return $tb->sendResponse(true);
+				} else {
+					return $tb->sendResponse(false, 'Something went wrong while saving your ping.');
+				}
+			}
+		} else {
+			return $tb->sendResponse(false, 'At least the URL to your entry is required.');
+		}
     }
 }
 

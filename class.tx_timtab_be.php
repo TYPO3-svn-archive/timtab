@@ -87,10 +87,11 @@ class tx_timtab_be {
 		}
 		
 		if($id) {
-			$isBlogPost  = $this->isBlogPost($id, $tt_news);
-			$isBlogPost ? $tt_news = $this->getCurrentPost($id) : $tt_news = array();
-			
+			//update
+			$isBlogPost = $this->isBlogPost($id, array());
+			$isBlogPost ? $tt_news = $this->getCurrentPost($id) : $tt_news = array();			
 		} else {
+			//new
 			$isBlogPost  = $this->isBlogPost($id, $fieldArray);
 		}
 		
@@ -137,8 +138,8 @@ class tx_timtab_be {
 	}
 	
 	/**
-	 * pre processing of tt_news entries, detecting trackback URLs and saving 
-	 * them into $fieldsArray so that they get stored into the DB an we can ping 
+	 * pre processing of posts, detecting trackback URLs and saving 
+	 * them into $fieldsArray so that they get stored into the DB and we can ping 
 	 * them afterwards 
 	 *
 	 * @param	string		$status: ...
@@ -161,7 +162,7 @@ class tx_timtab_be {
 			
 			if($foundURLs = $tbObj->tbAutoDiscovery($fieldArray['bodytext'])) {
 				
-				$newTBs = '';
+				$newTbURLs = '';
 				if($this->status == 'update') {
 					//update a post, find new trackbacks
 					$tbField = '';
@@ -189,19 +190,19 @@ class tx_timtab_be {
 					}
 
 					foreach($newTBarray as $url) {
-						$newTBs .= $url.'|0|new'.chr(10);
+						$newTbURLs .= $url.'|0|new'.chr(10);
 					}
-					$newTBs = trim($oldTBs.$newTBs);
+					$newTbURLs = trim($oldTBs.$newTbURLs);
 
 				} elseif($this->status == 'new') {
 					//creating a new post			
 					foreach($foundURLs as $url) {
-						$newTBs .= $url.'|0|new'.chr(10);
+						$newTbURLs .= $url.'|0|new'.chr(10);
 					}
-					$newTBs = trim($newTBs);
+					$newTbURLs = trim($newTbURLs);
 				}
 
-				$fieldArray['tx_timtab_trackbacks'] = $newTBs;
+				$fieldArray['tx_timtab_trackbacks'] = $newTbURLs;
 			}
 		}
 	}
@@ -226,7 +227,7 @@ class tx_timtab_be {
 			//processing trackbacks
 			$tbObj = t3lib_div::makeInstance('tx_timtab_trackback');
 			$tbObj->init($this, $tt_news);
-			$TBstatus = $this->getTrackbackStatus($tt_news['tx_timtab_trackbacks']);
+			$TBstatus = $tbObj->getTrackbackStatus($tt_news['tx_timtab_trackbacks'], $this->status);
 						
 			if(is_array($TBstatus)) {
 				foreach($TBstatus as $k => $TB) {
@@ -249,7 +250,7 @@ class tx_timtab_be {
 			$GLOBALS['TYPO3_DB']->exec_UPDATEquery(
 				'tt_news',
 				'uid = '.$tt_news['uid'],
-				array('tx_timtab_trackbacks' => $this->setTrackbackStatus($TBstatus))
+				array('tx_timtab_trackbacks' => $tbObj->setTrackbackStatus($TBstatus))
 			);
 			//end processing trackbacks
 		}
@@ -272,57 +273,12 @@ class tx_timtab_be {
 	}
 	
 	/**
-	 * builds an array containing url, status and reason if status is failed
+	 * checks whether the current tt_news record is a blog post
 	 * 
-	 * @param	string	list of Trackbacks coming from the DB
-	 * @return	array	checked and transformed array of trackback URLs enriched with meta information
+	 * @param	integer	tt_news uid to fetch the record in case the available information is not sufficent
+	 * @param	array	tt_news record or parts of it
+	 * @return	boolean
 	 */
-	function getTrackbackStatus($TBlist) {
-		$tbField = explode("\n", $TBlist);
-
-		$trackbacks = array();
-		foreach($tbField as $line) {
-			$properties = explode('|', $line);
-			
-			if($properties[1] == 1) {
-				$reason = ''; //ping sent
-			} elseif($properties[2]) {
-				$reason = $properties[2]; //might be an error message
-			} elseif($this->status == 'new') {
-				$reason = 'new'; //a TB we just found
-			} else {
-				$reason = 'unknown'; //something mysterious happend
-			}
-			
-			$trackbacks[] = array(
-				'url'    => $properties[0],
-				'status' => $properties[1],
-				'reason' => $reason
-			);	
-		}
-		
-		return $trackbacks;
-	}
-	
-	/**
-	 * reverse function of getTrackbackStatus, builds a string to store in the DB
-	 * from an array containing URL, status and an optional message
-	 * 
-	 * @param	array	Trackback status array, with URL, status and errormessage
-	 * @return	string
-	 */
-	function setTrackbackStatus($TBstatus) {
-		$TBlist = '';
-		
-		foreach($TBstatus as $TB) {
-			$TBlist .= $TB['url'].'|'.$TB['status'];
-			$TBlist .= $TB['reason'] ?  '|'.$TB['reason'] : '';
-			$TBlist .= chr(10);
-		}
-		
-		return trim($TBlist);
-	}
-	
 	function isBlogPost($id, $tt_news = '') {
 		$result = false;
 		if(isset($tt_news['type']) && $tt_news['type'] == 3) {			
