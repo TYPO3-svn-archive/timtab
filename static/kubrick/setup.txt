@@ -82,10 +82,19 @@ page >
 page = PAGE
 page {
   typeNum = 0
-  headTag = <head profile="http://gmpg.org/xfn/11">
-  bodyTag = <body>
-  includeCSS.file001 = {$page.file.css}
 
+  # <head>
+  headTag = <head profile="http://gmpg.org/xfn/11">
+  headerData {
+    10 = TEXT
+    10.value = <link rel="pingback" href="{$plugin.tx_timtab.homepage}/?type=200" />
+    
+    20 = TEXT
+    20.value = <link rel="alternate" type="application/rss+xml" title="RSS-Feed" href="{$plugin.tx_timtab.homepage}/?type=100" />
+  }
+
+  # <body>
+  bodyTag = <body>
   10 = TEMPLATE
   10 {
     template = FILE
@@ -105,6 +114,7 @@ page {
   } # end page.10 (TEMPLATE)
   
   # add some 'dynamic' css
+  includeCSS.file001 = {$page.file.css}
   CSS_inlineStyle (
     body { background: url("{$page.file.kubrickbgcolor}"); }
     #page { background: url("{$page.file.kubrickbgwide}") repeat-y top; border: none; }
@@ -129,7 +139,10 @@ page {
   
     # externalize js and css
     removeDefaultJS = external
-  
+
+    # advertise that we can receive Pingback
+    additionalHeaders = X-Pingback: {$plugin.tx_timtab.homepage}/?type=200
+
     # Admin Panel
     admPanel = 1
   } # end page.config
