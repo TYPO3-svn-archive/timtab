@@ -77,7 +77,6 @@ t3lib_extMgm::addToAllTCAtypes('tt_news', 'title;;1;;,type,editlock,datetime;;2;
 t3lib_extMgm::addStaticFile($_EXTKEY,'static/kubrick/','Kubrick (default weblog template)');
 t3lib_extMgm::addStaticFile($_EXTKEY,'static/kubrick_single/','Kubrick Single View (default weblog template)');
 t3lib_extMgm::addStaticFile($_EXTKEY,'static/webservice/','Blog Webservices');
-t3lib_extMgm::addStaticFile($_EXTKEY,'pi1/static/','Blogroll');
 
 if (TYPO3_MODE=="BE")	$TBE_MODULES_EXT["xMOD_db_new_content_el"]["addElClasses"]["tx_timtab_pi1_wizicon"] = t3lib_extMgm::extPath($_EXTKEY).'pi1/class.tx_timtab_pi1_wizicon.php';
 ?>

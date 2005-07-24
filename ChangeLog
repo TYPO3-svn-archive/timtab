@@ -3,6 +3,8 @@
 	* CHG ! renamed markers for trackback link and rdf , now they beginn with BLOG_ , too
 	* FIX typo in type for tx_timtab.blogPid in constant editor corrected
 	* FIX small fixes in kubrick templates
+	* RMV removed the listing of the static TS template file for blogroll as it wasn't used
+	* RMV removed the registering for t3lib/class.t3lib_parsehtml.php XCLASS
 
 
 2005-07-21	Ingo Renner  <typo3@ingo-renner.com>

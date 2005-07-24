@@ -34,6 +34,4 @@ $TYPO3_CONF_VARS['EXTCONF']['ve_guestbook']['extraItemMarkerHook'][] = 'tx_timta
 $TYPO3_CONF_VARS['EXTCONF']['ve_guestbook']['postEntryInsertedHook'][] = 'tx_timtab';
 $TYPO3_CONF_VARS['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = 'tx_timtab_be'; 
 
-//t3lib_parsehtml XCLASS
-#$TYPO3_CONF_VARS['FE']['XCLASS']['t3lib/class.t3lib_parsehtml.php'] = $PATH_timtab.'class.ux_t3lib_parsehtml.php';
 ?>
