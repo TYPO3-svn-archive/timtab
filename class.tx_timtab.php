@@ -136,8 +136,8 @@ class tx_timtab extends tslib_pibase {
 			
 			$rdf = $tb->getEmbeddedRdf($plink, $tbURL);
 			$tbLink = $tb->getTrackbackLink();
-			$this->markerArray['###TRACKBACK_RDF###']  = $rdf;
-			$this->markerArray['###TRACKBACK_LINK###'] = $tbLink;
+			$this->markerArray['###BLOG_TRACKBACK_RDF###']  = $rdf;
+			$this->markerArray['###BLOG_TRACKBACK_LINK###'] = $tbLink;
 			
 			//misc
 			$this->markerArray['###BLOG_TEXT_CAT###'] = $this->pi_getLL('textCat');

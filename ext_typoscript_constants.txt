@@ -13,7 +13,7 @@ plugin.tx_timtab {
 	# cat=plugin.tx_timtab/basic/30; type=string; label= Blog homepage: the URL to your blog homepage
   homepage = http://www.example.com
 
-	# cat=plugin.tx_timtab/basic/40; type=nti; label= Blog pid: The pid where the single view of your tt_news plugin resides and shows the blog posts
+	# cat=plugin.tx_timtab/basic/40; type=int+; label= Blog pid: The pid where the single view of your tt_news plugin resides and shows the blog posts
   blogPid = 0
 }
 
@@ -25,7 +25,7 @@ plugin.tx_timtab_pi2 {
 	# cat=plugin.tx_timtab/webservices/15; type=int+; label= pid to store the comments in: The page or sysfolder where your comments and trackbacks will be saved
   pidStoreComments = 0
   
-	# cat=plugin.tx_timtab/webservices/20; type=int+; label= This sets the timout for XML-RPC Server connections in seconds
+	# cat=plugin.tx_timtab/webservices/20; type=int+; label= XML-RPC timeout: This sets the timout for XML-RPC Server connections in seconds
   connectionTimeout = 30
   
 	# cat=plugin.tx_timtab/enable/30; type=boolean; label= Blogger API: Enable Weblogging with external tools which are capable of using the Blogger API
