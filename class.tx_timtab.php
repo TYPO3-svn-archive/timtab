@@ -68,10 +68,10 @@ class tx_timtab extends tslib_pibase {
 	var $scriptRelPath 	= 'class.tx_timtab.php';	// Path to this script relative to the extension dir.
 	var $extKey 		= 'timtab';	// The extension key.
 
+	var $pObj;
 	var $conf;
 	var $markerArray;
 	var $calledBy;
-	var $pObj;
 
 	/**
 	 * main function which executes all steps
@@ -104,6 +104,15 @@ class tx_timtab extends tslib_pibase {
 		$this->conf = array_merge($this->conf, $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_timtab.']);
 
 		$this->markerArray = $markerArray;
+		
+		$pValKey = $this->pObj->cObj->currentValKey;
+		$this->pObj->cObj->currentValKey = 'commentNum';
+		
+		if($this->calledBy == 've_guestbook' && !$this->pObj->cObj->getCurrentVal()) {
+				$this->pObj->cObj->setCurrentVal(0);
+		}
+		
+		$this->pObj->cObj->currentValKey = $pValKey;
 	}
 
 	/**
@@ -149,7 +158,7 @@ class tx_timtab extends tslib_pibase {
 			$this->markerArray['###BLOG_NAME###'] = $this->pi_getLL('commentName');
 			$this->markerArray['###BLOG_MAIL###'] = $this->pi_getLL('commentMail');
 			$this->markerArray['###BLOG_HOMEPAGE###'] = $this->pi_getLL('commentURL');
-
+			
 			$this->markerArray['###BLOG_COMMENTS_COUNT###'] = $this->pObj->internal['res_count'];
 			if($this->pObj->internal['res_count'] == 1) {
 				$this->markerArray['###BLOG_RESPONSES###']	= $this->pi_getLL('one_response');
@@ -164,6 +173,16 @@ class tx_timtab extends tslib_pibase {
 			} else {
 				$this->markerArray['###BLOG_COMMENTER_NAME###'] = $this->conf['data']['firstname'];
 			}
+			
+			//numbering comments
+			$pValKey = $this->pObj->cObj->currentValKey;
+			$this->pObj->cObj->currentValKey = 'commentNum';
+			
+			$commentNum = $this->pObj->cObj->getCurrentVal() + 1;
+			$this->markerArray['###BLOG_COMMENT_NUM###'] = $commentNum;
+			$this->pObj->cObj->setCurrentVal($commentNum);			
+			
+			$this->pObj->cObj->currentValKey = $pValKey;			
 		}
 	}
 
@@ -290,7 +309,6 @@ class tx_timtab extends tslib_pibase {
 
 	/**
 	 * connects to the hook in ve_guestbook to post process a comment entry
-	 * we'll just clear the cache of some pages to keep the comment count updated
 	 *
 	 * @param	object		parentObject the calling ve_guestbook object
 	 * @return	void
@@ -298,6 +316,8 @@ class tx_timtab extends tslib_pibase {
 	function postEntryInsertedProcessor($pObj) {
 		#$this->cObj = $pObj->cObj;
 		$this->init(array(), array());
+		
+		//clear page cache for some pages to keep the comment count updated
 		$tce = t3lib_div::makeInstance('t3lib_TCEmain');
 		$tce->admin = 1;
 
@@ -306,6 +326,12 @@ class tx_timtab extends tslib_pibase {
 			$tce->clear_cacheCmd($page);
 		}
 		$tce->admin = 0;
+		
+		//TODO save user data into cookie
+		//save user data for comment form so he doesn't have to type it in every time 
+		//only if user wants this and we are allowed to set cookies
+		#if (!$this->dontSetCookie)	setcookie(cookie name, cookie value, expires, '/');
+		
 	}
 }
 

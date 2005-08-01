@@ -50,11 +50,14 @@ class tx_timtab_pi1 extends tslib_pibase {
 		$this->init($conf);
 		$blogroll = '<ul>'."\n";
 		
-		$res = $this->cObj->exec_getQuery('tx_timtab_blogroll', 
-			array(	'selectFields' => 'url, name, description, rel_identity, rel_friendship, rel_physical, rel_professional, rel_geographical, rel_family, rel_romantic, target', 
-					'where' => '1=1'.$this->enableFields, 
-					'pidInList' => $this->conf['pid_list'], 
-					'orderBy' => 'sorting'));
+		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+			'url, name, description, rel_identity, rel_friendship, rel_physical, rel_professional, rel_geographical, rel_family, rel_romantic, target',
+			'tx_timtab_blogroll',
+			'1=1'.$this->enableFields.' AND pid IN ('.$this->config['pidList'].')',
+			'',
+			'sorting'
+		);
+		
 		
 		while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 			$link  = "\t".'<li><a href="';
@@ -95,7 +98,20 @@ class tx_timtab_pi1 extends tslib_pibase {
 		$this->pi_loadLL();	
 		$this->local_cObj = t3lib_div::makeInstance('tslib_cObj');
 		$this->enableFields = $this->cObj->enableFields('tx_timtab_blogroll');
-		#debug($this->conf);
+	
+		// pidList is the pid/list of pids from where to fetch the faq items.
+		$cePidList = $this->cObj->data['pages']; //ce = Content Element
+		$pidList   = $cePidList ? 
+			$cePidList : 
+			trim($this->cObj->stdWrap(
+				$this->conf['pid_list'], $this->conf['pid_list.']
+			));
+
+		$this->config['pidList'] = $pidList ? 
+			implode(t3lib_div::intExplode(',', $pidList), ',') : 
+			$GLOBALS['TSFE']->id;
+		
+		unset($this->conf['pid_list']);
 	}
 	
 	/**

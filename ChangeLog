@@ -1,3 +1,9 @@
+2005-08-01	Ingo Renner  <typo3@ingo-renner.com>
+
+	* ADD blogroll links now showing in web->page view
+	* ADD new marker for use in ve_guestbook templates: ###BLOG_COMMENT_NUM### gives every comment a number starting with 1 and for every comment increasing by 1
+	* FIX blogroll can get the links from multiple pages now, if the startingpoint is set it will override the pid_list TS variable which is now necessary only if you're including the blogroll via TS into your template
+
 2005-07-24	Ingo Renner  <typo3@ingo-renner.com>
 
 	* CHG ! renamed markers for trackback link and rdf , now they beginn with BLOG_ , too
