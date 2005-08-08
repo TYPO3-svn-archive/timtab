@@ -1,3 +1,8 @@
+2005-08-08	Ingo Renner  <typo3@ingo-renner.com>
+
+	* ADD category support for XML-RPC interface
+	* CHG small fixes and optimizations
+
 2005-08-01	Ingo Renner  <typo3@ingo-renner.com>
 
 	* ADD blogroll links now showing in web->page view

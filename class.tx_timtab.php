@@ -159,6 +159,7 @@ class tx_timtab extends tslib_pibase {
 			$this->markerArray['###BLOG_MAIL###'] = $this->pi_getLL('commentMail');
 			$this->markerArray['###BLOG_HOMEPAGE###'] = $this->pi_getLL('commentURL');
 			
+			$this->markerArray['###BLOG_COMMENT_UID###'] = $this->conf['data']['uid'];
 			$this->markerArray['###BLOG_COMMENTS_COUNT###'] = $this->pObj->internal['res_count'];
 			if($this->pObj->internal['res_count'] == 1) {
 				$this->markerArray['###BLOG_RESPONSES###']	= $this->pi_getLL('one_response');
@@ -169,7 +170,7 @@ class tx_timtab extends tslib_pibase {
 			$this->markerArray['###BLOG_COMMENT_GRAVATAR###'] = $this->getGravatar();
 
 			if(!empty($this->conf['data']['homepage'])) {
-				$this->markerArray['###BLOG_COMMENTER_NAME###'] = '<a href="'.$this->conf['data']['homepage'].'" rel="external nofollow">'.$this->conf['data']['firstname'].'</a>';
+				$this->markerArray['###BLOG_COMMENTER_NAME###'] = '<a href="'.$this->conf['data']['homepage'].'" rel="external">'.$this->conf['data']['firstname'].'</a>';
 			} else {
 				$this->markerArray['###BLOG_COMMENTER_NAME###'] = $this->conf['data']['firstname'];
 			}

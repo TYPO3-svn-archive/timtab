@@ -31,15 +31,18 @@
  * @author    Ingo Schommer <me@chillu.com>
  */
 
+define('TYPE_TRACKBACK', 1);
+define('TYPE_PINGBACK', 2);
+
 $PATH_timtab = t3lib_extMgm::extPath('timtab');
 require_once(PATH_tslib.'class.tslib_pibase.php');
 require_once($PATH_timtab.'pi2/class.tx_timtab_pi2_xmlrpcserver.php');
 require_once($PATH_timtab.'class.tx_timtab_trackback.php');
 
 class tx_timtab_pi2 extends tslib_pibase {
-    var $prefixId = 'tx_timtab_pi2';        // Same as class name
-    var $scriptRelPath = 'pi2/class.tx_timtab_pi2.php';    // Path to this script relative to the extension dir.
-    var $extKey = 'timtab';    // The extension key.
+    var $prefixId      = 'tx_timtab_pi2';               // Same as class name
+    var $scriptRelPath = 'pi2/class.tx_timtab_pi2.php'; // Path to this script relative to the extension dir.
+    var $extKey        = 'timtab';                      // The extension key.
     
     var $tt_news;
     
@@ -56,7 +59,8 @@ class tx_timtab_pi2 extends tslib_pibase {
     	if($this->piVars['trackback'] == '1') {
     		$content = $this->processTrackback();
     	} else {
-    		$xmlrpcServer = new tx_timtab_pi2_xmlrpcServer($this);
+    		$className = t3lib_div::makeInstanceClassName('tx_timtab_pi2_xmlrpcServer');
+    		$xmlrpcServer = new $className($this);
     	}
     	
     	return $content;
@@ -99,6 +103,13 @@ class tx_timtab_pi2 extends tslib_pibase {
 		$title    = t3lib_div::_POST('title');
 		$excerpt  = t3lib_div::_POST('excerpt');
 		$blogName = t3lib_div::_POST('blog_name');
+		$charset  = t3lib_div::_POST('charset');
+		
+		if ($charset) {
+			$charset = strtoupper( trim($charset) );
+		} else {
+			$charset = 'ASCII, UTF-8, ISO-8859-1, JIS, EUC-JP, SJIS';
+		}
 		
 		if (!empty($tbURL)) {
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
@@ -114,10 +125,14 @@ class tx_timtab_pi2 extends tslib_pibase {
 			}
 			
 			$title   = htmlspecialchars(strip_tags($title));
+			$title   = $GLOBALS['TSFE']->csConv($title, $charset);
 			$title   = (strlen($title) > 250) ? substr($title, 0, 250).'...' : $title;
 		
 			$excerpt = strip_tags($excerpt);
+			$excerpt = $GLOBALS['TSFE']->csConv($excerpt, $charset);
 			$excerpt = (strlen($excerpt) > 255) ? substr($excerpt, 0, 252).'...' : $excerpt;
+		
+			$blogName = $GLOBALS['TSFE']->csConv($blogName, $charset);
 		
 			//do we have a ping, already?
 			unset($res);
@@ -141,7 +156,7 @@ class tx_timtab_pi2 extends tslib_pibase {
 					'homepage' => $tbURL,
 					'entry' => $excerpt,
 					'remote_addr' => $_SERVER['REMOTE_ADDR'],
-					'tx_timtab_type' => 1 //1 = Trackback
+					'tx_timtab_type' => TYPE_TRACKBACK
 				);
 				$res = $GLOBALS['TYPO3_DB']->exec_INSERTquery(
 					'tx_veguestbook_entries',
