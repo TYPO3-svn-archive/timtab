@@ -9,7 +9,7 @@ if (!defined ('TYPO3_MODE')) 	die ('Access denied.');
 $PATH_timtab = t3lib_extMgm::extPath('timtab');
 
 if (TYPO3_MODE == 'FE')	{
-	require_once($PATH_timtab.'class.tx_timtab.php');
+	require_once($PATH_timtab.'class.tx_timtab_fe.php');
 } else {
 	require_once($PATH_timtab.'class.tx_timtab_be.php');
 }
@@ -35,9 +35,9 @@ t3lib_extMgm::addPItoST43($_EXTKEY,'pi1/class.tx_timtab_pi1.php','_pi1','list_ty
 t3lib_extMgm::addPItoST43($_EXTKEY,'pi2/class.tx_timtab_pi2.php','_pi2','list_type',0);
 
 //registering for several hooks
-$TYPO3_CONF_VARS['EXTCONF']['tt_news']['extraItemMarkerHook'][] = 'tx_timtab';
-$TYPO3_CONF_VARS['EXTCONF']['ve_guestbook']['extraItemMarkerHook'][] = 'tx_timtab';
-$TYPO3_CONF_VARS['EXTCONF']['ve_guestbook']['postEntryInsertedHook'][] = 'tx_timtab';
+$TYPO3_CONF_VARS['EXTCONF']['tt_news']['extraItemMarkerHook'][] = 'tx_timtab_fe';
+$TYPO3_CONF_VARS['EXTCONF']['ve_guestbook']['extraItemMarkerHook'][] = 'tx_timtab_fe';
+$TYPO3_CONF_VARS['EXTCONF']['ve_guestbook']['postEntryInsertedHook'][] = 'tx_timtab_fe';
 $TYPO3_CONF_VARS['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = 'tx_timtab_be'; 
 
 ?>

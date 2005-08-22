@@ -35,7 +35,7 @@
  *
  *
  *
- *   43: class tx_timtabb_trackback
+ *   43: class tx_timtab_trackback
  *
  * TOTAL FUNCTIONS: 0
  * (This index is automatically created/updated by the extension "extdeveval")

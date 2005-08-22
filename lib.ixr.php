@@ -21,7 +21,7 @@
    Previous version was 1.61, released 11th July 2003
 
 */
-define('XMLRPC_DEBUG', true);
+define('XMLRPC_DEBUG', false);
 define('DEBUG_FILENAME', 'D:/Projects/ingo-renner.com/www_v2/log/xmlrpc.log');
 
 class IXR_Value {

@@ -1,3 +1,11 @@
+2005-08-23	Ingo Renner  <typo3@ingo-renner.com>
+
+	* CHG !!! renamed class timtab into timtab_fe
+	* CHG Kubrick template now only requires to build the page tree, set some page ID in Constants Editor and insert the ve_guestbook in SINGLE view
+	* RMV removed search field from Kubrick template
+	* ADD added support for disabling comments (requires ve_guestbook > 1.7.5)
+
+
 2005-08-08	Ingo Renner  <typo3@ingo-renner.com>
 
 	* ADD category support for XML-RPC interface

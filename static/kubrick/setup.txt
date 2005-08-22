@@ -1,10 +1,14 @@
-
+#
 #	$Id$
+#
+
 
 # tt_news
 plugin.tt_news {
 
   templateFile = {$page.file.template_tt_news}
+  
+  singlePid = {$plugin.tx_timtab.blogPid}
   
   displayList.date_stdWrap.strftime = %B %d, %Y
   displaySingle.date_stdWrap.strftime =  %A, %B %d, %Y at %I:%M %p
@@ -15,10 +19,42 @@ plugin.tt_news {
   useHRDates = 1
   useHRDatesSingle = 1
   useSubCategories = 1
+  
+  displayCatMenu {
+    catmenu_stdWrap.wrap = <h2 class="news-catmenu">Categories</h2>|
+  }
 
   _LOCAL_LANG.default {
     archiveHeader = Archives
   }
+}
+
+# posts list
+temp.list < plugin.tt_news 
+temp.list {
+  code >
+  code = LIST
+}
+
+#post single view
+temp.single < plugin.tt_news 
+temp.single {
+  code >
+  code = SINGLE
+}
+
+# archives
+temp.archives < plugin.tt_news 
+temp.archives {
+  code >
+  code = AMENU
+}
+
+# categories
+temp.categories < plugin.tt_news 
+temp.categories {
+  code >
+  code = CATMENU
 }
 
 
@@ -102,12 +138,16 @@ page {
     
     workOnSubpart = DOCUMENT_BODY
   
-    marks {    
+    marks {
       PAGENAV < temp.pagenav
+      ARCHIVES < temp.archives
+      CATEGORIES < temp.categories
       BLOG_TITLE < temp.blogTitle
       BLOG_TAGLINE < temp.blogTagline
       BLOG_HOME < temp.blogHomepage
-      BLOG_CONTENT < styles.content.get
+      POSTS_LIST < temp.list
+      POST_SINGLE < temp.single
+      BLOG_CONTENT_NORMAL < styles.content.get
       BLOG_CONTENT_RIGHT < styles.content.getRight
       BLOG_BLOGROLL < temp.blogRoll
     } # end marks
