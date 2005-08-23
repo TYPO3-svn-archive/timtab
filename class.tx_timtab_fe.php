@@ -194,7 +194,21 @@ class tx_timtab_fe extends tslib_pibase {
 			$this->markerArray['###BLOG_COMMENT_NUM###'] = $commentNum;
 			$this->pObj->cObj->setCurrentVal($commentNum);			
 			
-			$this->pObj->cObj->currentValKey = $pValKey;			
+			$this->pObj->cObj->currentValKey = $pValKey;
+			
+			//remember the visitors data
+			$this->markerArray['###BLOG_REMEMBER_YES###']     = $this->pi_getLL('yes');
+			$this->markerArray['###BLOG_REMEMBER_NO###']      = $this->pi_getLL('no');
+			$this->markerArray['###BLOG_REMEMBER_VISITOR###'] = $this->pi_getLL('rememberInfo');			
+		
+			if(isset($_COOKIE['comment_info'])) {
+				$userInfo = unserialize($_COOKIE['comment_info']);
+								
+				$this->markerArray['###VALUE_FIRSTNAME###'] = $userInfo['name'];
+				$this->markerArray['###VALUE_EMAIL###']     = $userInfo['email'];
+				$this->markerArray['###VALUE_HOMEPAGE###']  = $userInfo['www'];
+			}		
+			
 		}
 	}
 
@@ -323,10 +337,37 @@ class tx_timtab_fe extends tslib_pibase {
 	 * @return	void
 	 */
 	function postEntryInsertedProcessor($pObj) {
-		#$this->cObj = $pObj->cObj;
 		$this->init(array(), array());
 		
 		//clear page cache for some pages to keep the comment count updated
+		$this->clearPageCache();
+				
+		//save user data for comment form so he doesn't have to type it in every time 
+		//only if user wants this and we are allowed to set cookies		
+		$rememberArr = t3lib_div::_POST('tx_timtab');
+		$rememberVal = $rememberArr['remember_visitor'];
+		
+		if (!$this->dontSetCookie && $rememberVal) {
+			$userInfo = serialize(
+				array(
+					'name' => $pObj->postvars['firstname'],
+					'email' => $pObj->postvars['email'],
+					'www' => $pObj->postvars['homepage'],
+				)
+			);
+			
+			setcookie('comment_info', $userInfo, time() + 3600 * 24 * 90, '/');
+		}
+		
+	}
+	
+	/**
+	 * explicitly clears cache for the blog page as it is not updating sometimes
+	 * 
+	 * @return void
+	 */
+	function clearPageCache() {
+		//TODO put this in a class timtab_lib
 		$tce = t3lib_div::makeInstance('t3lib_TCEmain');
 		$tce->admin = 1;
 
@@ -334,13 +375,7 @@ class tx_timtab_fe extends tslib_pibase {
 		foreach($clearCachePages as $page) {
 			$tce->clear_cacheCmd($page);
 		}
-		$tce->admin = 0;
-		
-		//TODO save user data into cookie
-		//save user data for comment form so he doesn't have to type it in every time 
-		//only if user wants this and we are allowed to set cookies
-		#if (!$this->dontSetCookie)	setcookie(cookie name, cookie value, expires, '/');
-		
+		$tce->admin = 0;	
 	}
 }
 

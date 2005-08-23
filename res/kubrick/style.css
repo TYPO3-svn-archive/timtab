@@ -455,7 +455,7 @@ select {
 	width: 130px;
 	}
 
-#commentform input {
+#commentform input[type=text] {
 	width: 170px;
 	padding: 2px;
 	margin: 5px 5px 1px 0;

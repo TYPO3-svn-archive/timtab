@@ -23,7 +23,10 @@ $LOCAL_LANG = Array (
 		'commentName' => 'Name',
 		'commentMail' => 'Mail',
 		'commentURL' => 'Website',
-		'commentsDeactivated' => 'Sorry, comments are deactivated for this post.'
+		'commentsDeactivated' => 'Sorry, comments are closed for this post.',
+		'yes' => 'yes',
+		'no' => 'no',
+		'rememberInfo' => 'Remember my information:',
 	),
 	'dk' => Array (
 	),
