@@ -25,8 +25,11 @@ plugin.tx_timtab_pi2 {
 	# cat=plugin.tx_timtab/webservices/15; type=int+; label= pid to store the comments in: The page or sysfolder where your comments and trackbacks will be saved
   pidStoreComments = 0
   
-	# cat=plugin.tx_timtab/webservices/20; type=int+; label= XML-RPC timeout: This sets the timout for XML-RPC Server connections in seconds
+	# cat=plugin.tx_timtab/webservices/20; type=int+; label= XML-RPC timeout: This sets the timeout for XML-RPC Server connections in seconds
   connectionTimeout = 30
+  
+	# cat=plugin.tx_timtab/webservice/30; type=string; label= Blogger Title: The subject/title for posts created via blogger API
+  bloggerTitle = Blog post
   
 	# cat=plugin.tx_timtab/enable/30; type=boolean; label= Blogger API: Enable Weblogging with external tools which are capable of using the Blogger API
   enableBlogger = 0
@@ -35,10 +38,10 @@ plugin.tx_timtab_pi2 {
   enableMetaWeblog = 0
   
 	# cat=plugin.tx_timtab/enable/50; type=boolean; label= Movable Type API: Enable Weblogging with external tools which are capable of using the Movable Type API
-  enableMovableType = 0
+  #enableMovableType = 0
   
 	# cat=plugin.tx_timtab/enable/60; type=boolean; label= Uploads: Enable file uploads from external tools
-  enableUploads = 0
+  #enableUploads = 0
   
 	# cat=plugin.tx_timtab/enable/60; type=boolean; label= Strict API: Force the XML-RPC Server to be API compliant instead of behaving the more common way
   strictAPI = 0
