@@ -104,11 +104,12 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 		$blggr = array();
 		if($this->conf['enableBlogger']) {
 			$blggr = array(
-				'blogger.newPost'       => 'this:blggrNewPost',
-				'blogger.editPost'      => 'this:blggrEditPost',
-				'blogger.deletePost'    => 'this:blggrDeletePost',
-				'blogger.getUsersBlogs' => 'this:blggrGetUsersBlogs',
-				'blogger.getUserInfo'	=> 'this:blggrGetUserInfo',
+				'blogger.newPost'        => 'this:blggrNewPost',
+				'blogger.editPost'       => 'this:blggrEditPost',
+				'blogger.deletePost'     => 'this:blggrDeletePost',
+				'blogger.getRecentPosts' => 'this:blggrGetRecentPosts',
+				'blogger.getUsersBlogs'  => 'this:blggrGetUsersBlogs',
+				'blogger.getUserInfo'	 => 'this:blggrGetUserInfo',
 			);
 		} else {
 			// always needed
@@ -176,13 +177,13 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 	/**
 	 * creates a new post and optionally publishes it using the blogger API
 	 *
-	 * @param	array		array of arguments: [0]postId, [1]blogId, [2]username, [3]password
+	 * @param	array		array of arguments: [0]appKey, [1]blogId, [2]username, [3]password
 	 * @return	string		the posts id
 	 */
 	function blggrNewPost($args) {
 		$this->escape($args);
 		$appKey   = $args[0]; //unused
-		$blogId   = $args[1];
+		$blogId   = $args[1]; //unused
 		$username = $args[2];
 		$password = $args[3];
 		$content  = $args[4];
@@ -319,6 +320,68 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 		}
 
 		return '';
+	}
+	
+	/**
+	 * undocumented but existing blogger method
+	 * gets the last $numPost posts
+	 * 
+	 * @param	array		array of arguments: [0]appKey, [1]blogId, [2]username, [3]password, [4]numberOfPosts
+	 * @return	array		$numPosts last posts
+	 */
+	function blggrGetRecentPosts($args) {
+		$this->escape($args);
+		$appKey   = $args[0]; //unused
+		$blogId   = $args[1]; //unused
+		$username = $args[2];
+		$password = $args[3];
+		$numPosts = $args[4];
+		
+		if(!$this->authUser($username, $password)) {
+			return new IXR_Error(403, 'Not authorized: Bad username/password combination.');
+		}
+		
+		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+			'uid, datetime, title, bodytext, category',
+			'tt_news',
+			'pid = '.$this->conf['pidStorePosts'].' AND type = 3 AND deleted = 0',
+			'',
+			'datetime DESC',
+			$numPosts
+		);
+
+		if(!$res) {
+			return new IXR_Error(500, 'Database connection brocken or query failed.');;
+		}
+
+		if($GLOBALS['TYPO3_DB']->sql_num_rows($res) > 0) {
+			while($post = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {				
+				$catArray   = $this->getPostCategories($post['uid']);
+				$categories = implode(', ', $catArray);
+				
+				$content  = '<title>'.$post['title'].'</title>';
+				$content .= '<category>'.$categories.'</category>';
+				$content .= $this->transformContent('rte', $post['bodytext']);
+				
+				$struct[] = array(
+					'userid' => 0, //??? post author uid
+					'dateCreated' => new IXR_Date($post['datetime']),
+					'content' => $content,
+					'postid' => $post['uid'],
+				);
+			}
+
+			//we need the reverse order of the DB result
+			$recent_posts = array();
+			foreach($struct as $post) {
+				$recent_posts[] = $post;
+			}
+
+			return $recent_posts;
+		} else {
+			return new IXR_Error(100, 'No Posts available');
+		}
+		
 	}
 
 	/**
