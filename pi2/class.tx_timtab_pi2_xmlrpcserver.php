@@ -35,38 +35,48 @@
  *
  *
  *
- *   81: class tx_timtab_pi2_xmlrpcServer extends IXR_Server
- *   85:     function tx_timtab_pi2_xmlrpcServer(&$pObj)
+ *   93: class tx_timtab_pi2_xmlrpcServer extends IXR_Server
+ *   98:     function tx_timtab_pi2_xmlrpcServer(&$pObj)
  *
  *              SECTION: MetaWeblog
- *  155:     function mwNewPost($args)
- *  207:     function mwEditPost($args)
- *  251:     function mwGetPost($args)
- *  295:     function mwGetCategories($args)
- *  351:     function mwGetRecentPosts($args)
- *  405:     function mwNewMediaObject($args)
+ *  181:     function mwNewPost($args)
+ *  232:     function mwEditPost($args)
+ *  283:     function mwGetPost($args)
+ *  328:     function mwGetCategories($args)
+ *  385:     function mwGetRecentPosts($args)
+ *  440:     function mwNewMediaObject($args)
  *
  *              SECTION: Blogger
- *  442:     function blggrNewPost($args)
- *  459:     function blggrEditPost($args)
- *  479:     function blggrDeletePost($args)
- *  509:     function blggrGetUsersBlogs($args)
- *  533:     function blggrGetUserInfo($args)
+ *  481:     function blggrNewPost($args)
+ *  533:     function blggrEditPost($args)
+ *  555:     function blggrDeletePost($args)
+ *  586:     function blggrGetUsersBlogs($args)
+ *  611:     function blggrGetUserInfo($args)
+ *
+ *              SECTION: Trackback
+ *  648:     function tbDiscovery(&$fieldArray, $id)
+ *  704:     function tbSendPings($fieldArray)
  *
  *              SECTION: Pingback
- *  566:     function pbPing($args)
- *  578:     function pbGetPingbacks($args)
+ *  746:     function pbPing($args)
+ *  759:     function pbGetPingbacks($args)
  *
  *              SECTION: Demo
- *  594:     function demoSayHello($args)
- *  604:     function demoAddTwoNumbers($args)
+ *  776:     function demoSayHello($args)
+ *  786:     function demoAddTwoNumbers($args)
  *
  *              SECTION: non webservices
- *  623:     function getPostCategories($postId)
- *  654:     function authUser($username, $password)
- *  683:     function transformContent($dirRTE, $value)
+ *  806:     function getPostCategories($postId)
+ *  837:     function setPostCategories($postId, $cats_xmlrpc)
+ *  900:     function authUser($username, $password)
+ *  929:     function transformContent($dirRTE, $value)
+ *  983:     function getCurrentPost($tt_news_uid)
+ * 1001:     function escape(&$array)
+ * 1018:     function clearPageCache()
+ * 1038:     function getBlggrTitle($content)
+ * 1063:     function getBlggrCategory($content)
  *
- * TOTAL FUNCTIONS: 19
+ * TOTAL FUNCTIONS: 27
  * (This index is automatically created/updated by the extension "extdeveval")
  *
  */
@@ -120,13 +130,25 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 				// MetaWeblog API aliases for Blogger API
 				// see http://www.xmlrpc.com/stories/storyReader$2460
 				'metaWeblog.deletePost'     => 'this:blggrDeletePost',
+				'metaWeblog.getUsersBlogs'  => 'this:blggrGetUsersBlogs',
 			);
 		}
 
 		// Movable Type API
 		$mt = array();
 		if($this->conf['enableMovableType']) {
-			$mt = array();	//nothing yet
+			$mt = array(
+			/* planed, but nothing implemented yet
+				'mt.getCategoryList'      => 'this:mtGetCategoryList',
+				'mt.getRecentPostTitles'  => 'this:mtGetRecentPostTitles',
+				'mt.getPostCategories'    => 'this:mtGetPostCategories',
+				'mt.setPostCategories'    => 'this:mtSetPostCategories',
+				'mt.supportedMethods'     => 'this:mtSupportedMethods',
+				'mt.supportedTextFilters' => 'this:mtSupportedTextFilters',
+				'mt.getTrackbackPings'    => 'this:mtGetTrackbackPings',
+				'mt.publishPost'          => 'this:mtPublishPost',
+			*/
+			);
 		}
 
 		// PingBack
@@ -143,6 +165,216 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 
 		$this->IXR_Server( array_merge($blggr, $mw, $mt, $pb, $demo) );
 	}
+	
+	
+	/***********************************************
+	 *
+	 * Blogger
+	 *
+	 **********************************************/
+
+	/**
+	 * creates a new post and optionally publishes it using the blogger API
+	 *
+	 * @param	array		array of arguments: [0]postId, [1]blogId, [2]username, [3]password
+	 * @return	string		the posts id
+	 */
+	function blggrNewPost($args) {
+		$this->escape($args);
+		$appKey   = $args[0]; //unused
+		$blogId   = $args[1];
+		$username = $args[2];
+		$password = $args[3];
+		$content  = $args[4];
+		$publish  = (int) !$args[5];
+		$this->status = 'new';
+
+		if(!$this->authUser($username, $password)) {
+			return new IXR_Error(403, 'Not authorized: Bad username/password combination.');
+		}
+
+		//TODO use helper functions to get title and category
+		$title      = $this->getBlggrTitle($content);
+		$categories = $this->getBlggrCategory($content);
+		$content    = $this->cleanBlggrPost($content);
+		
+		$time = time();
+		$insertFields = array(
+			'pid'      => $this->conf['pidStorePosts'],
+			'hidden'   => $publish,
+			'title'    => $title,
+			'bodytext' => $this->transformContent('db', $content),
+			'author'   => $username,
+			'tstamp'   => $time,
+			'crdate'   => $time,
+			'datetime' => $time,
+			'type'     => 3,
+		);
+
+		//processing of trackbacks
+		$this->tbDiscovery($insertFields, 0);
+
+		$GLOBALS['TYPO3_DB']->exec_INSERTquery('tt_news', $insertFields);
+		$insertFields['uid'] = $insertId = $GLOBALS['TYPO3_DB']->sql_insert_id();
+
+		if(!$insertId) {
+			return new IXR_Error(500, 'Sorry, your entry could not be posted. Something wrong happened.');
+		}
+
+		//processing of trackbacks
+		$this->tbSendPings($insertFields);
+		
+		$this->setPostCategories($insertId, $categories);
+
+		//TODO handle pingbacks
+
+		$this->clearPageCache();
+		
+		return strval($insertId);
+	}
+
+	/**
+	 * edits an existing post and optionally publishes it using the blogger API
+	 *
+	 * @param	array		array of arguments: [0]appKey, [1]postId, [2]username, [3]password, [4]numberOfPosts, [5]content, [6]publish
+	 * @return	boolean
+	 */
+	function blggrEditPost($args) {
+		$this->escape($args);
+		$appKey   = $args[0]; //unused
+		$postId   = $args[1];
+		$username = $args[2];
+		$password = $args[3];		
+		$content  = $args[4];
+		$publish  = (int) !$args[5];
+		$this->status = 'update';
+
+		if(!$this->authUser($username, $password)) {
+			return new IXR_Error(403, 'Not authorized: Bad username/password combination.');
+		}
+		
+		$title      = $this->getBlggrTitle($content);
+		$categories = $this->getBlggrCategory($content);
+		$content    = $this->cleanBlggrPost($content);
+		
+		$updateFields = array(
+			'hidden'   => $publish,
+			'title'    => addslashes($title),
+			'bodytext' => $this->transformContent('db', $content),
+			'author'   => '', //$username, //let's see what we can do with the author field
+			'tstamp'   => time(),
+		);
+
+		//processing of trackbacks
+		$this->tbDiscovery($updateFields, $postId);
+
+		$res = $GLOBALS['TYPO3_DB']->exec_UPDATEquery(
+			'tt_news',
+			'uid = '.$GLOBALS['TYPO3_DB']->fullQuoteStr($postId, 'tt_news'),
+			$updateFields
+		);
+
+		if(!$res) {
+			return new IXR_Error(500, 'Internal Server Error. Couldn\'t connect to database.');
+		}
+
+		$this->setPostCategories($postId, $categories);
+
+		//processing of trackbacks
+		$updateFields['uid'] = $postId;
+		$this->tbSendPings($updateFields);
+		
+		//TODO handle pingbacks
+		
+		$this->clearPageCache();
+		
+		return true;
+	}
+
+	/**
+	 * deletes a post from the server (actually marks it deleted) using the blogger API
+	 *
+	 * @param	array		array of arguments: [0]appKey, [1]postId, [2]username, [3]password
+	 * @return	boolean
+	 */
+	function blggrDeletePost($args) {
+		$this->escape($args);
+		$appKey   = $args[0]; //unused
+		$postId   = $args[1];
+		$username = $args[2];
+		$password = $args[3];
+
+		if(!$this->authUser($username, $password)) {
+			return new IXR_Error(403, 'Not authorized: Bad username/password combination.');
+		}
+
+		$res = $GLOBALS['TYPO3_DB']->exec_UPDATEquery(
+			'tt_news',
+			'uid = '.$GLOBALS['TYPO3_DB']->fullQuoteStr($postId, 'tt_news'),
+			array('deleted' => 1)
+		);
+
+		if(!$res) {
+			return new IXR_Error(500, 'Internal Server Error. Couldn\'t connect to database.');
+		}
+
+		return '';
+	}
+
+	/**
+	 * retrieves a list of weblogs for which a user has posting privileges
+	 * using the blogger API
+	 *
+	 * @param	array		array of arguments: [0]appKey, [1]username, [2]password
+	 * @return	array
+	 */
+	function blggrGetUsersBlogs($args) {
+		$this->escape($args);
+		$appKey   = $args[0]; //unused
+		$username = $args[1];
+		$password = $args[2];
+
+		if(!$this->authUser($username, $password)) {
+			return new IXR_Error(403, 'Not authorized: Bad username/password combination.');
+		}
+
+		$struct = array(
+			'url'      => $this->conf['homepage'],
+			'blogid'   => '1', //hardcoded, no multiple blogs supported yet
+			'blogName' => $this->conf['title']
+		);
+
+		return array($struct);
+	}
+
+	/**
+	 * retrieves information about a blog author using the blogger API
+	 *
+	 * @param	array		array of arguments: [0]appKey, [1]username, [2]password
+	 * @return	struct
+	 */
+	function blggrGetUserInfo($args) {
+		$this->escape($args);
+		$appKey   = $args[0]; //unused
+		$username = $args[1];
+		$password = $args[2];
+
+		if(!$this->authUser($username, $password)) {
+			return new IXR_Error(403, 'Not authorized: Bad username/password combination.');
+		}
+
+		$struct = array(
+			'userid'    => '',
+			'firstname' => '',
+			'lastname'  => '',
+			'nickname'  => '',
+			'email'     => '',
+			'url'       => ''
+		);
+
+		return $struct;
+	}
+	
 
 	/***********************************************
 	 *
@@ -167,7 +399,7 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 
 		if(!$this->authUser($username, $password)) {
 			return new IXR_Error(403, 'Not authorized: Bad username/password combination.');
-		}	
+		}
 
 		$time = time();
 		$insertFields = array(
@@ -181,23 +413,26 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 			'datetime' => $time,
 			'type'     => 3,
 		);
-		
+
 		//processing of trackbacks
 		$this->tbDiscovery($insertFields, 0);
-		
+
 		$GLOBALS['TYPO3_DB']->exec_INSERTquery('tt_news', $insertFields);
 		$insertFields['uid'] = $insertId = $GLOBALS['TYPO3_DB']->sql_insert_id();
-		
+
 		if(!$insertId) {
 			return new IXR_Error(500, 'Sorry, your entry could not be posted. Something wrong happened.');
 		}
-		
+
 		//processing of trackbacks
 		$this->tbSendPings($insertFields);
 
 		$this->setPostCategories($insertId, $args[3]['categories']);
 		
 		//TODO handle pingbacks
+		
+		$this->clearPageCache();
+		
 		return strval($insertId);
 	}
 
@@ -227,7 +462,7 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 			'author'   => '', //$username, //let's see what we can do with the author field
 			'tstamp'   => time(),
 		);
-		
+
 		//processing of trackbacks
 		$this->tbDiscovery($updateFields, $postId);
 
@@ -236,16 +471,18 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 			'uid = '.$GLOBALS['TYPO3_DB']->fullQuoteStr($postId, 'tt_news'),
 			$updateFields
 		);
-				
+
 		if(!$res) {
 			return new IXR_Error(500, 'Internal Server Error. Couldn\'t connect to database.');
 		}
-				
+
 		$this->setPostCategories($postId, $args[3]['categories']);
-		
+
 		//processing of trackbacks
 		$updateFields['uid'] = $postId;
 		$this->tbSendPings($updateFields);
+
+		//TODO handle pingbacks
 
 		$this->clearPageCache();
 
@@ -400,9 +637,9 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 			//we need the reverse order of the DB result
 			$recent_posts = array();
 			foreach($struct as $post) {
-				$recent_posts[] = $post;	
+				$recent_posts[] = $post;
 			}
-			
+
 			return $recent_posts;
 		} else {
 			return new IXR_Error(100, 'No Posts available');
@@ -424,10 +661,10 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 		if(!$this->authUser($username, $password)) {
 			return new IXR_Error(403, 'Not authorized: Bad username/password combination.');
 		}
-		
+
 		if(!$this->conf['enableUploads']) {
 			return new IXR_Error(405, 'No uploads allowed for this site.');
-		} 
+		}
 
 		if( t3lib_div::validPathStr($data['name']) ) {
 			$filename = t3lib_div::getFileAbsFileName( $GLOBALS['TYPO3_CONF_VARS']['BE']['RTE_imageStorageDir'].substr($data['name'],1) );
@@ -443,147 +680,17 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 			return array('url' => t3lib_div::getIndpEnv('TYPO3_SITE_URL').$filename);
 		}
 	}
-
-	/***********************************************
-	 *
-	 * Blogger
-	 *
-	 **********************************************/
-
-	/**
-	 * creates a new post and optionally publishes it using the blogger API
-	 *
-	 * @param	array		array of arguments: [0]postId, [1]blogId, [2]username, [3]password
-	 * @return	string
-	 */
-	function blggrNewPost($args) {
-		$this->escape($args);
-		$appKey   = $args[0]; //unused
-		$blogId   = $args[1];
-		$username = $args[2];
-		$password = $args[3];
-		$this->status = 'new';
-
-		if(!$this->authUser($username, $password)) {
-			return new IXR_Error(403, 'Not authorized: Bad username/password combination.');
-		}
-	}
-
-	/**
-	 * edits an existing post and optionally publishes it using the blogger API
-	 *
-	 * @param	array		array of arguments: [0]appKey, [1]postId, [2]username, [3]password, [4]numberOfPosts, [5]content, [6]publish
-	 * @return	boolean
-	 */
-	function blggrEditPost($args) {
-		$this->escape($args);
-		$appKey   = $args[0]; //unused
-		$postId   = $args[1];
-		$username = $args[2];
-		$password = $args[3];
-		$numPosts = $args[4];
-		$content  = $args[5];
-		$publish  = (int) !$args[6];
-		$this->status = 'update';
-
-		if(!$this->authUser($username, $password)) {
-			return new IXR_Error(403, 'Not authorized: Bad username/password combination.');
-		}
-	}
-
-	/**
-	 * deletes a post from the server (actually marks it deleted) using the blogger API
-	 *
-	 * @param	array		array of arguments: [0]appKey, [1]postId, [2]username, [3]password
-	 * @return	boolean
-	 */
-	function blggrDeletePost($args) {
-		$this->escape($args);
-		$appKey   = $args[0]; //unused
-		$postId   = $args[1];
-		$username = $args[2];
-		$password = $args[3];
-
-		if(!$this->authUser($username, $password)) {
-			return new IXR_Error(403, 'Not authorized: Bad username/password combination.');
-		}
-
-		$res = $GLOBALS['TYPO3_DB']->exec_UPDATEquery(
-			'tt_news',
-			'uid = '.$GLOBALS['TYPO3_DB']->fullQuoteStr($postId, 'tt_news'),
-			array('deleted' => 1)
-		);
-
-		if(!$res) {
-			return new IXR_Error(500, 'Internal Server Error. Couldn\'t connect to database.');
-		}
-
-		return '';
-	}
-
-	/**
-	 * retrieves a list of weblogs for which a user has posting privileges
-	 * using the blogger API
-	 *
-	 * @param	array		array of arguments: [0]appKey, [1]username, [2]password
-	 * @return	array
-	 */
-	function blggrGetUsersBlogs($args) {
-		$this->escape($args);
-		$appKey   = $args[0]; //unused
-		$username = $args[1];
-		$password = $args[2];
-
-		if(!$this->authUser($username, $password)) {
-			return new IXR_Error(403, 'Not authorized: Bad username/password combination.');
-		}
-
-		$struct = array(
-			'url'      => $this->conf['homepage'],
-			'blogid'   => '1', //hardcoded, no multiple blogs supported yet
-			'blogName' => $this->conf['title']
-		);
-
-		return array($struct);
-	}
-
-	/**
-	 * retrieves information about a blog author using the blogger API
-	 *
-	 * @param	array		array of arguments: [0]appKey, [1]username, [2]password
-	 * @return	struct
-	 */
-	function blggrGetUserInfo($args) {
-		$this->escape($args);
-		$appKey   = $args[0]; //unused
-		$username = $args[1];
-		$password = $args[2];
-
-		if(!$this->authUser($username, $password)) {
-			return new IXR_Error(403, 'Not authorized: Bad username/password combination.');
-		}
-
-		$struct = array(
-			'userid' => '',
-			'firstname' => '',
-			'lastname' => '',
-			'nickname' => '',
-			'email' => '',
-			'url' => ''
-		);
-
-		return $struct;
-	}
 	
+
 	/***********************************************
 	 *
 	 * Trackback
 	 *
 	 **********************************************/
-	
+
 	/**
-	 * pre processing of posts, detecting trackback URLs and saving them into 
-	 * $fieldsArray so that they get stored into the DB and we can ping them 
+	 * pre processing of posts, detecting trackback URLs and saving them into
+	 * $fieldsArray so that they get stored into the DB and we can ping them
 	 * afterwards when the INSERT query was successfull
 	 *
 	 * @param	array		$fieldArray: ...
@@ -594,10 +701,10 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 		//initialize processing of trackbacks
 		$tbObj = t3lib_div::makeInstance('tx_timtab_trackback');
 		$tbObj->init($this, $fieldArray);
-		
+
 		$newTbURLs = '';
 		$foundURLs = $tbObj->tbAutoDiscovery($fieldArray['bodytext']);
-					
+
 		if($foundURLs && $this->status == 'update') {
 			//update a post, find new trackbacks
 			$tbField = '';
@@ -606,16 +713,16 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 			} else {
 				$tt_news = $this->getCurrentPost($id);
 				$tbField = $tt_news['tx_timtab_trackbacks'];
-			}					
+			}
 			$oldTBarray = t3lib_div::trimExplode("\n", $tbField);
-			
+
 			$temp = array();
 			foreach($oldTBarray as $TB) {
 				$parts = explode('|', $TB);
-				$temp[] = (string) trim($parts[0]);	
+				$temp[] = (string) trim($parts[0]);
 			}
 			//extract new TBs
-			$newTBarray = array_diff($foundURLs, $temp);					
+			$newTBarray = array_diff($foundURLs, $temp);
 
 			unset($TB);
 			reset($oldTBarray);
@@ -630,16 +737,16 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 			$newTbURLs = trim($oldTBs.$newTbURLs);
 
 		} elseif($foundURLs && $this->status == 'new') {
-			//creating a new post			
+			//creating a new post
 			foreach($foundURLs as $url) {
 				$newTbURLs .= $url.'|0|new'.chr(10);
 			}
 			$newTbURLs = trim($newTbURLs);
 		}
 
-		$fieldArray['tx_timtab_trackbacks'] = $newTbURLs;		
+		$fieldArray['tx_timtab_trackbacks'] = $newTbURLs;
 	}
-	
+
 	/**
 	 * post processing of blog posts, sending pings
 	 *
@@ -650,13 +757,13 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 		$tbObj = t3lib_div::makeInstance('tx_timtab_trackback');
 		$tbObj->init($this, $fieldArray);
 		$TBstatus = $tbObj->getTrackbackStatus($fieldArray['tx_timtab_trackbacks'], $this->status);
-					
+
 		if(is_array($TBstatus)) {
 			foreach($TBstatus as $k => $TB) {
 				// Attempt to ping each trackback URL
 				if(!empty($TB['url']) && $TB['status'] == 0) {
 					$result = $tbObj->ping($TB['url']);
-					if($result[0]) { 
+					if($result[0]) {
 						//success
 						$TBstatus[$k]['status'] = 1;
 						unset($TBstatus[$k]['reason']);
@@ -664,10 +771,10 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 						//failed
 						$TBstatus[$k]['reason'] = $result[1];
 					}
-				}	
-			}				
+				}
+			}
 		}
-					
+
 		//update trackback status in tt_news record
 		$GLOBALS['TYPO3_DB']->exec_UPDATEquery(
 			'tt_news',
@@ -675,6 +782,7 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 			array('tx_timtab_trackbacks' => $tbObj->setTrackbackStatus($TBstatus))
 		);
 	}
+
 
 	/***********************************************
 	 *
@@ -690,7 +798,6 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 	 */
 	function pbPing($args) {
 		$this->escape($args);
-		//taken from wordpress
 
 
 	}
@@ -703,8 +810,9 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 	 */
 	function pbGetPingbacks($args) {
 		$this->escape($args);
-		
+
 	}
+
 
 	/***********************************************
 	 *
@@ -735,6 +843,7 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 
 		return $number1 + $number2;
 	}
+
 
 	/***********************************************
 	 *
@@ -770,11 +879,11 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 
 		return $categories;
 	}
-	
+
 	/**
 	 * sets the categories for a post - since we are working in the FE scope we
 	 * cannot use TCE which would handle this automaticly.
-	 * 
+	 *
 	 * @param	integer		the post ID to set the categories for
 	 * @param	array		an array of category to assign to the post
 	 * @return	void
@@ -789,28 +898,28 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 				'tt_news_cat',
 				'deleted = 0 '.$where
 			);
-		
+
 			$cats_new = array();
 			while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 					$cats_new[] = $row['uid'];
 			}
 			unset($row, $res, $where);
-			
+
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 				'uid_foreign',
 				'tt_news_cat_mm',
 				'uid_local = '.$GLOBALS['TYPO3_DB']->fullQuoteStr($postId, 'tt_news_cat_mm')
 			);
-			
+
 			$cats_old = array();
 			while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 				$cats_old[] = $row['uid_foreign'];
 			}
 			unset($row, $res);
-			
+
 			$add_cats = array_diff($cats_new, $cats_old);
 			$rmv_cats = array_diff($cats_old, $cats_new);
-			
+
 			//add new categories
 			foreach($add_cats as $cat) {
 				$GLOBALS['TYPO3_DB']->exec_INSERTquery(
@@ -820,19 +929,19 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 						'uid_foreign' => $cat,
 						'sorting'     => 1
 					)
-				);	
+				);
 			}
 			unset($cat);
-			
-			//remove categories which are not assigned to the post anymore			
+
+			//remove categories which are not assigned to the post anymore
 			foreach($rmv_cats as $cat) {
 				$GLOBALS['TYPO3_DB']->exec_DELETEquery(
 					'tt_news_cat_mm',
 					'uid_local = '.$GLOBALS['TYPO3_DB']->fullQuoteStr($postId, 'tt_news_cat_mm').
 						' AND uid_foreign = '.$GLOBALS['TYPO3_DB']->fullQuoteStr($cat, 'tt_news_cat_mm')
-				);	
-			}	
-		}	
+				);
+			}
+		}
 	}
 
 	/**
@@ -855,7 +964,9 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 		//auth user
 		$accessOK = $auth->authUser();
 		#$authOK   = $this->xmlrpcUser->check('tables_modify', 'tt_news');
+		
 		$authOK   = true;	//TODO $this->xmlrpcUser needs to be an object to check table permissions
+		
 		#$isObj    = is_object($this->xmlrpcUser); //false, but needs to be true
 
 		return $accessOK && $authOK;
@@ -878,9 +989,9 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 		$field      = 'bodytext';
 		$pid        = $this->conf['pidStorePosts'];
 		$RTErelPath = '';
-		
+
 		if($dirRTE == 'db') {
-			$value = stripslashes($value);	
+			$value = stripslashes($value);
 		}
 
 		//start getting $specConf --- taken from t3lib_BEfunc::getTCAtypes()
@@ -918,11 +1029,11 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 
 		return $value;
 	}
-	
+
 	/**
 	 * gets the current tt_news record we are working on
-	 * 
-	 * @param	integer	the tt_news uid of the record we want to get
+	 *
+	 * @param	integer		the tt_news uid of the record we want to get
 	 * @return	array
 	 */
 	function getCurrentPost($tt_news_uid) {
@@ -934,12 +1045,13 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
  		);
  		return $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
 	}
-	
+
 	/**
 	 * escapes an array of key => value pairs
+	 *
 	 * taken from wordpress, thanks!
-	 * 
-	 * @param	array	array of key => value pairs to escape
+	 *
+	 * @param	array		array of key => value pairs to escape
 	 * @return	void
 	 */
 	function escape(&$array) {
@@ -953,11 +1065,11 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 			}
 		}
 	}
-	
+
 	/**
 	 * explicitly clears cache for the blog page as it is not updating sometimes
-	 * 
-	 * @return void
+	 *
+	 * @return	void
 	 */
 	function clearPageCache() {
 		$tce = t3lib_div::makeInstance('t3lib_TCEmain');
@@ -967,7 +1079,65 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 		foreach($clearCachePages as $page) {
 			$tce->clear_cacheCmd($page);
 		}
-		$tce->admin = 0;	
+		$tce->admin = 0;
+	}
+
+	/**
+	 * as the blogger API doesn't support title directly we'll get it from the
+	 * post content surrounded by a <title> tag
+	 *
+	 * original taken from wordpress, thanks!
+	 *
+	 * @param	string		the posts content
+	 * @return	string		the posts title if found, a default title otherwise
+	 */
+	function getBlggrTitle($content) {
+		$matchtitle = array();
+		$title      = $this->conf['bloggerTitle'];
+
+		if (preg_match('/<title>(.+?)<\/title>/is', $content, $matchtitle)) {
+			$title = $matchtitle[0];
+
+			//TODO replace with substr()
+			$title = preg_replace('/<title>/si', '', $title);
+			$title = preg_replace('/<\/title>/si', '', $title);
+		}
+
+		return $title;
+	}
+
+	/**
+	 * the blogger API doesn't support categories, but if we find a <category>
+	 * tag in the content of the post we will use the categories found enclosed
+	 * by it
+	 *
+	 * original taken from wordpress, thanks!
+	 *
+	 * @param	string		the posts content
+	 * @return	array		array of category names
+	 */
+	function getBlggrCategory($content) {
+		$matchcat = $category = array();
+
+		if (preg_match('/<category>(.+?)<\/category>/is', $content, $matchcat)) {
+			$category = trim($matchcat[1], ',');
+			$category = explode(',', $category);
+		}
+
+		return $category;
+	}
+
+	/**
+	 * cleans a blogger Post from possible <title> and <category> tags
+	 * 
+	 * @param	string		the blogger post
+	 * @return	string		the blogger post without <title> and <category> tags
+	 */
+	function cleanBlggrPost($content) {		
+		$content = preg_replace('/<title>.+?<\/title>/si', '', $content);
+		$content = preg_replace('/<category>.+?<\/category>/si', '', $content);
+		
+		return trim($content);
 	}
 }
 
