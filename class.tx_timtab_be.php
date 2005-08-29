@@ -100,7 +100,7 @@ class tx_timtab_be {
 
 	/**
 	 * initializes the configuration for the extension as we need the TS setup
-	 * like blog title and timouts for trackback in the BE, too
+	 * like blog title and timeouts for trackback in the BE, too
 	 *
 	 * @return	void
 	 */
@@ -253,6 +253,8 @@ class tx_timtab_be {
 				array('tx_timtab_trackbacks' => $tbObj->setTrackbackStatus($TBstatus))
 			);
 			//end processing trackbacks
+			
+			$this->clearPageCache();
 		}
 	}
 	
@@ -289,6 +291,23 @@ class tx_timtab_be {
 		}
 
 		return $result;
+	}
+	
+	/**
+	 * explicitly clears cache for the blog page as it is not updating sometimes
+	 * 
+	 * @return void
+	 */
+	function clearPageCache() {
+		//TODO put this in a class timtab_lib
+		$tce = t3lib_div::makeInstance('t3lib_TCEmain');
+		$tce->admin = 1;
+
+		$clearCachePages = split(',', $this->conf['clearPageCacheOnUpdate']);
+		foreach($clearCachePages as $page) {
+			$tce->clear_cacheCmd($page);
+		}
+		$tce->admin = 0;	
 	}
 }
 
