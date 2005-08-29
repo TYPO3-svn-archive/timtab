@@ -1,3 +1,13 @@
+2005-08-29	Ingo Renner  <typo3@ingo-renner.com>
+
+	* CHG disabled not working and not well tested options for first release
+	* CHG changed the way user information is stored in cookies	
+	* RMV removed unused markers in tx_timtab_fe
+	* ADD added blogger.newPost and blogger.EditPost
+	* ADD Kubrick now remembers the users name, email and homepage
+	* ADD first explainations in manual
+	* ADD added german translations
+	
 2005-08-24	Ingo Renner  <typo3@ingo-renner.com>
 
 	* ADD timtab now remembers the name, e-mail and homepage when someone leaves a comment
