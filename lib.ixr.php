@@ -453,20 +453,19 @@ class IXR_Request {
     function IXR_Request($method, $args) {
         $this->method = $method;
         $this->args = $args;
-        $this->xml = <<<EOD
-<?xml version="1.0"?>
+        $this->xml = 
+'<?xml version="1.0"?>
 <methodCall>
-<methodName>{$this->method}</methodName>
-<params>
-
-EOD;
+	<methodName>'.$this->method.'</methodName>
+	<params>';
         foreach ($this->args as $arg) {
-            $this->xml .= '<param><value>';
+            $this->xml .= '		<param><value>';
             $v = new IXR_Value($arg);
             $this->xml .= $v->getXml();
-            $this->xml .= "</value></param>\n";
+            $this->xml .= '		</value></param>'.chr(10);
         }
-        $this->xml .= '</params></methodCall>';
+        $this->xml .= '	</params>' .
+        			  '</methodCall>';
     }
     function getLength() {
         return strlen($this->xml);
@@ -602,25 +601,23 @@ class IXR_Error {
         $this->message = $message;
     }
     function getXml() {
-        $xml = <<<EOD
-<methodResponse>
+        $xml = 
+'<methodResponse>
   <fault>
     <value>
       <struct>
         <member>
           <name>faultCode</name>
-          <value><int>{$this->code}</int></value>
+          <value><int>'.$this->code.'</int></value>
         </member>
         <member>
           <name>faultString</name>
-          <value><string>{$this->message}</string></value>
+          <value><string>'.$this->message.'</string></value>
         </member>
       </struct>
     </value>
   </fault>
-</methodResponse> 
-
-EOD;
+</methodResponse>';
         return $xml;
     }
 }
