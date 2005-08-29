@@ -351,9 +351,9 @@ class tx_timtab_trackback {
 	 */
 	function getTrackbackLink() {
 		$urlParameters = array(
-		/*	'tx_ttnews[year]'    => date('Y', $this->tt_news['datetime']),
+			'tx_ttnews[year]'    => date('Y', $this->tt_news['datetime']),
 			'tx_ttnews[month]'   => date('m', $this->tt_news['datetime']),
-			'tx_ttnews[day]'     => date('d', $this->tt_news['datetime']),	*/
+			'tx_ttnews[day]'     => date('d', $this->tt_news['datetime']),	
 			'tx_ttnews[tt_news]' => $this->tt_news['uid'],
 			'type'               => 200,
 			'tx_timtab_pi2[trackback]' => 1
