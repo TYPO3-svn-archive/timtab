@@ -181,7 +181,7 @@ page {
     removeDefaultJS = external
 
     # advertise that we can receive Pingback
-    additionalHeaders = X-Pingback: {$plugin.tx_timtab.homepage}/?type=200
+    #additionalHeaders = X-Pingback: {$plugin.tx_timtab.homepage}/?type=200
 
     # Admin Panel
     admPanel = 1
