@@ -149,7 +149,6 @@ class tx_timtab_fe extends tslib_pibase {
 			$this->markerArray['###BLOG_TRACKBACK_LINK###'] = $tbLink;
 			
 			//misc
-			$this->markerArray['###BLOG_TEXT_CAT###'] = $this->pi_getLL('textCat');
 			$this->markerArray['###BLOG_POST_TITLE###'] = $this->buildPostTitle($this->conf['data']['title']);
 		} elseif($this->calledBy == 've_guestbook') {
 			
@@ -170,7 +169,6 @@ class tx_timtab_fe extends tslib_pibase {
 			$this->markerArray['###BLOG_MAIL###'] = $this->pi_getLL('commentMail');
 			$this->markerArray['###BLOG_HOMEPAGE###'] = $this->pi_getLL('commentURL');
 			
-			$this->markerArray['###BLOG_COMMENT_UID###'] = $this->conf['data']['uid'];
 			$this->markerArray['###BLOG_COMMENTS_COUNT###'] = $this->pObj->internal['res_count'];
 			if($this->pObj->internal['res_count'] == 1) {
 				$this->markerArray['###BLOG_RESPONSES###']	= $this->pi_getLL('one_response');
@@ -202,11 +200,11 @@ class tx_timtab_fe extends tslib_pibase {
 			$this->markerArray['###BLOG_REMEMBER_VISITOR###'] = $this->pi_getLL('rememberInfo');			
 		
 			if(isset($_COOKIE['comment_info'])) {
-				$userInfo = unserialize($_COOKIE['comment_info']);
+				$userInfo = explode('|', $_COOKIE['comment_info']);
 								
-				$this->markerArray['###VALUE_FIRSTNAME###'] = $userInfo['name'];
-				$this->markerArray['###VALUE_EMAIL###']     = $userInfo['email'];
-				$this->markerArray['###VALUE_HOMEPAGE###']  = $userInfo['www'];
+				$this->markerArray['###VALUE_FIRSTNAME###'] = $userInfo[0];
+				$this->markerArray['###VALUE_EMAIL###']     = $userInfo[1];
+				$this->markerArray['###VALUE_HOMEPAGE###']  = $userInfo[2];
 			}		
 			
 		}
@@ -249,20 +247,17 @@ class tx_timtab_fe extends tslib_pibase {
 	 * @return	string		title, ready for output
 	 */
 	function buildPostTitle($title) {
-		#debug($this->conf['data']);
-		#debug($this->markerArray);
 		$addParams  = '&tx_ttnews[tt_news]='.$this->conf['data']['uid'];
 		$addParams .= '&tx_ttnews[year]='.$this->pObj->piVars['year'];
 		$addParams .= '&tx_ttnews[month]='.$this->pObj->piVars['month'];
 		$addParams .= '&tx_ttnews[day]='.$this->pObj->piVars['day'];
 		
-		#debug($this->pObj->categories);
 		$conf = array(
-			'parameter' => $GLOBALS['TSFE']->id,
-			'ATagParams' => 'rel="bookmark" title="Permanent Link: '.$title.'"',
+			'parameter'        => $GLOBALS['TSFE']->id,
+			'ATagParams'       => 'rel="bookmark" title="Permanent Link: '.$title.'"',
 			'additionalParams' => $addParams,
-			'no_cache' => $this->pObj->allowCaching?0:1,
-			'useCacheHash' => $this->pObj->allowCaching,
+			'no_cache'         => $this->pObj->allowCaching?0:1,
+			'useCacheHash'     => $this->pObj->allowCaching,
 		);
 
 		return $this->cObj->typolink($title, $conf);
@@ -348,11 +343,11 @@ class tx_timtab_fe extends tslib_pibase {
 		$rememberVal = $rememberArr['remember_visitor'];
 		
 		if (!$this->dontSetCookie && $rememberVal) {
-			$userInfo = serialize(
+			$userInfo = implode('|',
 				array(
-					'name' => $pObj->postvars['firstname'],
-					'email' => $pObj->postvars['email'],
-					'www' => $pObj->postvars['homepage'],
+					$pObj->postvars['firstname'],
+					$pObj->postvars['email'],
+					$pObj->postvars['homepage'],
 				)
 			);
 			
