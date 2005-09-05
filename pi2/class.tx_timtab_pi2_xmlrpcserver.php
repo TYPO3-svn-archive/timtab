@@ -35,48 +35,50 @@
  *
  *
  *
- *   93: class tx_timtab_pi2_xmlrpcServer extends IXR_Server
- *   98:     function tx_timtab_pi2_xmlrpcServer(&$pObj)
- *
- *              SECTION: MetaWeblog
- *  181:     function mwNewPost($args)
- *  232:     function mwEditPost($args)
- *  283:     function mwGetPost($args)
- *  328:     function mwGetCategories($args)
- *  385:     function mwGetRecentPosts($args)
- *  440:     function mwNewMediaObject($args)
+ *   95: class tx_timtab_pi2_xmlrpcServer extends IXR_Server
+ *  100:     function tx_timtab_pi2_xmlrpcServer(&$pObj)
  *
  *              SECTION: Blogger
- *  481:     function blggrNewPost($args)
- *  533:     function blggrEditPost($args)
- *  555:     function blggrDeletePost($args)
- *  586:     function blggrGetUsersBlogs($args)
- *  611:     function blggrGetUserInfo($args)
+ *  185:     function blggrNewPost($args)
+ *  245:     function blggrEditPost($args)
+ *  303:     function blggrDeletePost($args)
+ *  334:     function blggrGetRecentPosts($args)
+ *  396:     function blggrGetUsersBlogs($args)
+ *  421:     function blggrGetUserInfo($args)
+ *
+ *              SECTION: MetaWeblog
+ *  456:     function mwNewPost($args)
+ *  510:     function mwEditPost($args)
+ *  563:     function mwGetPost($args)
+ *  608:     function mwGetCategories($args)
+ *  665:     function mwGetRecentPosts($args)
+ *  720:     function mwNewMediaObject($args)
  *
  *              SECTION: Trackback
- *  648:     function tbDiscovery(&$fieldArray, $id)
- *  704:     function tbSendPings($fieldArray)
+ *  765:     function tbDiscovery(&$fieldArray, $id)
+ *  821:     function tbSendPings($fieldArray)
  *
  *              SECTION: Pingback
- *  746:     function pbPing($args)
- *  759:     function pbGetPingbacks($args)
+ *  864:     function pbPing($args)
+ *  876:     function pbGetPingbacks($args)
  *
  *              SECTION: Demo
- *  776:     function demoSayHello($args)
- *  786:     function demoAddTwoNumbers($args)
+ *  894:     function demoSayHello($args)
+ *  904:     function demoAddTwoNumbers($args)
  *
  *              SECTION: non webservices
- *  806:     function getPostCategories($postId)
- *  837:     function setPostCategories($postId, $cats_xmlrpc)
- *  900:     function authUser($username, $password)
- *  929:     function transformContent($dirRTE, $value)
- *  983:     function getCurrentPost($tt_news_uid)
- * 1001:     function escape(&$array)
- * 1018:     function clearPageCache()
- * 1038:     function getBlggrTitle($content)
- * 1063:     function getBlggrCategory($content)
+ *  925:     function getPostCategories($postId)
+ *  956:     function setPostCategories($postId, $cats_xmlrpc)
+ * 1019:     function authUser($username, $password)
+ * 1050:     function transformContent($dirRTE, $value)
+ * 1104:     function getCurrentPost($tt_news_uid)
+ * 1122:     function escape(&$array)
+ * 1139:     function clearPageCache()
+ * 1159:     function getBlggrTitle($content)
+ * 1184:     function getBlggrCategory($content)
+ * 1201:     function cleanBlggrPost($content)
  *
- * TOTAL FUNCTIONS: 27
+ * TOTAL FUNCTIONS: 29
  * (This index is automatically created/updated by the extension "extdeveval")
  *
  */
@@ -139,7 +141,8 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 		$mt = array();
 		if($this->conf['enableMovableType']) {
 			$mt = array(
-			/* planed, but nothing implemented yet
+			//FIXME implement MovableType API
+			/* planed, but nothing implemented yet			 
 				'mt.getCategoryList'      => 'this:mtGetCategoryList',
 				'mt.getRecentPostTitles'  => 'this:mtGetRecentPostTitles',
 				'mt.getPostCategories'    => 'this:mtGetPostCategories',
@@ -166,8 +169,8 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 
 		$this->IXR_Server( array_merge($blggr, $mw, $mt, $pb, $demo) );
 	}
-	
-	
+
+
 	/***********************************************
 	 *
 	 * Blogger
@@ -198,7 +201,7 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 		$title      = $this->getBlggrTitle($content);
 		$categories = $this->getBlggrCategory($content);
 		$content    = $this->cleanBlggrPost($content);
-		
+
 		$time = time();
 		$insertFields = array(
 			'pid'      => $this->conf['pidStorePosts'],
@@ -224,13 +227,13 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 
 		//processing of trackbacks
 		$this->tbSendPings($insertFields);
-		
+
 		$this->setPostCategories($insertId, $categories);
 
 		//TODO handle pingbacks
 
 		$this->clearPageCache();
-		
+
 		return strval($insertId);
 	}
 
@@ -245,7 +248,7 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 		$appKey   = $args[0]; //unused
 		$postId   = $args[1];
 		$username = $args[2];
-		$password = $args[3];		
+		$password = $args[3];
 		$content  = $args[4];
 		$publish  = (int) !$args[5];
 		$this->status = 'update';
@@ -253,11 +256,11 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 		if(!$this->authUser($username, $password)) {
 			return new IXR_Error(403, 'Not authorized: Bad username/password combination.');
 		}
-		
+
 		$title      = $this->getBlggrTitle($content);
 		$categories = $this->getBlggrCategory($content);
 		$content    = $this->cleanBlggrPost($content);
-		
+
 		$updateFields = array(
 			'hidden'   => $publish,
 			'title'    => addslashes($title),
@@ -284,11 +287,11 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 		//processing of trackbacks
 		$updateFields['uid'] = $postId;
 		$this->tbSendPings($updateFields);
-		
+
 		//TODO handle pingbacks
-		
+
 		$this->clearPageCache();
-		
+
 		return true;
 	}
 
@@ -321,11 +324,11 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 
 		return '';
 	}
-	
+
 	/**
 	 * undocumented but existing blogger method
 	 * gets the last $numPost posts
-	 * 
+	 *
 	 * @param	array		array of arguments: [0]appKey, [1]blogId, [2]username, [3]password, [4]numberOfPosts
 	 * @return	array		$numPosts last posts
 	 */
@@ -336,11 +339,11 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 		$username = $args[2];
 		$password = $args[3];
 		$numPosts = $args[4];
-		
+
 		if(!$this->authUser($username, $password)) {
 			return new IXR_Error(403, 'Not authorized: Bad username/password combination.');
 		}
-		
+
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'uid, datetime, title, bodytext, category',
 			'tt_news',
@@ -355,14 +358,14 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 		}
 
 		if($GLOBALS['TYPO3_DB']->sql_num_rows($res) > 0) {
-			while($post = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {				
+			while($post = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 				$catArray   = $this->getPostCategories($post['uid']);
 				$categories = implode(', ', $catArray);
-				
+
 				$content  = '<title>'.$post['title'].'</title>';
 				$content .= '<category>'.$categories.'</category>';
 				$content .= $this->transformContent('rte', $post['bodytext']);
-				
+
 				$struct[] = array(
 					'userid' => 0, //??? post author uid
 					'dateCreated' => new IXR_Date($post['datetime']),
@@ -381,7 +384,7 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 		} else {
 			return new IXR_Error(100, 'No Posts available');
 		}
-		
+
 	}
 
 	/**
@@ -437,7 +440,7 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 
 		return $struct;
 	}
-	
+
 
 	/***********************************************
 	 *
@@ -491,11 +494,11 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 		$this->tbSendPings($insertFields);
 
 		$this->setPostCategories($insertId, $args[3]['categories']);
-		
+
 		//TODO handle pingbacks
-		
+
 		$this->clearPageCache();
-		
+
 		return strval($insertId);
 	}
 
@@ -743,7 +746,7 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 			return array('url' => t3lib_div::getIndpEnv('TYPO3_SITE_URL').$filename);
 		}
 	}
-	
+
 
 	/***********************************************
 	 *
@@ -1027,9 +1030,9 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 		//auth user
 		$accessOK = $auth->authUser();
 		#$authOK   = $this->xmlrpcUser->check('tables_modify', 'tt_news');
-		
+
 		$authOK   = true;	//TODO $this->xmlrpcUser needs to be an object to check table permissions
-		
+
 		#$isObj    = is_object($this->xmlrpcUser); //false, but needs to be true
 
 		return $accessOK && $authOK;
@@ -1192,14 +1195,14 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 
 	/**
 	 * cleans a blogger Post from possible <title> and <category> tags
-	 * 
+	 *
 	 * @param	string		the blogger post
 	 * @return	string		the blogger post without <title> and <category> tags
 	 */
-	function cleanBlggrPost($content) {		
+	function cleanBlggrPost($content) {
 		$content = preg_replace('/<title>.+?<\/title>/si', '', $content);
 		$content = preg_replace('/<category>.+?<\/category>/si', '', $content);
-		
+
 		return trim($content);
 	}
 }

@@ -38,20 +38,21 @@
  *
  *
  *
- *   68: class tx_timtab_fe
- *   87:     function main($markerArray, $conf)
- *  102:     function init($markerArray, $conf)
- *  121:     function substituteMarkers()
- *  172:     function count_comments()
- *  187:     function getPostTitle()
- *  203:     function buildPostTitle($title)
- *  222:     function getGravatar()
+ *   65: class tx_timtab_fe extends tslib_pibase
+ *   84:     function main($markerArray, $conf)
+ *   99:     function init($markerArray, $conf)
+ *  124:     function substituteMarkers()
+ *  219:     function count_comments()
+ *  234:     function getCurrentPost()
+ *  250:     function buildPostTitle($title)
+ *  274:     function getGravatar()
  *
  *              SECTION: Hook Connectors
- *  268:     function extraItemMarkerProcessor($markerArray, $row, $lConf, $pObject)
- *  286:     function postEntryInsertedProcessor($pObj)
+ *  321:     function extraItemMarkerProcessor($markerArray, $row, $lConf, &$pObj)
+ *  335:     function postEntryInsertedProcessor($pObj)
+ *  365:     function clearPageCache()
  *
- * TOTAL FUNCTIONS: 9
+ * TOTAL FUNCTIONS: 10
  * (This index is automatically created/updated by the extension "extdeveval")
  *
  */
@@ -104,14 +105,14 @@ class tx_timtab_fe extends tslib_pibase {
 		$this->conf = array_merge($this->conf, $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_timtab.']);
 
 		$this->markerArray = $markerArray;
-		
+
 		$pValKey = $this->pObj->cObj->currentValKey;
 		$this->pObj->cObj->currentValKey = 'commentNum';
-		
+
 		if($this->calledBy == 've_guestbook' && !$this->pObj->cObj->getCurrentVal()) {
 				$this->pObj->cObj->setCurrentVal(0);
 		}
-		
+
 		$this->pObj->cObj->currentValKey = $pValKey;
 	}
 
@@ -136,39 +137,39 @@ class tx_timtab_fe extends tslib_pibase {
 				$this->markerArray['###BLOG_COMMENTS_COUNT###'] = $comment_count;
 				$this->markerArray['###BLOG_TEXT_COMMENTS###'] = $this->pi_getLL('multiple_comments');
 			}
-			
+
 			//trackback
 			$tb = t3lib_div::makeInstance('tx_timtab_trackback');
-			$tb->init($this, $this->conf['data']);			
+			$tb->init($this, $this->conf['data']);
 			$plink = $tb->getPermalink();
 			$tbURL = $tb->getTrackbackURL();
-			
+
 			$rdf = $tb->getEmbeddedRdf($plink, $tbURL);
 			$tbLink = $tb->getTrackbackLink();
 			$this->markerArray['###BLOG_TRACKBACK_RDF###']  = $rdf;
 			$this->markerArray['###BLOG_TRACKBACK_LINK###'] = $tbLink;
-			
+
 			//misc
 			$this->markerArray['###BLOG_POST_TITLE###'] = $this->buildPostTitle($this->conf['data']['title']);
 		} elseif($this->calledBy == 've_guestbook') {
-			
+
 			$tt_news = $this->getCurrentPost();
-			
+
 			//deactivated comments
-			if(!$tt_news['tx_timtab_comments_allowed'] && $this->pObj->status == 'displayForm') {			
+			if(!$tt_news['tx_timtab_comments_allowed'] && $this->pObj->status == 'displayForm') {
 				$this->pObj->templateCode = '<!-- ###TEMPLATE_FORM### --> ###BLOG_COMMENTS_DEACTIVATED### <!-- ###TEMPLATE_FORM### -->';
 				$this->pi_getLL('commentsDeactivated');
-				
+
 				$this->markerArray['###BLOG_COMMENTS_DEACTIVATED###'] = $this->pi_getLL('commentsDeactivated');
 			}
-			
+
 			$this->markerArray['###BLOG_FORM_REQUIRED###'] = $this->pi_getLL('formRequired');
 			$this->markerArray['###BLOG_LEAVE_REPLY###'] = $this->pi_getLL('leaveReply');
 			$this->markerArray['###BLOG_NOT_PUBLISHED###'] = $this->pi_getLL('notPublished');
 			$this->markerArray['###BLOG_NAME###'] = $this->pi_getLL('commentName');
 			$this->markerArray['###BLOG_MAIL###'] = $this->pi_getLL('commentMail');
 			$this->markerArray['###BLOG_HOMEPAGE###'] = $this->pi_getLL('commentURL');
-			
+
 			$this->markerArray['###BLOG_COMMENTS_COUNT###'] = $this->pObj->internal['res_count'];
 			if($this->pObj->internal['res_count'] == 1) {
 				$this->markerArray['###BLOG_RESPONSES###']	= $this->pi_getLL('one_response');
@@ -183,30 +184,30 @@ class tx_timtab_fe extends tslib_pibase {
 			} else {
 				$this->markerArray['###BLOG_COMMENTER_NAME###'] = $this->conf['data']['firstname'];
 			}
-			
+
 			//numbering comments
 			$pValKey = $this->pObj->cObj->currentValKey;
 			$this->pObj->cObj->currentValKey = 'commentNum';
-			
+
 			$commentNum = $this->pObj->cObj->getCurrentVal() + 1;
 			$this->markerArray['###BLOG_COMMENT_NUM###'] = $commentNum;
-			$this->pObj->cObj->setCurrentVal($commentNum);			
-			
+			$this->pObj->cObj->setCurrentVal($commentNum);
+
 			$this->pObj->cObj->currentValKey = $pValKey;
-			
+
 			//remember the visitors data
 			$this->markerArray['###BLOG_REMEMBER_YES###']     = $this->pi_getLL('yes');
 			$this->markerArray['###BLOG_REMEMBER_NO###']      = $this->pi_getLL('no');
-			$this->markerArray['###BLOG_REMEMBER_VISITOR###'] = $this->pi_getLL('rememberInfo');			
-		
+			$this->markerArray['###BLOG_REMEMBER_VISITOR###'] = $this->pi_getLL('rememberInfo');
+
 			if(isset($_COOKIE['comment_info'])) {
 				$userInfo = explode('|', $_COOKIE['comment_info']);
-								
+
 				$this->markerArray['###VALUE_FIRSTNAME###'] = $userInfo[0];
 				$this->markerArray['###VALUE_EMAIL###']     = $userInfo[1];
 				$this->markerArray['###VALUE_HOMEPAGE###']  = $userInfo[2];
-			}		
-			
+			}
+
 		}
 	}
 
@@ -251,7 +252,7 @@ class tx_timtab_fe extends tslib_pibase {
 		$addParams .= '&tx_ttnews[year]='.$this->pObj->piVars['year'];
 		$addParams .= '&tx_ttnews[month]='.$this->pObj->piVars['month'];
 		$addParams .= '&tx_ttnews[day]='.$this->pObj->piVars['day'];
-		
+
 		$conf = array(
 			'parameter'        => $GLOBALS['TSFE']->id,
 			'ATagParams'       => 'rel="bookmark" title="Permanent Link: '.$title.'"',
@@ -308,7 +309,7 @@ class tx_timtab_fe extends tslib_pibase {
 	 **********************************************/
 
 	/**
-	 * connects into tt_news and ve_guestbook item marker processing hook 
+	 * connects into tt_news and ve_guestbook item marker processing hook
 	 * and fills our markers
 	 *
 	 * @param	array		an array of markers coming from tt_news
@@ -333,15 +334,15 @@ class tx_timtab_fe extends tslib_pibase {
 	 */
 	function postEntryInsertedProcessor($pObj) {
 		$this->init(array(), array());
-		
+
 		//clear page cache for some pages to keep the comment count updated
 		$this->clearPageCache();
-				
-		//save user data for comment form so he doesn't have to type it in every time 
-		//only if user wants this and we are allowed to set cookies		
+
+		//save user data for comment form so he doesn't have to type it in every time
+		//only if user wants this and we are allowed to set cookies
 		$rememberArr = t3lib_div::_POST('tx_timtab');
 		$rememberVal = $rememberArr['remember_visitor'];
-		
+
 		if (!$this->dontSetCookie && $rememberVal) {
 			$userInfo = implode('|',
 				array(
@@ -350,16 +351,16 @@ class tx_timtab_fe extends tslib_pibase {
 					$pObj->postvars['homepage'],
 				)
 			);
-			
+
 			setcookie('comment_info', $userInfo, time() + 3600 * 24 * 90, '/');
 		}
-		
+
 	}
-	
+
 	/**
 	 * explicitly clears cache for the blog page as it is not updating sometimes
-	 * 
-	 * @return void
+	 *
+	 * @return	void
 	 */
 	function clearPageCache() {
 		//TODO put this in a class timtab_lib
@@ -370,7 +371,7 @@ class tx_timtab_fe extends tslib_pibase {
 		foreach($clearCachePages as $page) {
 			$tce->clear_cacheCmd($page);
 		}
-		$tce->admin = 0;	
+		$tce->admin = 0;
 	}
 }
 

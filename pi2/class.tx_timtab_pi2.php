@@ -30,6 +30,20 @@
  * @author    Ingo Renner <typo3@ingo-renner.com>
  * @author    Ingo Schommer <me@chillu.com>
  */
+/**
+ * [CLASS/FUNCTION INDEX of SCRIPT]
+ *
+ *
+ *
+ *   56: class tx_timtab_pi2 extends tslib_pibase
+ *   70:     function main($content, $conf)
+ *   89:     function init($conf)
+ *  107:     function processTrackback()
+ *
+ * TOTAL FUNCTIONS: 3
+ * (This index is automatically created/updated by the extension "extdeveval")
+ *
+ */
 
 define('TYPE_TRACKBACK', 1);
 define('TYPE_PINGBACK', 2);
@@ -43,16 +57,16 @@ class tx_timtab_pi2 extends tslib_pibase {
     var $prefixId      = 'tx_timtab_pi2';               // Same as class name
     var $scriptRelPath = 'pi2/class.tx_timtab_pi2.php'; // Path to this script relative to the extension dir.
     var $extKey        = 'timtab';                      // The extension key.
-    
+
     var $tt_news;
-    
+
     /**
-     * main function of pi2 decides whether to process a XML-RPC request or Trackbacks
-     * 
-     * @param	string	content
-     * @param	array	configuration array
-     * @return	string
-     */
+ * main function of pi2 decides whether to process a XML-RPC request or Trackbacks
+ *
+ * @param	string		content
+ * @param	array		configuration array
+ * @return	string
+ */
     function main($content, $conf)    {
     	$this->init($conf);
 
@@ -62,55 +76,55 @@ class tx_timtab_pi2 extends tslib_pibase {
     		$className = t3lib_div::makeInstanceClassName('tx_timtab_pi2_xmlrpcServer');
     		$xmlrpcServer = new $className($this);
     	}
-    	
+
     	return $content;
     }
-    
+
     /**
-	 * initializes the configuration for the extension
-	 *
-	 * @param	array	configuration array
-	 * @return	void
-	 */
+ * initializes the configuration for the extension
+ *
+ * @param	array		configuration array
+ * @return	void
+ */
     function init($conf) {
     	$this->conf = array_merge($conf, $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_timtab.']);
         $this->pi_setPiVarDefaults();
         $this->pi_USER_INT_obj=1;    // Configuring so caching is not expected. This value means that no cHash params are ever set. We do this, because it's a USER_INT object!
-        
+
     	if($this->piVars['trackback'] == '1') {
     		$tt_news = t3lib_div::_GP('tx_ttnews');
     		$this->tt_news = intval($tt_news['tt_news']);
     	}
     }
-    
+
     /**
-     * processing of tracbacks, checks for a tt_news uid, whether pings are enabled
-     * for this post, the URL of the backtracker and whether we already have a 
-     * ping from that URL
-     * 
-     * @return	string
-     */
+ * processing of tracbacks, checks for a tt_news uid, whether pings are enabled
+ * for this post, the URL of the backtracker and whether we already have a
+ * ping from that URL
+ *
+ * @return	string
+ */
     function processTrackback() {
     	$tb = t3lib_div::makeInstance('tx_timtab_trackback');
     	$tb->encoding = 'UTF-8';
-    	
+
     	if(!$this->tt_news || !is_int($this->tt_news)) {
     		return $tb->sendResponse(false, 'I really need an ID for this to work.');
-    	}	
-    	
+    	}
+
     	//process trackback
     	$tbURL    = (string) t3lib_div::_POST('url');
 		$title    = t3lib_div::_POST('title');
 		$excerpt  = t3lib_div::_POST('excerpt');
 		$blogName = t3lib_div::_POST('blog_name');
 		$charset  = t3lib_div::_POST('charset');
-		
+
 		if ($charset) {
 			$charset = strtoupper( trim($charset) );
 		} else {
 			$charset = 'ASCII, UTF-8, ISO-8859-1, JIS, EUC-JP, SJIS';
 		}
-		
+
 		if (!empty($tbURL)) {
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 				'*',
@@ -118,22 +132,22 @@ class tx_timtab_pi2 extends tslib_pibase {
 				'uid = '.$this->tt_news
 			);
 			$tt_news = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
-			
+
 			//ping disabled
 			if(!$tt_news['tx_timtab_ping_allowed']) {
 				return $tb->sendResponse(false, 'Sorry, trackbacks are closed for this item.');
 			}
-			
+
 			$title   = htmlspecialchars(strip_tags($title));
 			$title   = $GLOBALS['TSFE']->csConv($title, $charset);
 			$title   = (strlen($title) > 250) ? substr($title, 0, 250).'...' : $title;
-		
+
 			$excerpt = strip_tags($excerpt);
 			$excerpt = $GLOBALS['TSFE']->csConv($excerpt, $charset);
 			$excerpt = (strlen($excerpt) > 255) ? substr($excerpt, 0, 252).'...' : $excerpt;
-		
+
 			$blogName = $GLOBALS['TSFE']->csConv($blogName, $charset);
-		
+
 			//do we have a ping, already?
 			unset($res);
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
@@ -163,7 +177,7 @@ class tx_timtab_pi2 extends tslib_pibase {
 					$insertFields
 				);
 				$insertId = $GLOBALS['TYPO3_DB']->sql_insert_id($res);
-				
+
 				if($insertId) {
 					return $tb->sendResponse(true);
 				} else {
