@@ -15,14 +15,10 @@ if (TYPO3_MODE == 'FE')	{
 }
 
 //presetting userTS
-t3lib_extMgm::addUserTSConfig('
-	options.saveDocNew.tx_timtab_blogroll = 1
-');
+t3lib_extMgm::addUserTSConfig('options.saveDocNew.tx_timtab_blogroll = 1');
 
 // Extending TypoScript from static template uid=43 to set up userdefined tag:
-t3lib_extMgm::addTypoScript($_EXTKEY,'editorcfg','
-	tt_content.CSS_editor.ch.tx_timtab_pi1 = < plugin.tx_timtab_pi1.CSS_editor
-',43);
+t3lib_extMgm::addTypoScript($_EXTKEY,'editorcfg','tt_content.CSS_editor.ch.tx_timtab_pi1 = < plugin.tx_timtab_pi1.CSS_editor',43);
 
 //listing Blogroll Links in Web->Page view
 $TYPO3_CONF_VARS['EXTCONF']['cms']['db_layout']['addTables']['tx_timtab_blogroll'][0] = array(
