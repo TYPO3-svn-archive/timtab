@@ -16,6 +16,7 @@ CREATE TABLE tt_news (
 #
 CREATE TABLE tx_veguestbook_entries (
 	tx_timtab_type tinyint(4) unsigned DEFAULT '0' NOT NULL,
+	homepage text NOT NULL,
 );
 
 #

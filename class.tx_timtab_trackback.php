@@ -244,7 +244,7 @@ class tx_timtab_trackback {
 		$rdf .= '	dc:title="'.$this->xmlSafe($title).'"'.$r;
 		$rdf .= '	dc:subject="TrackBack"'.$r;
 		$rdf .= '	dc:description="'.$this->xmlSafe($excerpt).'"'.$r;
-		$rdf .= '	dc:creator='.$this->xmlSafe($author).'"'.$r;
+		$rdf .= '	dc:creator="'.$this->xmlSafe($author).'"'.$r;
 		$rdf .= '	dc:date="'.$RFC822_date.'" />'.$r;
 		$rdf .= '</rdf:RDF>'.$r;
 		$rdf .= '-->'.$r;
