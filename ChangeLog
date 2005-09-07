@@ -1,3 +1,9 @@
+2005-09-07	Ingo Renner  <typo3@ingo-renner.com>
+
+	* FIX fixes a bug with trackback where the homepage field of ve_guestbook was too short for long URLs
+	* ADD added italian language
+	* CHG version is now 0.4.3
+	
 2005-08-29	Ingo Renner  <typo3@ingo-renner.com>
 
 	* CHG disabled not working and not well tested options for first release
