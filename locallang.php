@@ -9,7 +9,7 @@
 
 $LOCAL_LANG = Array (
 	'default' => Array (
-		'pi1_title' => 'Blogroll',	
+		'pi1_title' => 'Blogroll',
 		'pi1_plus_wiz_description' => 'add a blogroll to your site',
 		'no_comments' => 'No Comments',
 		'one_comment' => 'Comment',
@@ -30,7 +30,7 @@ $LOCAL_LANG = Array (
 	'dk' => Array (
 	),
 	'de' => Array (
-		'pi1_title' => 'Blogroll',	
+		'pi1_title' => 'Blogroll',
 		'pi1_plus_wiz_description' => 'Einen Blogroll in die Seite einfügen.',
 		'no_comments' => 'Keine Kommentare',
 		'one_comment' => 'Kommentar',
@@ -51,6 +51,23 @@ $LOCAL_LANG = Array (
 	'no' => Array (
 	),
 	'it' => Array (
+		'pi1_title' => 'Blogroll',
+		'pi1_plus_wiz_description' => 'aggiungi un elenco di blog al tuo sito',
+		'no_comments' => 'Nessun Commento',
+		'one_comment' => 'Commento',
+		'multiple_comments' => 'Commenti',
+		'one_response' => 'Risultato',
+		'multiple_responses' => 'Risultati',
+		'formRequired' => '(richiesto)',
+		'leaveReply' => 'Lascia una Risposta',
+		'notPublished' => '(non sarà visibile)',
+		'commentName' => 'Nome',
+		'commentMail' => 'Mail',
+		'commentURL' => 'Web',
+		'commentsDeactivated' => 'Spiacenti, commenti non abilitati',
+		'yes' => 'si',
+		'no' => 'no',
+		'rememberInfo' => 'ricordati i miei dati',
 	),
 	'fr' => Array (
 	),
@@ -121,6 +138,12 @@ $LOCAL_LANG = Array (
 	'ba' => Array (
 	),
 	'kr' => Array (
+	),
+	'eo' => Array (
+	),
+	'my' => Array (
+	),
+	'hi' => Array (
 	),
 );
 ?>
