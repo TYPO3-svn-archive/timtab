@@ -77,9 +77,9 @@ class tx_timtab_be {
 	 * perform some checks before doing the big init
 	 *
 	 * @param	string		the current status of the operation: eather 'new' or 'update'
-	 * @param	[type]		$id: ...
-	 * @param	[type]		$fieldArray: ...
-	 * @param	[type]		$pObj: ...
+	 * @param	integer		the uid of the current post
+	 * @param	array		array of changed fields for an update, all fields for a new post
+	 * @param	object		$pObj: ...
 	 * @return	array
 	 */
 	function preInit($status, $id, $fieldArray, $pObj) {
@@ -96,7 +96,9 @@ class tx_timtab_be {
 		if($id) {
 			//update
 			$isBlogPost = $this->isBlogPost($id, array());
-			$isBlogPost ? $tt_news = $this->getCurrentPost($id) : $tt_news = array();
+			if($isBlogPost) {
+				$tt_news = $this->getCurrentPost($id);
+			}
 		} else {
 			//new
 			$isBlogPost  = $this->isBlogPost($id, $fieldArray);
@@ -114,7 +116,7 @@ class tx_timtab_be {
 	function init() {
 		global $TSFE;
 
-		$this->pid = intval(t3lib_div::_GP('popViewId'));
+		$this->pid  = intval(t3lib_div::_GP('popViewId'));
 		$this->cObj = t3lib_div::makeInstance('tslib_cObj');
 
 		//we need a nearly whole TSFE for getting plugin setup and creation of correct source URLs
