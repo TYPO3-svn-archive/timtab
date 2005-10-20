@@ -74,6 +74,23 @@ $LOCAL_LANG = Array (
 	'es' => Array (
 	),
 	'nl' => Array (
+		'pi1_title' => 'Blogroll',
+		'pi1_plus_wiz_description' => 'voeg een blogroll to aan uw website',
+		'no_comments' => 'Geen reacties',
+		'one_comment' => 'Reactie',
+		'multiple_comments' => 'Reacties',
+		'one_response' => 'Reactie',
+		'multiple_responses' => 'Reacties',
+		'formRequired' => '(verplicht)',
+		'leaveReply' => 'Reageer',
+		'notPublished' => '(wordt niet gepubliceerd)',
+		'commentName' => 'Naam',
+		'commentMail' => 'E-mail',
+		'commentURL' => 'Website',
+		'commentsDeactivated' => 'Sorry, reageren op deze post is niet meer mogelijk',
+		'yes' => 'ja',
+		'no' => 'nee',
+		'rememberInfo' => 'herinner mij',
 	),
 	'cz' => Array (
 	),
