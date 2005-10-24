@@ -1,3 +1,8 @@
+2005-10-25	Ingo Renner  <typo3@ingo-renner.com>
+
+	* ADD added post navigation previous and next to kubrick
+	* FIX fixed missing substitution of a marker in kubrick	
+
 2005-10-20	Ingo Renner  <typo3@ingo-renner.com>
 
 	* FIX fixed the inheritance of the Kubrick main template to all subpages which caused to show the posts on every page instead of only showing them on the homepage

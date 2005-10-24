@@ -106,9 +106,10 @@ class tx_timtab_fe extends tslib_pibase {
 
 		$this->markerArray = $markerArray;
 
+		//init numbering comments
 		$pValKey = $this->pObj->cObj->currentValKey;
 		$this->pObj->cObj->currentValKey = 'commentNum';
-
+		
 		if($this->calledBy == 've_guestbook' && !$this->pObj->cObj->getCurrentVal()) {
 				$this->pObj->cObj->setCurrentVal(0);
 		}
@@ -137,7 +138,19 @@ class tx_timtab_fe extends tslib_pibase {
 				$this->markerArray['###BLOG_COMMENTS_COUNT###'] = $comment_count;
 				$this->markerArray['###BLOG_TEXT_COMMENTS###'] = $this->pi_getLL('multiple_comments');
 			}
-
+			
+			//post navigation
+			$this->markerArray['###BLOG_PREV_POST###'] = '';
+			$this->markerArray['###BLOG_NEXT_POST###'] = '';
+			$prev = $this->getPrevPost();
+			if($prev) {
+				$this->markerArray['###BLOG_PREV_POST###'] = '&laquo; '.$this->makePostLink($prev);
+			}
+			$next = $this->getNextPost();
+			if($next) {
+				$this->markerArray['###BLOG_NEXT_POST###'] = $this->makePostLink($next).' &raquo;';
+			}
+			
 			//trackback
 			$tb = t3lib_div::makeInstance('tx_timtab_trackback');
 			$tb->init($this, $this->conf['data']);
@@ -164,20 +177,21 @@ class tx_timtab_fe extends tslib_pibase {
 			}
 
 			$this->markerArray['###BLOG_FORM_REQUIRED###'] = $this->pi_getLL('formRequired');
-			$this->markerArray['###BLOG_LEAVE_REPLY###'] = $this->pi_getLL('leaveReply');
+			$this->markerArray['###BLOG_LEAVE_REPLY###']   = $this->pi_getLL('leaveReply');
 			$this->markerArray['###BLOG_NOT_PUBLISHED###'] = $this->pi_getLL('notPublished');
-			$this->markerArray['###BLOG_NAME###'] = $this->pi_getLL('commentName');
-			$this->markerArray['###BLOG_MAIL###'] = $this->pi_getLL('commentMail');
-			$this->markerArray['###BLOG_HOMEPAGE###'] = $this->pi_getLL('commentURL');
+			$this->markerArray['###BLOG_NAME###']          = $this->pi_getLL('commentName');
+			$this->markerArray['###BLOG_MAIL###']          = $this->pi_getLL('commentMail');
+			$this->markerArray['###BLOG_HOMEPAGE###']      = $this->pi_getLL('commentURL');
 
+			$this->markerArray['###BLOG_COMMENT_UID###']    = $this->conf['data']['uid'];
 			$this->markerArray['###BLOG_COMMENTS_COUNT###'] = $this->pObj->internal['res_count'];
 			if($this->pObj->internal['res_count'] == 1) {
 				$this->markerArray['###BLOG_RESPONSES###']	= $this->pi_getLL('one_response');
 			} else {
 				$this->markerArray['###BLOG_RESPONSES###']	= $this->pi_getLL('multiple_responses');
 			}
-			$this->markerArray['###BLOG_POST_TITLE###'] = $tt_news['title'];
-			$this->markerArray['###BLOG_COMMENT_GRAVATAR###'] = $this->getGravatar();
+			$this->markerArray['###BLOG_POST_TITLE###']     = $tt_news['title'];
+			$this->markerArray['###BLOG_COMMENT_GRAVATAR###']   = $this->getGravatar();
 
 			if(!empty($this->conf['data']['homepage'])) {
 				$this->markerArray['###BLOG_COMMENTER_NAME###'] = '<a href="'.$this->conf['data']['homepage'].'" rel="external">'.$this->conf['data']['firstname'].'</a>';
@@ -239,6 +253,62 @@ class tx_timtab_fe extends tslib_pibase {
 		);
 
 		return $res[0];
+	}
+	
+	/**
+	 * gets previous post if available
+	 * 
+	 * @return	array
+	 */
+	function getPrevPost() {
+		$res = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+			'uid, title, datetime',
+			'tt_news',
+			'pid IN ('.$this->pObj->conf['pid_list'].') AND datetime < '.$this->conf['data']['datetime'].$this->cObj->enableFields('tt_news'),
+			'',
+			'datetime DESC'
+		);
+		
+		return $res[0];
+	}
+	
+	/**
+	 * gets previous post if available
+	 * 
+	 * @return	array
+	 */
+	function getNextPost() {
+		$res = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+			'uid, title, datetime',
+			'tt_news',
+			'pid IN ('.$this->pObj->conf['pid_list'].') AND datetime > '.$this->conf['data']['datetime'].$this->cObj->enableFields('tt_news'),
+			'',
+			'datetime ASC'
+		);
+		
+		return $res[0];
+	}
+	
+	/**
+	 * builds a link to a given post
+	 * 
+	 * @param	array		the post data
+	 * @return	string		the post link
+	 */
+	function makePostLink($tt_news) {
+		$addParams  = '&tx_ttnews[tt_news]='.$tt_news['uid'];
+		$addParams .= '&tx_ttnews[year]='.date('Y', $tt_news['datetime']);
+		$addParams .= '&tx_ttnews[month]='.date('m', $tt_news['datetime']);
+		$addParams .= '&tx_ttnews[day]='.date('d', $tt_news['datetime']);
+
+		$conf = array(
+			'parameter'        => $GLOBALS['TSFE']->id,
+			'additionalParams' => $addParams,
+			'no_cache'         => $this->pObj->allowCaching?0:1,
+			'useCacheHash'     => $this->pObj->allowCaching,
+		);
+
+		return $this->cObj->typolink($tt_news['title'], $conf);
 	}
 
 	/**
@@ -340,10 +410,10 @@ class tx_timtab_fe extends tslib_pibase {
 
 		//save user data for comment form so he doesn't have to type it in every time
 		//only if user wants this and we are allowed to set cookies
-		$rememberArr = t3lib_div::_POST('tx_timtab');
-		$rememberVal = $rememberArr['remember_visitor'];
+		$postData = t3lib_div::_POST('tx_timtab');
+		$remember = $postData['remember_visitor'];
 
-		if (!$this->dontSetCookie && $rememberVal) {
+		if (!$this->dontSetCookie && $remember) {
 			$userInfo = implode('|',
 				array(
 					$pObj->postvars['firstname'],
