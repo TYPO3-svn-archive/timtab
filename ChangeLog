@@ -1,7 +1,11 @@
 2005-10-25	Ingo Renner  <typo3@ingo-renner.com>
 
-	* ADD added post navigation previous and next to kubrick
-	* FIX fixed missing substitution of a marker in kubrick	
+	* ADD added Kubrick style category menu
+	
+2005-10-25	Ingo Renner  <typo3@ingo-renner.com>
+
+	* ADD added post navigation previous and next to Kubrick
+	* FIX fixed missing substitution of a marker in Kubrick	
 
 2005-10-20	Ingo Renner  <typo3@ingo-renner.com>
 

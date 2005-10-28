@@ -81,8 +81,7 @@ class tx_timtab_fe extends tslib_pibase {
 	 * @param	array		the configuration coming from tt_news
 	 * @return	array		modified marker array
 	 */
-	function main($markerArray, $conf) {
-		$this->cObj = t3lib_div::makeInstance('tslib_cObj'); // local cObj.
+	function main($markerArray, $conf) {		
 		$this->init($markerArray, $conf);
 		$this->substituteMarkers();
 
@@ -97,6 +96,7 @@ class tx_timtab_fe extends tslib_pibase {
 	 * @return	void
 	 */
 	function init($markerArray, $conf) {
+		$this->cObj = t3lib_div::makeInstance('tslib_cObj'); // local cObj.
 		$this->pi_loadLL(); // Loading language-labels
 
 		// pi_setPiVarDefaults() does not work since we are in a code library
@@ -425,6 +425,38 @@ class tx_timtab_fe extends tslib_pibase {
 			setcookie('comment_info', $userInfo, time() + 3600 * 24 * 90, '/');
 		}
 
+	}
+	
+	/**
+	 * renders the category menu for Kubrick
+	 * 
+	 * @param	array		the configuration array
+	 * @parma	object		the parent tt_news object
+	 * @return	string		the category menu
+	 */
+	function userDisplayCatmenu($conf, $pObj) {
+		$this->conf     = array();
+		$this->calledBy = 'tt_news';
+		$this->init(array(), $conf);
+		
+		$res = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
+			'tt_news_cat.uid, COUNT(tt_news_cat.uid) as num, tt_news_cat.title',
+			'tt_news',
+			'tt_news_cat_mm',
+			'tt_news_cat',
+			'AND tt_news.pid = '.$pObj->conf['pid_list'].$this->cObj->enableFields('tt_news'),
+			'tt_news_cat.uid'
+		);
+		
+		$content = '<ul>'.chr(10);
+		while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+			$urlParameters = array('tx_ttnews[cat]' => $row['uid']);
+			$content .= '<li>'.$this->pi_linkTP($row['title'], $urlParameters, $pObj->allowCaching)
+					 .' ('.$row['num'].')</li>'.chr(10);
+		}
+		$content .= '</ul>'.chr(10);
+		
+		return $content;
 	}
 
 	/**

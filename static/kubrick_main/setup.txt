@@ -21,7 +21,8 @@ plugin.tt_news {
   useSubCategories = 1
   
   displayCatMenu {
-    catmenu_stdWrap.wrap = <h2 class="news-catmenu">Categories</h2>|
+    mode = timtab_kubrick
+    catmenu_stdWrap.wrap = <li><h2 class="news-catmenu">Categories</h2>|</li>
   }
 
   _LOCAL_LANG.default {
