@@ -169,10 +169,8 @@ class tx_timtab_fe extends tslib_pibase {
 			$tt_news = $this->getCurrentPost();
 
 			//deactivated comments
-			if(!$tt_news['tx_timtab_comments_allowed'] && $this->pObj->status == 'displayForm') {
+			if(!$tt_news['tx_timtab_comments_allowed'] && $this->pObj->status == 'displayForm' && $this->isBlogComment()) {
 				$this->pObj->templateCode = '<!-- ###TEMPLATE_FORM### --> ###BLOG_COMMENTS_DEACTIVATED### <!-- ###TEMPLATE_FORM### -->';
-				$this->pi_getLL('commentsDeactivated');
-
 				$this->markerArray['###BLOG_COMMENTS_DEACTIVATED###'] = $this->pi_getLL('commentsDeactivated');
 			}
 
@@ -457,6 +455,22 @@ class tx_timtab_fe extends tslib_pibase {
 		$content .= '</ul>'.chr(10);
 		
 		return $content;
+	}
+
+	/**
+	 * checks whether we are are used in a blog environment
+	 * 
+	 * @return	boolean		true if we are commenting on a post, false otherwise
+	 */
+	function isBlogComment() {
+		$result = false;
+		$tt_news = t3lib_div::_GET('tx_ttnews');
+		
+		if(isset($tt_news['tt_news'])) {
+			$result = true;	
+		}
+		
+		return $result;
 	}
 
 	/**
