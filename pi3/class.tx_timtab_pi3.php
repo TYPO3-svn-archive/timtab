@@ -23,6 +23,7 @@
 ***************************************************************/
 /**
  * Plugin 'calendar' for the 'timtab' extension.
+ * Code shamlesly taken from wordpress
  *
  * $Id$
  *
@@ -33,6 +34,19 @@
  *
  *
  *
+ *   56: class tx_timtab_pi3 extends tslib_pibase
+ *   69:     function main($content, $conf)
+ *   87:     function init($conf)
+ *  118:     function getCalendar()
+ *  280:     function getCurrentTime($gmt = false)
+ *  296:     function getDaysWithPosts($monthBeginn)
+ *  335:     function getMonthLink($timestamp, $now)
+ *  369:     function getDayLink($timestamp, $day, $title)
+ *  398:     function getWeekdays()
+ *  418:     function calendarWeekMod($num)
+ *
+ * TOTAL FUNCTIONS: 9
+ * (This index is automatically created/updated by the extension "extdeveval")
  *
  */
 
@@ -54,9 +68,9 @@ class tx_timtab_pi3 extends tslib_pibase {
 	 */
 	function main($content, $conf)	{
 		$this->init($conf);
-		
+
 		$content = $this->getCalendar();
-		
+
 		if($this->conf['dontWrapInDiv'] == 1) {
 			return $content;
 		} else {
@@ -75,7 +89,7 @@ class tx_timtab_pi3 extends tslib_pibase {
 		$this->conf['allowCaching'] = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tt_news.']['allowCaching'];
 		$this->pi_setPiVarDefaults();
 		$this->pi_loadLL();
-		
+
 		// pidList is the pid/list of pids from where to fetch the faq items.
 		$cePidList = $this->cObj->data['pages']; //ce = Content Element
 		$pidList   = $cePidList ?
@@ -87,18 +101,18 @@ class tx_timtab_pi3 extends tslib_pibase {
 		$this->conf['pidList'] = $pidList ?
 			implode(t3lib_div::intExplode(',', $pidList), ',') :
 			$GLOBALS['TSFE']->id;
-			
+
 		$this->enableFields = $this->cObj->enableFields('tt_news')
 							.' AND tt_news.type = 3'
 							.' AND tt_news.pid IN('.$this->conf['pidList'].')';
-		
+
 
 		unset($this->conf['pid_list']);
 	}
-	
+
 	/**
 	 * renders calendar which shows days with posts, addopted from wordpress
-	 * 
+	 *
 	 * @return	string		the html for the calendar
 	 */
 	function getCalendar() {
@@ -111,22 +125,22 @@ class tx_timtab_pi3 extends tslib_pibase {
 			'datetime DESC',
 			1
 		);
-	    
+
 		if(empty($check)) {
-			return '';	
+			return '';
 		}
-	    
+
 		/*
 		if (isset($_GET['w'])) {
 			$w = ''.intval($_GET['w']);
 		}
 		*/
-	    
+
 		// week_begins = 0 stands for sunday
 		$weekBegins = $this->conf['week_begins'];
 		$addHours   = $this->conf['gmt_offset'];
 		$addMinutes = intval(60 * ($this->conf['gmt_offset'] - $addHours));
-	
+
 		// Let's figure out when we are
 		$newsGET = t3lib_div::_GET('tx_ttnews');
 		if (!empty($newsGET)) {
@@ -136,9 +150,9 @@ class tx_timtab_pi3 extends tslib_pibase {
 			$thisYear  = gmdate('Y', $this->getCurrentTime() + $this->conf['gmt_offset'] * 3600);
 			$thisMonth = gmdate('n', $this->getCurrentTime() + $this->conf['gmt_offset'] * 3600);
 		}
-		
+
 		$unixMonth = mktime(0, 0 , 0, $thisMonth, 1, $thisYear);
-		
+
 		// Get the next and previous month and year with at least one post
 		$prevTime = $unixMonth;
 		$prev = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
@@ -164,63 +178,63 @@ class tx_timtab_pi3 extends tslib_pibase {
 		);
 		if(!empty($next)) {
 			$next = $next[0]['datetime'];
-		}		
+		}
 
 		//beginn output
 	    $content = '<table id="timtab-calendar">
 	    	<caption>'.strftime('%B', $unixMonth).' '.date('Y', $unixMonth).'</caption>
 	    	<thead>
 	    	<tr>';
-	    
+
 	    $week     = array();
     	$weekdays = $this->getWeekdays();
-    	
+
     	for($i = 0; $i <= 6; $i++) {
     		$week[] = $weekdays[($i + $weekBegins) % 7];
     	}
     	foreach ($week as $wd) {
     		$content .= "\n\t\t\t".'<th abbr="'.$wd.'" scope="col" title="'.$wd.'">'.substr($wd, 0, $this->conf['weekdayNameLength']).'</th>';
 		}
-		
+
 		$content .= '
 		</tr>
 		</thead>
-				
+
 		<tfoot>
 		<tr>';
-		
+
 		if ($prev) {
 			$content .= "\n\t\t\t".'<td abbr="'.strftime('%b', $prev).'" colspan="3" id="prev">'
 					 .$this->getMonthLink($prev, $unixMonth).'</td>';
 		} else {
 			$content .= "\n\t\t\t".'<td colspan="3" id="prev" class="pad">&nbsp;</td>';
 		}
-		
+
 		$content .= "\n\t\t\t".'<td class="pad">&nbsp;</td>';
-		
+
 		if ($next) {
 			$content .= "\n\t\t\t".'<td abbr="'.strftime('%b', $next).'" colspan="3" id="next">'
 					 .$this->getMonthLink($next, $unixMonth).'</td>';
 		} else {
 			$content .= "\n\t\t\t".'<td colspan="3" id="next" class="pad">&nbsp;</td>';
 		}
-		
+
 		$content .= '
 		</tr>
 		</tfoot>
 
 		<tbody>
 		<tr>';
-		
+
 		// Get days with posts
 		$daysWithPosts = $this->getDaysWithPosts($unixMonth);
-		
+
 		// See how much we should pad in the beginning
 		$pad = $this->calendarWeekMod(date('w', $unixMonth) - $weekBegins);
 		if($pad != 0) {
 			$content .= "\n\t\t\t".'<td colspan="'.$pad.'" class="pad">&nbsp;</td>';
 		}
-		
+
 		$daysInMonth = intval(date('t', $unixMonth));
 		for ($day = 1; $day <= $daysInMonth; ++$day) {
 			if(isset($newrow) && $newrow) {
@@ -241,25 +255,25 @@ class tx_timtab_pi3 extends tslib_pibase {
 				$content .= $day;
 			}
 			$content .= '</td>';
-			
+
 			if (6 == $this->calendarWeekMod(date('w', mktime(0, 0 , 0, $thisMonth, $day, $thisYear))-$weekBegins)) {
 				$newrow = true;
 			}
 		}
-		
+
 		$pad = 7 - $this->calendarWeekMod(date('w', mktime(0, 0 , 0, $thisMonth, $day, $thisYear))-$weekBegins);
 		if ($pad != 0 && $pad != 7) {
 			$content .= "\n\t\t\t".'<td class="pad" colspan="'.$pad.'">&nbsp;</td>';
-		}		
-		
+		}
+
 		$content .= "\n\t\t</tr>\n\t\t</tbody>\n\t\t</table>";
-		
-		return $content; 
+
+		return $content;
 	}
-	
+
 	/**
 	 * gets the current time optionaly regarding GMT offset
-	 * 
+	 *
 	 * @param	boolean		get time without GMT offset when set to true
 	 * @return	integer		the current timestamp
 	 */
@@ -269,19 +283,19 @@ class tx_timtab_pi3 extends tslib_pibase {
 		} else {
 			$time = time() + ($this->conf['gmt_offset'] * 3600);
 		}
-		
+
 		return $time;
 	}
-	
+
 	/**
 	 * gets array with days where posts were made
-	 * 
+	 *
 	 * @param	integer		timestamp of the beginning of the month we want to get posts from
 	 * @return	array		array with days where posts were made
 	 */
-	function getDaysWithPosts($monthBeginn) {		
+	function getDaysWithPosts($monthBeginn) {
 		$monthEnd = $monthBeginn + ((int)date('t', $monthBeginn) * 24 * 3600);
-		
+
 		$userAgent = t3lib_div::getIndpEnv('HTTP_USER_AGENT');
 		if (strstr($userAgent, 'MSIE') || strstr(strtolower($userAgent), 'camino') || strstr(strtolower($userAgent), 'safari')) {
 			//IE, Camino, Safari
@@ -290,7 +304,7 @@ class tx_timtab_pi3 extends tslib_pibase {
 			//every other browser
 			$titleSeparator = ', ';
 		}
-		
+
 		$result = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
 			'title, datetime',
 			'tt_news',
@@ -310,10 +324,10 @@ class tx_timtab_pi3 extends tslib_pibase {
 
 		return $daysWithPosts;
 	}
-	
+
 	/**
 	 * generates a typolink to the month of the given timestamp
-	 * 
+	 *
 	 * @param	integer		timestamp of the month to link to
 	 * @param	integer		timestamp of the currently shown month
 	 * @return	string		typolink
@@ -323,30 +337,30 @@ class tx_timtab_pi3 extends tslib_pibase {
 			'tx_ttnews[year]'  => date('Y', $timestamp),
 			'tx_ttnews[month]' => date('m', $timestamp)
 		);
-		
+
 		$tagAttribs = ' title="'.sprintf($this->pi_getLL('view_posts'), strftime('%B %G', $timestamp)).'"';
-		
+
 		$conf = array(
 			'useCacheHash'     => $this->conf['allowCaching'],
 			'no_cache'         => !$this->conf['allowCaching'],
 			'parameter'        => $GLOBALS['TSFE']->id, /*the link target*/
 			'additionalParams' => $this->conf['parent.']['addParams'].t3lib_div::implodeArrayForUrl('',$urlParams,'',1).$this->pi_moreParams,
 			'ATagParams'       => $tagAttribs
-		);		
-		
+		);
+
 		$link = strftime('%b', $timestamp);
 		if($timestamp < $now) {
 			$link = '&laquo; '.$link;
 		} else {
 			$link = $link.'&raquo; ';
-		}		
-		
-		return $this->cObj->typoLink($link, $conf);	
+		}
+
+		return $this->cObj->typoLink($link, $conf);
 	}
-	
+
 	/**
 	 * generates a typolink to the day of the given timestamp
-	 * 
+	 *
 	 * @param	integer		timestamp of the month to link to
 	 * @param	integer		the day to link to
 	 * @param	string		the title attribute for the link
@@ -354,31 +368,31 @@ class tx_timtab_pi3 extends tslib_pibase {
 	 */
 	function getDayLink($timestamp, $day, $title) {
 		if($day < 10) {
-			$day = '0'.$day;	
+			$day = '0'.$day;
 		}
-		
+
 		$urlParams = array(
 			'tx_ttnews[year]'  => date('Y', $timestamp),
 			'tx_ttnews[month]' => date('m', $timestamp),
 			'tx_ttnews[day]'   => $day
 		);
-		
+
 		$tagAttribs = ' title="'.$title.'"';
-		
+
 		$conf = array(
 			'useCacheHash'     => $this->conf['allowCaching'],
 			'no_cache'         => !$this->conf['allowCaching'],
 			'parameter'        => $GLOBALS['TSFE']->id, /*the link target*/
 			'additionalParams' => $this->conf['parent.']['addParams'].t3lib_div::implodeArrayForUrl('',$urlParams,'',1).$this->pi_moreParams,
 			'ATagParams'       => $tagAttribs
-		);		
-		
+		);
+
 		return $this->cObj->typoLink($day, $conf);
 	}
-	
+
 	/**
 	 * returns an array with localized weekday names
-	 * 
+	 *
 	 * @return	array		array with localized weekday names
 	 */
 	function getWeekdays() {
@@ -389,19 +403,22 @@ class tx_timtab_pi3 extends tslib_pibase {
 			$this->pi_getLL('wednesday'),
 			$this->pi_getLL('thursday'),
 			$this->pi_getLL('friday'),
-			$this->pi_getLL('saturday')			
-		);	
-		
+			$this->pi_getLL('saturday')
+		);
+
 		return $week;
 	}
-	
+
 	/**
-	 * taken from wordpress
+	 * I have no clue what this thing does (taken from wordpress)
+	 *
+	 * @param	integer		$num
+	 * @return	integer		...
 	 */
 	function calendarWeekMod($num) {
 		$base = 7;
-		return ($num - $base*floor($num/$base));
-	}	
+		return ($num - $base * floor($num/$base));
+	}
 }
 
 
