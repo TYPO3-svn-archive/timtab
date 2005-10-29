@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2004 Ingo Renner (typo3@ingo-renner.com)
+*  (c) 2005 Ingo Renner (typo3@ingo-renner.com)
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -92,7 +92,7 @@ class tx_timtab_pi2 extends tslib_pibase {
         $this->pi_USER_INT_obj=1;    // Configuring so caching is not expected. This value means that no cHash params are ever set. We do this, because it's a USER_INT object!
 
     	if($this->piVars['trackback'] == '1') {
-    		$tt_news       = t3lib_div::_GP('tx_ttnews');
+    		$tt_news = t3lib_div::_GP('tx_ttnews');
     		$this->tt_news = intval($tt_news['tt_news']);
     	}
     }
@@ -106,12 +106,7 @@ class tx_timtab_pi2 extends tslib_pibase {
  */
     function processTrackback() {
     	$tb = t3lib_div::makeInstance('tx_timtab_trackback');
-    	$tb->encoding = 'UTF-8';    	
-    	
-    	$postVars = t3lib_div::_POST();
-    	if(empty($postVars)) {
-    		return $tb->sendResponse(false, 'Trackback pings must use HTTP POST.');
-    	}
+    	$tb->encoding = 'UTF-8';
 
     	if(!$this->tt_news || !is_int($this->tt_news)) {
     		return $tb->sendResponse(false, 'I really need an ID for this to work.');

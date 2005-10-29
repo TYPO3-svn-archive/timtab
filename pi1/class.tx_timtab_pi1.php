@@ -51,7 +51,6 @@ class tx_timtab_pi1 extends tslib_pibase {
 	var $scriptRelPath = 'pi1/class.tx_timtab_pi1.php';	// Path to this script relative to the extension dir.
 	var $extKey = 'timtab';	// The extension key.
 	var $enableFields;
-	var $local_cObj;
 
 	/**
 	 * main funtction for blogroll
@@ -67,7 +66,7 @@ class tx_timtab_pi1 extends tslib_pibase {
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'url, name, description, rel_identity, rel_friendship, rel_physical, rel_professional, rel_geographical, rel_family, rel_romantic, target',
 			'tx_timtab_blogroll',
-			'1=1'.$this->enableFields.' AND pid IN ('.$this->config['pidList'].')',
+			'1=1'.$this->enableFields.' AND pid IN ('.$this->conf['pidList'].')',
 			'',
 			'sorting'
 		);
@@ -92,7 +91,7 @@ class tx_timtab_pi1 extends tslib_pibase {
 
 		$blogroll .= '</ul>';
 
-		$content .= $this->local_cObj->stdWrap($blogroll, $this->conf['header_stdWrap.']);
+		$content .= $this->cObj->stdWrap($blogroll, $this->conf['header_stdWrap.']);
 
 		if($this->conf['dontWrapInDiv'] == 1) {
 			return $content;
@@ -111,7 +110,6 @@ class tx_timtab_pi1 extends tslib_pibase {
 		$this->conf = $conf;
 		$this->pi_setPiVarDefaults();
 		$this->pi_loadLL();
-		$this->local_cObj = t3lib_div::makeInstance('tslib_cObj');
 		$this->enableFields = $this->cObj->enableFields('tx_timtab_blogroll');
 
 		// pidList is the pid/list of pids from where to fetch the faq items.
@@ -122,7 +120,7 @@ class tx_timtab_pi1 extends tslib_pibase {
 				$this->conf['pid_list'], $this->conf['pid_list.']
 			));
 
-		$this->config['pidList'] = $pidList ?
+		$this->conf['pidList'] = $pidList ?
 			implode(t3lib_div::intExplode(',', $pidList), ',') :
 			$GLOBALS['TSFE']->id;
 
