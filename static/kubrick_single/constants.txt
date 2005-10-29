@@ -1,6 +1,2 @@
 
 #	$Id$
-
-page.file {
-  template_single = EXT:timtab/res/kubrick/kubrick_single.tmpl
-}
