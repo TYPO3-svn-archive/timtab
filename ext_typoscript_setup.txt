@@ -64,3 +64,18 @@ plugin.tx_timtab_pi2 {
   #enableUploads = {$plugin.tx_timtab_pi2.enableUploads}
   strictAPI = {$plugin.tx_timtab_pi2.strictAPI}
 }
+
+
+#
+#	Calendar config
+#
+
+plugin.tx_timtab_pi3 {
+  header_stdWrap.wrap = 
+  dontWrapInDiv = 0  
+  pid_list = 0
+  #0 = sunday, 1 = monday
+  week_begins = 1
+  gmt_offset = 0
+  weekdayNameLength = 1
+}

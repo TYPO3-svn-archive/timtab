@@ -63,7 +63,8 @@ $LOCAL_LANG = Array (
 		'tx_timtab_blogroll.target.I.0' => 'none (Note that the target attribute is illegal in XHTML 1.1 and 1.0 Strict.)',
 		'tx_timtab_blogroll.target.I.1' => '_blank',
 		'tx_timtab_blogroll.target.I.2' => '_top',
-		'tt_content.list_type_pi1' => 'blogroll',
+		'tt_content.list_type_pi1' => 'Blogroll',
+		'tt_content.list_type_pi3' => 'Calendar',
 	),
 	'dk' => Array (
 	),
@@ -122,7 +123,8 @@ $LOCAL_LANG = Array (
 		'tx_timtab_blogroll.target.I.0' => '- (Beachte das das target Attribut in XHTML 1.1 and 1.0 Strict nicht erlaubt ist.)',
 		'tx_timtab_blogroll.target.I.1' => '_blank',
 		'tx_timtab_blogroll.target.I.2' => '_top',
-		'tt_content.list_type_pi1' => 'Blogroll',
+		'tt_content.list_type_pi1' => 'Blogroll',		
+		'tt_content.list_type_pi3' => 'Kalender',
 	),
 	'no' => Array (
 	),
@@ -156,9 +158,9 @@ $LOCAL_LANG = Array (
 		'tx_timtab_blogroll.rating.I.8' => '8',
 		'tx_timtab_blogroll.rating.I.9' => '9',
 		'tx_timtab_blogroll.target' => 'link target',
-		'tx_timtab_blogroll.target.I.1' => '_nuova',
+		'tx_timtab_blogroll.target.I.1' => '_blank',
 		'tx_timtab_blogroll.target.I.2' => '_top',
-		'tt_content.list_type_pi1' => 'blogs',
+		'tt_content.list_type_pi1' => 'Blogroll',
 	),
 	'fr' => Array (
 	),
@@ -219,7 +221,7 @@ $LOCAL_LANG = Array (
 		'tx_timtab_blogroll.target.I.0' => 'geen (Hou er rekening mee dat het target attribuut niet meer geldig is in XHTML 1.1 and 1.0 Strict.)',
 		'tx_timtab_blogroll.target.I.1' => '_blank',
 		'tx_timtab_blogroll.target.I.2' => '_top',
-		'tt_content.list_type_pi1' => 'blogroll',
+		'tt_content.list_type_pi1' => 'Blogroll',
 	),
 	'cz' => Array (
 	),

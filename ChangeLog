@@ -1,6 +1,7 @@
 2005-10-29	Ingo Renner  <typo3@ingo-renner.com>
 
 	* ADD added Kubrick style category menu
+	* ADD added small calendar which show days that have posts
 	* FIX fixed Bug 0001737: TimTab modifies ve_guestbook
 	
 2005-10-25	Ingo Renner  <typo3@ingo-renner.com>

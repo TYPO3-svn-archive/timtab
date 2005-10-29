@@ -19,6 +19,7 @@ plugin.tt_news {
   useHRDates = 1
   useHRDatesSingle = 1
   useSubCategories = 1
+  limit = 10
   
   displayCatMenu {
     mode = timtab_kubrick
@@ -29,6 +30,14 @@ plugin.tt_news {
     archiveHeader = Archives
   }
 }
+
+#list all posts of the current month when in archive
+[globalVar = GP:tx_ttnews|year > 0]
+plugin.tt_news.limit = 100
+[global]
+[globalVar = GP:tx_ttnews|ps > 0]
+plugin.tt_news.limit = 100
+[global]
 
 # posts list
 temp.list < plugin.tt_news 

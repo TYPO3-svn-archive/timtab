@@ -187,20 +187,20 @@ a:hover {
 	text-decoration: underline;
 	}
 	
-#wp-calendar #prev a {
+#timtab-calendar #prev a {
 	font-size: 9pt;
 	}
 
-#wp-calendar a {
+#timtab-calendar a {
 	text-decoration: none;
 	}
 
-#wp-calendar caption {
+#timtab-calendar caption {
 	font: bold 1.3em 'Lucida Grande', Verdana, Arial, Sans-Serif;
 	text-align: center;
 	}
 
-#wp-calendar th {
+#timtab-calendar th {
 	font-style: normal;
 	text-transform: capitalize;
 	}
@@ -529,37 +529,37 @@ select {
 
 
 /* Begin Calendar */
-#wp-calendar {
+#timtab-calendar {
 	empty-cells: show;
 	margin: 10px auto 0;
 	width: 155px;
 	}
 
-#wp-calendar #next a {
+#timtab-calendar #next a {
 	padding-right: 10px;
 	text-align: right;
 	}
 
-#wp-calendar #prev a {
+#timtab-calendar #prev a {
 	padding-left: 10px;
 	text-align: left;
 	}
 
-#wp-calendar a {
+#timtab-calendar a {
 	display: block;
 	}
 
-#wp-calendar caption {
+#timtab-calendar caption {
 	text-align: center;
 	width: 100%;
 	}
 
-#wp-calendar td {
+#timtab-calendar td {
 	padding: 3px 0;
 	text-align: center;
 	}
 
-#wp-calendar td.pad:hover { /* Doesn't work in IE */
+#timtab-calendar td.pad:hover { /* Doesn't work in IE */
 	background-color: #fff; }
 /* End Calendar */
 
