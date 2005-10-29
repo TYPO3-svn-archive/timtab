@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2004 Ingo Renner (typo3@ingo-renner.com)
+*  (c) 2005 Ingo Renner (typo3@ingo-renner.com)
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
