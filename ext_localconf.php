@@ -29,7 +29,7 @@ $TYPO3_CONF_VARS['EXTCONF']['cms']['db_layout']['addTables']['tx_timtab_blogroll
 //adding plugins
 t3lib_extMgm::addPItoST43($_EXTKEY,'pi1/class.tx_timtab_pi1.php','_pi1','list_type',1);
 t3lib_extMgm::addPItoST43($_EXTKEY,'pi2/class.tx_timtab_pi2.php','_pi2','list_type',0);
-t3lib_extMgm::addPItoST43($_EXTKEY,'pi2/class.tx_timtab_pi3.php','_pi3','list_type',0);
+t3lib_extMgm::addPItoST43($_EXTKEY,'pi3/class.tx_timtab_pi3.php','_pi3','list_type',0);
 
 //registering for several hooks
 $TYPO3_CONF_VARS['EXTCONF']['tt_news']['extraItemMarkerHook'][]        = 'tx_timtab_fe';
