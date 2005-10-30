@@ -89,6 +89,7 @@ class tx_timtab_pi3 extends tslib_pibase {
 	function init($conf) {
 		$this->conf = array_merge($this->conf, $conf);
 		$this->conf['allowCaching'] = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tt_news.']['allowCaching'];
+		$this->conf['blogPid'] = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_timtab.']['blogPid'];
 		$this->pi_setPiVarDefaults();
 		$this->pi_loadLL();
 
@@ -339,7 +340,7 @@ class tx_timtab_pi3 extends tslib_pibase {
 		$conf = array(
 			'useCacheHash'     => $this->conf['allowCaching'],
 			'no_cache'         => !$this->conf['allowCaching'],
-			'parameter'        => $GLOBALS['TSFE']->id, /*the link target*/
+			'parameter'        => $this->conf['targetPid'],
 			'additionalParams' => $this->conf['parent.']['addParams'].t3lib_div::implodeArrayForUrl('',$urlParams,'',1).$this->pi_moreParams,
 			'ATagParams'       => $tagAttribs
 		);
@@ -378,7 +379,7 @@ class tx_timtab_pi3 extends tslib_pibase {
 		$conf = array(
 			'useCacheHash'     => $this->conf['allowCaching'],
 			'no_cache'         => !$this->conf['allowCaching'],
-			'parameter'        => $GLOBALS['TSFE']->id, /*the link target*/
+			'parameter'        => $this->conf['targetPid'],
 			'additionalParams' => $this->conf['parent.']['addParams'].t3lib_div::implodeArrayForUrl('',$urlParams,'',1).$this->pi_moreParams,
 			'ATagParams'       => $tagAttribs
 		);
