@@ -10,6 +10,7 @@ $PATH_timtab = t3lib_extMgm::extPath('timtab');
 
 if (TYPO3_MODE == 'FE')	{
 	require_once($PATH_timtab.'class.tx_timtab_fe.php');
+	require_once($PATH_timtab.'class.tx_timtab_catmenu.php');
 } else {
 	require_once($PATH_timtab.'class.tx_timtab_be.php');
 }
@@ -33,7 +34,7 @@ t3lib_extMgm::addPItoST43($_EXTKEY,'pi3/class.tx_timtab_pi3.php','_pi3','list_ty
 
 //registering for several hooks
 $TYPO3_CONF_VARS['EXTCONF']['tt_news']['extraItemMarkerHook'][]        = 'tx_timtab_fe';
-$TYPO3_CONF_VARS['EXTCONF']['tt_news']['userDisplayCatmenuHook'][]     = 'tx_timtab_fe';
+$TYPO3_CONF_VARS['EXTCONF']['tt_news']['userDisplayCatmenuHook'][]     = 'tx_timtab_catmenu';
 $TYPO3_CONF_VARS['EXTCONF']['ve_guestbook']['extraItemMarkerHook'][]   = 'tx_timtab_fe';
 $TYPO3_CONF_VARS['EXTCONF']['ve_guestbook']['postEntryInsertedHook'][] = 'tx_timtab_fe';
 $TYPO3_CONF_VARS['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = 'tx_timtab_be'; 

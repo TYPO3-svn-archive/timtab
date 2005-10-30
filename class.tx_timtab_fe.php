@@ -442,42 +442,7 @@ class tx_timtab_fe extends tslib_pibase {
 			setcookie('comment_info', $userInfo, time() + 3600 * 24 * 90, '/');
 		}
 
-	}
-	
-	/**
-	 * renders the category menu for Kubrick
-	 * 
-	 * @param	array		the configuration array
-	 * @parma	object		the parent tt_news object
-	 * @return	string		the category menu
-	 */
-	function userDisplayCatmenu($conf, $pObj) {
-		$this->conf     = array();
-		$this->calledBy = 'tt_news';
-		$this->init(array(), $conf);
-		$content = '';
-		
-		if($pObj->conf['displayCatMenu.']['mode'] == 'timtab') {		
-			$res = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
-				'tt_news_cat.uid, COUNT(tt_news_cat.uid) as num, tt_news_cat.title',
-				'tt_news',
-				'tt_news_cat_mm',
-				'tt_news_cat',
-				'AND tt_news.pid = '.$pObj->conf['pid_list'].$this->cObj->enableFields('tt_news'),
-				'tt_news_cat.uid'
-			);
-			
-			$content = '<ul>'.chr(10);
-			while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-				$urlParameters = array('tx_ttnews[cat]' => $row['uid']);
-				$content .= '<li>'.$this->pi_linkTP($row['title'], $urlParameters, $pObj->allowCaching)
-						 .' ('.$row['num'].')</li>'.chr(10);
-			}
-			$content .= '</ul>'.chr(10);
-		}
-		
-		return $content;
-	}
+	}	
 
 	/**
 	 * checks whether we are are used in a blog environment

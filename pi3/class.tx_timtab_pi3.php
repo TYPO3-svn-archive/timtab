@@ -58,6 +58,7 @@ class tx_timtab_pi3 extends tslib_pibase {
 	var $scriptRelPath = 'pi3/class.tx_timtab_pi3.php';	// Path to this script relative to the extension dir.
 	var $extKey = 'timtab';	// The extension key.
 	var $enableFields;
+	var $pi_checkCHash = TRUE;
 
 	/**
 	 * main funtction for blogroll

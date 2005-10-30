@@ -28,6 +28,8 @@ $LOCAL_LANG = Array (
 		'yes' => 'yes',
 		'no' => 'no',
 		'rememberInfo' => 'remember my information',
+		'view_category_posts' => 'View all posts filed under %s',
+		'no_categories' => 'No categories',
 	),
 	'dk' => Array (
 	),
@@ -51,6 +53,8 @@ $LOCAL_LANG = Array (
 		'yes' => 'ja',
 		'no' => 'nein',
 		'rememberInfo' => 'Meine Informationen merken',
+		'view_category_posts' => 'Zeige alle Posts in %s',
+		'no_categories' => 'Keine Kategorien',
 	),
 	'no' => Array (
 	),

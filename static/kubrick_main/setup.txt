@@ -68,7 +68,6 @@ temp.categories {
 }
 
 
-
 # ve_guestbook
 plugin.tx_veguestbook_pi1 {
 
