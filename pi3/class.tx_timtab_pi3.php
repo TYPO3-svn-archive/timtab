@@ -69,7 +69,9 @@ class tx_timtab_pi3 extends tslib_pibase {
 	function main($content, $conf)	{
 		$this->init($conf);
 
-		$content = $this->getCalendar();
+		$calendar = $this->getCalendar();
+
+		$content  = $this->cObj->stdWrap($calendar, $this->conf['header_stdWrap.']);
 
 		if($this->conf['dontWrapInDiv'] == 1) {
 			return $content;
