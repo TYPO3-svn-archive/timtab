@@ -182,7 +182,6 @@ class tx_timtab_fe extends tslib_pibase {
 			$this->markerArray['###BLOG_HOMEPAGE###']      = $this->pi_getLL('commentURL');
 
 			$this->markerArray['###BLOG_COMMENT_UID###']    = $this->conf['data']['uid'];
-			$this->markerArray['###BLOG_COMMENTS_COUNT###'] = $this->pObj->internal['res_count'];
 			if($this->pObj->internal['res_count'] == 1) {
 				$this->markerArray['###BLOG_RESPONSES###']	= $this->pi_getLL('one_response');
 			} else {
@@ -195,6 +194,20 @@ class tx_timtab_fe extends tslib_pibase {
 				$this->markerArray['###BLOG_COMMENTER_NAME###'] = '<a href="'.$this->conf['data']['homepage'].'" rel="external">'.$this->conf['data']['firstname'].'</a>';
 			} else {
 				$this->markerArray['###BLOG_COMMENTER_NAME###'] = $this->conf['data']['firstname'];
+			}
+						
+			$comment_count = $this->pObj->internal['res_count'];
+			if($comment_count == 0) {
+				$this->markerArray['###BLOG_COMMENTS_COUNT###'] = '';
+				$this->markerArray['###BLOG_TEXT_COMMENTS###'] = $this->pi_getLL('no_comments');
+			}
+			elseif($comment_count == 1) {
+				$this->markerArray['###BLOG_COMMENTS_COUNT###'] = 1;
+				$this->markerArray['###BLOG_TEXT_COMMENTS###'] = $this->pi_getLL('one_comment');
+			}
+			else {
+				$this->markerArray['###BLOG_COMMENTS_COUNT###'] = $comment_count;
+				$this->markerArray['###BLOG_TEXT_COMMENTS###'] = $this->pi_getLL('multiple_comments');
 			}
 
 			//numbering comments
