@@ -45,6 +45,7 @@ plugin.tx_timtab_pi1 {
   header_stdWrap.wrap = 
   dontWrapInDiv = 0  
   pid_list = 0
+  listClass = 
 }
 
 

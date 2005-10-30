@@ -61,7 +61,14 @@ class tx_timtab_pi1 extends tslib_pibase {
 	 */
 	function main($content, $conf)	{
 		$this->init($conf);
-		$blogroll = '<ul>'."\n";
+		$blogroll = '<ul';
+
+		$listClass = trim($this->conf['listClass']);
+		if($listClass) {
+			$blogroll .= ' class="'.$listClass.'"';
+		}
+
+		$blogroll .= '>'."\n";
 
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'url, name, description, rel_identity, rel_friendship, rel_physical, rel_professional, rel_geographical, rel_family, rel_romantic, target',
