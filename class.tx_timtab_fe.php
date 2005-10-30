@@ -161,6 +161,7 @@ class tx_timtab_fe extends tslib_pibase {
 			$tbLink = $tb->getTrackbackLink();
 			$this->markerArray['###BLOG_TRACKBACK_RDF###']  = $rdf;
 			$this->markerArray['###BLOG_TRACKBACK_LINK###'] = $tbLink;
+			$this->markerArray['###BLOG_TRACKBACK_URL###']  = $tbURL;
 
 			//misc
 			$this->markerArray['###BLOG_POST_TITLE###'] = $this->buildPostTitle($this->conf['data']['title']);
@@ -232,6 +233,11 @@ class tx_timtab_fe extends tslib_pibase {
 				$this->markerArray['###VALUE_EMAIL###']     = $userInfo[1];
 				$this->markerArray['###VALUE_HOMEPAGE###']  = $userInfo[2];
 			}
+			
+			$tb = t3lib_div::makeInstance('tx_timtab_trackback');
+			$tb->init($this, $tt_news);
+			$this->markerArray['###BLOG_TRACKBACK_URL###'] = $tb->getTrackbackURL();
+			
 
 		}
 	}
@@ -449,23 +455,26 @@ class tx_timtab_fe extends tslib_pibase {
 		$this->conf     = array();
 		$this->calledBy = 'tt_news';
 		$this->init(array(), $conf);
+		$content = '';
 		
-		$res = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
-			'tt_news_cat.uid, COUNT(tt_news_cat.uid) as num, tt_news_cat.title',
-			'tt_news',
-			'tt_news_cat_mm',
-			'tt_news_cat',
-			'AND tt_news.pid = '.$pObj->conf['pid_list'].$this->cObj->enableFields('tt_news'),
-			'tt_news_cat.uid'
-		);
-		
-		$content = '<ul>'.chr(10);
-		while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-			$urlParameters = array('tx_ttnews[cat]' => $row['uid']);
-			$content .= '<li>'.$this->pi_linkTP($row['title'], $urlParameters, $pObj->allowCaching)
-					 .' ('.$row['num'].')</li>'.chr(10);
+		if($pObj->conf['displayCatMenu.']['mode'] == 'timtab') {		
+			$res = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
+				'tt_news_cat.uid, COUNT(tt_news_cat.uid) as num, tt_news_cat.title',
+				'tt_news',
+				'tt_news_cat_mm',
+				'tt_news_cat',
+				'AND tt_news.pid = '.$pObj->conf['pid_list'].$this->cObj->enableFields('tt_news'),
+				'tt_news_cat.uid'
+			);
+			
+			$content = '<ul>'.chr(10);
+			while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+				$urlParameters = array('tx_ttnews[cat]' => $row['uid']);
+				$content .= '<li>'.$this->pi_linkTP($row['title'], $urlParameters, $pObj->allowCaching)
+						 .' ('.$row['num'].')</li>'.chr(10);
+			}
+			$content .= '</ul>'.chr(10);
 		}
-		$content .= '</ul>'.chr(10);
 		
 		return $content;
 	}

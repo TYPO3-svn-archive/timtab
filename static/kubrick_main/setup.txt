@@ -22,7 +22,7 @@ plugin.tt_news {
   limit = 10
   
   displayCatMenu {
-    mode = timtab_kubrick
+    mode = timtab
     catmenu_stdWrap.wrap = <li><h2 class="news-catmenu">Categories</h2>|</li>
   }
 
