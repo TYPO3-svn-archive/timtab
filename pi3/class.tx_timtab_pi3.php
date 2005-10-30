@@ -132,12 +132,6 @@ class tx_timtab_pi3 extends tslib_pibase {
 			return '';
 		}
 
-		/*
-		if (isset($_GET['w'])) {
-			$w = ''.intval($_GET['w']);
-		}
-		*/
-
 		// week_begins = 0 stands for sunday
 		$weekBegins = $this->conf['week_begins'];
 		$addHours   = $this->conf['gmt_offset'];
@@ -354,7 +348,7 @@ class tx_timtab_pi3 extends tslib_pibase {
 		if($timestamp < $now) {
 			$link = '&laquo; '.$link;
 		} else {
-			$link = $link.'&raquo; ';
+			$link = $link.' &raquo;';
 		}
 
 		return $this->cObj->typoLink($link, $conf);
