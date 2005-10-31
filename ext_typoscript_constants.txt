@@ -15,6 +15,9 @@ plugin.tx_timtab {
 
 	# cat=plugin.tx_timtab/basic/40; type=int+; label= Blog pid: The pid where the single view of your tt_news plugin resides and shows the blog posts
   blogPid = 0
+  
+	# cat=plugin.tx_timtab/basic/50; type=int+; label= Home pid: The pid of your Homepage
+  homePid = 0
 }
 
 plugin.tx_timtab_pi2 {

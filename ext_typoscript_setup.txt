@@ -39,6 +39,7 @@ plugin.tx_timtab {
   tagline = {$plugin.tx_timtab.tagline}
   homepage = {$plugin.tx_timtab.homepage}
   blogPid = {$plugin.tx_timtab.blogPid}
+  homePid = {$plugin.tx_timtab.homePid}
 }
 
 
