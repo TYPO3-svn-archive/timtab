@@ -10,7 +10,7 @@
 $LOCAL_LANG = Array (
 	'default' => Array (
 	),
-	'dk' => Array (			
+	'dk' => Array (
 	),
 	'de' => Array (
 	),
@@ -87,6 +87,12 @@ $LOCAL_LANG = Array (
 	'ba' => Array (
 	),
 	'kr' => Array (
+	),
+	'eo' => Array (
+	),
+	'my' => Array (
+	),
+	'hi' => Array (
 	),
 );
 ?>

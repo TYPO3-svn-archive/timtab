@@ -9,28 +9,36 @@
 
 $LOCAL_LANG = Array (
 	'default' => Array (
-		'monday'    => 'Monday',
-		'tuesday'   => 'Tuesday',
+		'monday' => 'Monday',
+		'tuesday' => 'Tuesday',
 		'wednesday' => 'Wednesday',
-		'thursday'  => 'Thursday',
-		'friday'    => 'Friday',
-		'saturday'  => 'Saturday',
-		'sunday'    => 'Sunday',
+		'thursday' => 'Thursday',
+		'friday' => 'Friday',
+		'saturday' => 'Saturday',
+		'sunday' => 'Sunday',
 		'view_posts' => 'View posts for %s',
 	),
-	'dk' => Array (			
+	'dk' => Array (
 	),
 	'de' => Array (
-		'monday'    => 'Montag',
-		'tuesday'   => 'Dienstag',
+		'monday' => 'Montag',
+		'tuesday' => 'Dienstag',
 		'wednesday' => 'Mittwoch',
-		'thursday'  => 'Donnerstag',
-		'friday'    => 'Freitag',
-		'saturday'  => 'Samstag',
-		'sunday'    => 'Sonntag',
+		'thursday' => 'Donnerstag',
+		'friday' => 'Freitag',
+		'saturday' => 'Samstag',
+		'sunday' => 'Sonntag',
 		'view_posts' => 'Zeige Posts aus %s',
 	),
 	'no' => Array (
+		'monday' => 'Mandag',
+		'tuesday' => 'Tirsdag',
+		'wednesday' => 'Onsdag',
+		'thursday' => 'Torsdag',
+		'friday' => 'Fredag',
+		'saturday' => 'Lшrdag',
+		'sunday' => 'Sшndag',
+		'view_posts' => 'Vis alle poster for %s',
 	),
 	'it' => Array (
 	),
@@ -39,6 +47,14 @@ $LOCAL_LANG = Array (
 	'es' => Array (
 	),
 	'nl' => Array (
+		'monday' => 'Maandag',
+		'tuesday' => 'Dinsdag',
+		'wednesday' => 'Woensdag',
+		'thursday' => 'Donderdag',
+		'friday' => 'Vrijdag',
+		'saturday' => 'Zaterdag',
+		'sunday' => 'Zondag',
+		'view_posts' => 'Bekijk berichten voor %s',
 	),
 	'cz' => Array (
 	),
@@ -55,6 +71,14 @@ $LOCAL_LANG = Array (
 	'pt' => Array (
 	),
 	'ru' => Array (
+		'monday' => 'Понедельник',
+		'tuesday' => 'Вторник',
+		'wednesday' => 'Среда',
+		'thursday' => 'Четверг',
+		'friday' => 'Пятница',
+		'saturday' => 'Суббота',
+		'sunday' => 'Воскресенье',
+		'view_posts' => 'Просмотреть посты от %s',
 	),
 	'ro' => Array (
 	),
@@ -104,6 +128,11 @@ $LOCAL_LANG = Array (
 	),
 	'kr' => Array (
 	),
+	'eo' => Array (
+	),
+	'my' => Array (
+	),
+	'hi' => Array (
+	),
 );
-
 ?>
