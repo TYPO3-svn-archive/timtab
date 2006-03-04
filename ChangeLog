@@ -1,3 +1,7 @@
+2006-02-22	Ingo Renner  <typo3@ingo-renner.com>
+
+	* FIX tt_news GRSP handling
+	
 2005-11-15	Ingo Renner  <typo3@ingo-renner.com>
 
 	* CHG Kubrick is now a one click install theme

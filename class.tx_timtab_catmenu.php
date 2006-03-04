@@ -203,7 +203,7 @@ class tx_timtab_catmenu extends tslib_pibase {
 		$categories = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
 			'uid, title, description, parent_category',
 			'tt_news_cat',
-			'uid > 0'.$pObj->SPaddWhere.$this->catEnableFields,
+			'uid > 0'.$this->pObj->SPaddWhere.$this->catEnableFields,
 			'',
 			$this->conf['displayCatMenu.']['sortBy']
 		);
