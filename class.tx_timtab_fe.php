@@ -102,6 +102,9 @@ class tx_timtab_fe extends tslib_pibase {
 		// pi_setPiVarDefaults() does not work since we are in a code library
 		// and don't get called as a plugin, so we're getting our conf this way:
 		// $this->conf might be set already, so we have to merge both arrays
+		if(!is_array($this->conf)) {
+			$this->conf = array();
+		}
 		$this->conf = array_merge($this->conf, $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_timtab.']);
 
 		$this->markerArray = $markerArray;
