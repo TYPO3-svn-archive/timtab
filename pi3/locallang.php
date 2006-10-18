@@ -7,8 +7,8 @@
  * This file is detected by the translation tool.
  */
 
-$LOCAL_LANG = Array (
-	'default' => Array (
+$LOCAL_LANG = array (
+	'default' => array (
 		'monday' => 'Monday',
 		'tuesday' => 'Tuesday',
 		'wednesday' => 'Wednesday',
@@ -18,9 +18,17 @@ $LOCAL_LANG = Array (
 		'sunday' => 'Sunday',
 		'view_posts' => 'View posts for %s',
 	),
-	'dk' => Array (
+	'dk' => array (
+		'monday' => 'Mandag',
+		'tuesday' => 'Tirsdag',
+		'wednesday' => 'Onsdag',
+		'thursday' => 'Torsdag',
+		'friday' => 'Fredag',
+		'saturday' => 'L¿rdag',
+		'sunday' => 'S¿ndag',
+		'view_posts' => 'Vis indl¾g for %s',
 	),
-	'de' => Array (
+	'de' => array (
 		'monday' => 'Montag',
 		'tuesday' => 'Dienstag',
 		'wednesday' => 'Mittwoch',
@@ -30,7 +38,7 @@ $LOCAL_LANG = Array (
 		'sunday' => 'Sonntag',
 		'view_posts' => 'Zeige Posts aus %s',
 	),
-	'no' => Array (
+	'no' => array (
 		'monday' => 'Mandag',
 		'tuesday' => 'Tirsdag',
 		'wednesday' => 'Onsdag',
@@ -40,13 +48,13 @@ $LOCAL_LANG = Array (
 		'sunday' => 'Søndag',
 		'view_posts' => 'Vis alle poster for %s',
 	),
-	'it' => Array (
+	'it' => array (
 	),
-	'fr' => Array (
+	'fr' => array (
 	),
-	'es' => Array (
+	'es' => array (
 	),
-	'nl' => Array (
+	'nl' => array (
 		'monday' => 'Maandag',
 		'tuesday' => 'Dinsdag',
 		'wednesday' => 'Woensdag',
@@ -56,21 +64,21 @@ $LOCAL_LANG = Array (
 		'sunday' => 'Zondag',
 		'view_posts' => 'Bekijk berichten voor %s',
 	),
-	'cz' => Array (
+	'cz' => array (
 	),
-	'pl' => Array (
+	'pl' => array (
 	),
-	'si' => Array (
+	'si' => array (
 	),
-	'fi' => Array (
+	'fi' => array (
 	),
-	'tr' => Array (
+	'tr' => array (
 	),
-	'se' => Array (
+	'se' => array (
 	),
-	'pt' => Array (
+	'pt' => array (
 	),
-	'ru' => Array (
+	'ru' => array (
 		'monday' => 'Ïîíåäåëüíèê',
 		'tuesday' => 'Âòîðíèê',
 		'wednesday' => 'Ñðåäà',
@@ -80,59 +88,59 @@ $LOCAL_LANG = Array (
 		'sunday' => 'Âîñêðåñåíüå',
 		'view_posts' => 'Ïðîñìîòðåòü ïîñòû îò %s',
 	),
-	'ro' => Array (
+	'ro' => array (
 	),
-	'ch' => Array (
+	'ch' => array (
 	),
-	'sk' => Array (
+	'sk' => array (
 	),
-	'lt' => Array (
+	'lt' => array (
 	),
-	'is' => Array (
+	'is' => array (
 	),
-	'hr' => Array (
+	'hr' => array (
 	),
-	'hu' => Array (
+	'hu' => array (
 	),
-	'gl' => Array (
+	'gl' => array (
 	),
-	'th' => Array (
+	'th' => array (
 	),
-	'gr' => Array (
+	'gr' => array (
 	),
-	'hk' => Array (
+	'hk' => array (
 	),
-	'eu' => Array (
+	'eu' => array (
 	),
-	'bg' => Array (
+	'bg' => array (
 	),
-	'br' => Array (
+	'br' => array (
 	),
-	'et' => Array (
+	'et' => array (
 	),
-	'ar' => Array (
+	'ar' => array (
 	),
-	'he' => Array (
+	'he' => array (
 	),
-	'ua' => Array (
+	'ua' => array (
 	),
-	'lv' => Array (
+	'lv' => array (
 	),
-	'jp' => Array (
+	'jp' => array (
 	),
-	'vn' => Array (
+	'vn' => array (
 	),
-	'ca' => Array (
+	'ca' => array (
 	),
-	'ba' => Array (
+	'ba' => array (
 	),
-	'kr' => Array (
+	'kr' => array (
 	),
-	'eo' => Array (
+	'eo' => array (
 	),
-	'my' => Array (
+	'my' => array (
 	),
-	'hi' => Array (
+	'hi' => array (
 	),
 );
 ?>

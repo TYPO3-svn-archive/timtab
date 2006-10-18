@@ -7,8 +7,8 @@
  * $Id$
  */
 
-$LOCAL_LANG = Array (
-	'default' => Array (
+$LOCAL_LANG = array (
+	'default' => array (
 		'pi1_title' => 'Blogroll',
 		'pi1_plus_wiz_description' => 'add a blogroll to your site',
 		'pi3_title' => 'Calendar',
@@ -31,13 +31,35 @@ $LOCAL_LANG = Array (
 		'view_category_posts' => 'View all posts filed under %s',
 		'no_categories' => 'No categories',
 	),
-	'dk' => Array (
-	),
-	'de' => Array (
-		'pi1_title' => 'Blogroll',
-		'pi1_plus_wiz_description' => 'Einen Blogroll in die Seite einfügen.',
+	'dk' => array (
 		'pi3_title' => 'Kalender',
-		'pi3_plus_wiz_description' => 'Fügt einen Kalender ein, der die Tage hervorhebt an denen Posts erstellt wurden.',
+		'no_comments' => 'Ingen kommentarer',
+		'one_comment' => 'Kommentar',
+		'multiple_comments' => 'Kommentarer',
+		'one_response' => 'Svar',
+		'multiple_responses' => 'Svar',
+		'formRequired' => '(pŒkr¾vet)',
+		'commentName' => 'Navn',
+		'commentMail' => 'E-mail',
+		'commentURL' => 'Hjemmeside',
+		'yes' => 'ja',
+		'no' => 'nej',
+		'rememberInfo' => 'husk mine informationer',
+		'no_categories' => 'Ingen kategorier',
+		'gravatar_this_is' => 'Dette er',
+		'pi1_title' => 'Blogroll',
+		'pi1_plus_wiz_description' => 'tilf¿j en blogroll til sitet',
+		'notPublished' => '(vil ikke blive vist)',
+		'pi3_plus_wiz_description' => 'tilf¿j en lille kalender hvor dage der indeholder blogindl¾g er markerede',
+		'leaveReply' => 'Skriv en kommentar',
+		'commentsDeactivated' => 'Der er lukket for kommentarer til dette indl¾g.',
+		'view_category_posts' => 'Vis alle indl¾g under %s',
+	),
+	'de' => array (
+		'pi1_title' => 'Blogroll',
+		'pi1_plus_wiz_description' => 'Einen Blogroll in die Seite einfŸgen.',
+		'pi3_title' => 'Kalender',
+		'pi3_plus_wiz_description' => 'FŸgt einen Kalender ein, der die Tage hervorhebt an denen Posts erstellt wurden.',
 		'no_comments' => 'Keine Kommentare',
 		'one_comment' => 'Kommentar',
 		'multiple_comments' => 'Kommentare',
@@ -49,14 +71,14 @@ $LOCAL_LANG = Array (
 		'commentName' => 'Name',
 		'commentMail' => 'E-Mail',
 		'commentURL' => 'Website',
-		'commentsDeactivated' => 'Kommentare sind für diesen Beitrag geschlossen.',
+		'commentsDeactivated' => 'Kommentare sind fŸr diesen Beitrag geschlossen.',
 		'yes' => 'ja',
 		'no' => 'nein',
 		'rememberInfo' => 'Meine Informationen merken',
 		'view_category_posts' => 'Zeige alle Posts in %s',
 		'no_categories' => 'Keine Kategorien',
 	),
-	'no' => Array (
+	'no' => array (
 		'pi1_title' => 'Blogliste',
 		'pi1_plus_wiz_description' => 'legg til en blogliste til ditt websted',
 		'pi3_title' => 'Kalender',
@@ -79,7 +101,7 @@ $LOCAL_LANG = Array (
 		'view_category_posts' => 'Vis alle poster lagret under %s',
 		'no_categories' => 'Ingen kategorier',
 	),
-	'it' => Array (
+	'it' => array (
 		'pi1_title' => 'Blogroll',
 		'pi1_plus_wiz_description' => 'aggiungi un elenco di blog al tuo sito',
 		'no_comments' => 'Nessun Commento',
@@ -98,11 +120,11 @@ $LOCAL_LANG = Array (
 		'no' => 'no',
 		'rememberInfo' => 'ricordati i miei dati',
 	),
-	'fr' => Array (
+	'fr' => array (
 	),
-	'es' => Array (
+	'es' => array (
 	),
-	'nl' => Array (
+	'nl' => array (
 		'pi1_title' => 'Blogroll',
 		'pi1_plus_wiz_description' => 'voeg een blogroll toe aan uw website',
 		'pi3_title' => 'Kalender',
@@ -125,21 +147,21 @@ $LOCAL_LANG = Array (
 		'view_category_posts' => 'Bekijk alle berichten die opgeslagen zijn onder %s',
 		'no_categories' => 'Geen categorien',
 	),
-	'cz' => Array (
+	'cz' => array (
 	),
-	'pl' => Array (
+	'pl' => array (
 	),
-	'si' => Array (
+	'si' => array (
 	),
-	'fi' => Array (
+	'fi' => array (
 	),
-	'tr' => Array (
+	'tr' => array (
 	),
-	'se' => Array (
+	'se' => array (
 	),
-	'pt' => Array (
+	'pt' => array (
 	),
-	'ru' => Array (
+	'ru' => array (
 		'pi1_title' => 'Îáçîð áëîãà',
 		'pi1_plus_wiz_description' => 'Äîáàâëåíèå îáîçðåâàòåëÿ áëîãà íà ñàéò',
 		'pi3_title' => 'Êàëåíäàðü',
@@ -162,59 +184,59 @@ $LOCAL_LANG = Array (
 		'view_category_posts' => 'Ïðîñìîòðåòü âñå ïîñòû êàòåãîðèè %s',
 		'no_categories' => 'Íåò êàòåãîðèé',
 	),
-	'ro' => Array (
+	'ro' => array (
 	),
-	'ch' => Array (
+	'ch' => array (
 	),
-	'sk' => Array (
+	'sk' => array (
 	),
-	'lt' => Array (
+	'lt' => array (
 	),
-	'is' => Array (
+	'is' => array (
 	),
-	'hr' => Array (
+	'hr' => array (
 	),
-	'hu' => Array (
+	'hu' => array (
 	),
-	'gl' => Array (
+	'gl' => array (
 	),
-	'th' => Array (
+	'th' => array (
 	),
-	'gr' => Array (
+	'gr' => array (
 	),
-	'hk' => Array (
+	'hk' => array (
 	),
-	'eu' => Array (
+	'eu' => array (
 	),
-	'bg' => Array (
+	'bg' => array (
 	),
-	'br' => Array (
+	'br' => array (
 	),
-	'et' => Array (
+	'et' => array (
 	),
-	'ar' => Array (
+	'ar' => array (
 	),
-	'he' => Array (
+	'he' => array (
 	),
-	'ua' => Array (
+	'ua' => array (
 	),
-	'lv' => Array (
+	'lv' => array (
 	),
-	'jp' => Array (
+	'jp' => array (
 	),
-	'vn' => Array (
+	'vn' => array (
 	),
-	'ca' => Array (
+	'ca' => array (
 	),
-	'ba' => Array (
+	'ba' => array (
 	),
-	'kr' => Array (
+	'kr' => array (
 	),
-	'eo' => Array (
+	'eo' => array (
 	),
-	'my' => Array (
+	'my' => array (
 	),
-	'hi' => Array (
+	'hi' => array (
 	),
 );
 ?>

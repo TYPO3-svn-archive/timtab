@@ -7,8 +7,8 @@
  * $Id$
  */
 
-$LOCAL_LANG = Array (
-	'default' => Array (
+$LOCAL_LANG = array (
+	'default' => array (
 		'tt_news.tx_timtab_trackbacks' => 'Trackbacks',
 		'tt_news.tx_timtab_ping_allowed' => 'Allow Pings',
 		'tt_news.tx_timtab_comments_allowed' => 'Allow Comments',
@@ -66,9 +66,66 @@ $LOCAL_LANG = Array (
 		'tt_content.list_type_pi1' => 'Blogroll',
 		'tt_content.list_type_pi3' => 'Calendar',
 	),
-	'dk' => Array (
+	'dk' => array (
+		'tt_news.tx_timtab_trackbacks' => 'Trackbacks',
+		'tt_news.tx_timtab_ping_allowed' => 'Tillad Pings',
+		'tt_news.tx_timtab_comments_allowed' => 'Tillad Kommentarer',
+		'tt_news.type.I.timtab' => 'Blogindl¾g',
+		'tx_timtab_blogroll' => 'Link',
+		'tx_timtab_blogroll.url' => 'URL',
+		'tx_timtab_blogroll.name' => 'linknavn',
+		'tx_timtab_blogroll.description' => 'kort beskrivelse',
+		'tx_timtab_blogroll.rel_identity' => 'identitet',
+		'tx_timtab_blogroll.rel_friendship.I.0' => 'ingen',
+		'tx_timtab_blogroll.img_uri' => 'billede URL',
+		'tx_timtab_blogroll.rss_uri' => 'RSS URL',
+		'tx_timtab_blogroll.rating.I.0' => '0',
+		'tx_timtab_blogroll.rating.I.1' => '1',
+		'tx_timtab_blogroll.rating.I.2' => '2',
+		'tx_timtab_blogroll.rating.I.3' => '3',
+		'tx_timtab_blogroll.rating.I.4' => '4',
+		'tx_timtab_blogroll.rating.I.5' => '5',
+		'tx_timtab_blogroll.rating.I.6' => '6',
+		'tx_timtab_blogroll.rating.I.7' => '7',
+		'tx_timtab_blogroll.rating.I.8' => '8',
+		'tx_timtab_blogroll.rating.I.9' => '9',
+		'tx_timtab_blogroll.target' => 'link target',
+		'tx_timtab_blogroll.target.I.0' => 'ingen (Husk at target attributten ikke er tilladt i XHTML 1.1 og 1.0 Strict.)',
+		'tx_timtab_blogroll.target.I.1' => '_blank',
+		'tx_timtab_blogroll.target.I.2' => '_top',
+		'tt_content.list_type_pi1' => 'Blogroll',
+		'tt_content.list_type_pi3' => 'Kalender',
+		'tx_timtab_blogroll.rel_friendship' => 'venskab',
+		'tx_timtab_blogroll.rel_friendship.I.0' => 'ingen',
+		'tx_timtab_blogroll.rel_friendship.I.1' => 'bekendt',
+		'tx_timtab_blogroll.rel_friendship.I.2' => 'kontakt',
+		'tx_timtab_blogroll.rel_friendship.I.3' => 'ven',
+		'tx_timtab_blogroll.rel_physical' => 'fysisk',
+		'tx_timtab_blogroll.rel_physical.I.0' => 'm¿dt',
+		'tx_timtab_blogroll.rel_professional' => 'professionel',
+		'tx_timtab_blogroll.rel_professional.I.0' => 'arbejdskollega',
+		'tx_timtab_blogroll.rel_professional.I.1' => 'kollega',
+		'tx_timtab_blogroll.rel_geographical.I.0' => 'ingen',
+		'tx_timtab_blogroll.rel_geographical.I.1' => 'sambo',
+		'tx_timtab_blogroll.rel_geographical.I.2' => 'nabo',
+		'tx_timtab_blogroll.rel_geographical' => 'geografisk',
+		'tx_timtab_blogroll.rel_family' => 'familie',
+		'tx_timtab_blogroll.rel_family.I.0' => 'ingen',
+		'tx_timtab_blogroll.rel_family.I.1' => 'barn',
+		'tx_timtab_blogroll.rel_family.I.2' => 'sl¾gtning',
+		'tx_timtab_blogroll.rel_family.I.3' => 'for¾ldre',
+		'tx_timtab_blogroll.rel_family.I.4' => 's¿skende',
+		'tx_timtab_blogroll.rel_family.I.5' => '¾gtef¾lle',
+		'tx_timtab_blogroll.rel_romantic' => 'romantisk',
+		'tx_timtab_blogroll.rel_romantic.I.0' => 'muse',
+		'tx_timtab_blogroll.rel_romantic.I.1' => 'forelskelse',
+		'tx_timtab_blogroll.rel_romantic.I.2' => 'date',
+		'tx_timtab_blogroll.rel_romantic.I.3' => 'k¾reste',
+		'tx_timtab_blogroll.notes' => 'notater',
+		'tx_timtab_blogroll.rating' => 'bed¿mmelse',
+		'tx_timtab_blogroll.rel_identity.I.0' => 'en anden af mine webadresser',
 	),
-	'de' => Array (
+	'de' => array (
 		'tt_news.tx_timtab_trackbacks' => 'Trackbacks',
 		'tt_news.tx_timtab_ping_allowed' => 'Erlaube Pings',
 		'tt_news.tx_timtab_comments_allowed' => 'Erlaube Comments',
@@ -126,7 +183,7 @@ $LOCAL_LANG = Array (
 		'tt_content.list_type_pi1' => 'Blogroll',
 		'tt_content.list_type_pi3' => 'Kalender',
 	),
-	'no' => Array (
+	'no' => array (
 		'tt_news.tx_timtab_trackbacks' => 'Trackbacks',
 		'tt_news.tx_timtab_ping_allowed' => 'Tillat ping',
 		'tt_news.tx_timtab_comments_allowed' => 'Tillat kommentarer',
@@ -184,7 +241,7 @@ $LOCAL_LANG = Array (
 		'tt_content.list_type_pi1' => 'blogliste',
 		'tt_content.list_type_pi3' => 'Kalender',
 	),
-	'it' => Array (
+	'it' => array (
 		'tt_news.tx_timtab_trackbacks' => 'Trackbacks',
 		'tt_news.tx_timtab_ping_allowed' => 'Permetti Pings',
 		'tt_news.tx_timtab_comments_allowed' => 'Permetti Commenti',
@@ -220,11 +277,11 @@ $LOCAL_LANG = Array (
 		'tx_timtab_blogroll.target.I.2' => '_top',
 		'tt_content.list_type_pi1' => 'Blogroll',
 	),
-	'fr' => Array (
+	'fr' => array (
 	),
-	'es' => Array (
+	'es' => array (
 	),
-	'nl' => Array (
+	'nl' => array (
 		'tt_news.tx_timtab_trackbacks' => 'Trackbacks',
 		'tt_news.tx_timtab_ping_allowed' => 'Pings toestaan',
 		'tt_news.tx_timtab_comments_allowed' => 'Reacties toestaan',
@@ -282,21 +339,21 @@ $LOCAL_LANG = Array (
 		'tt_content.list_type_pi1' => 'Blogroll',
 		'tt_content.list_type_pi3' => 'Kalender',
 	),
-	'cz' => Array (
+	'cz' => array (
 	),
-	'pl' => Array (
+	'pl' => array (
 	),
-	'si' => Array (
+	'si' => array (
 	),
-	'fi' => Array (
+	'fi' => array (
 	),
-	'tr' => Array (
+	'tr' => array (
 	),
-	'se' => Array (
+	'se' => array (
 	),
-	'pt' => Array (
+	'pt' => array (
 	),
-	'ru' => Array (
+	'ru' => array (
 		'tt_news.tx_timtab_trackbacks' => 'Òðýêáýêè',
 		'tt_news.tx_timtab_ping_allowed' => 'Ïîçâîëÿòü ïèíãè',
 		'tt_news.tx_timtab_comments_allowed' => 'Ïîçâîëÿòü êîììåíòàðèè',
@@ -354,59 +411,59 @@ $LOCAL_LANG = Array (
 		'tt_content.list_type_pi1' => 'Îáçîð áëîãà',
 		'tt_content.list_type_pi3' => 'Êàëåíäàðü',
 	),
-	'ro' => Array (
+	'ro' => array (
 	),
-	'ch' => Array (
+	'ch' => array (
 	),
-	'sk' => Array (
+	'sk' => array (
 	),
-	'lt' => Array (
+	'lt' => array (
 	),
-	'is' => Array (
+	'is' => array (
 	),
-	'hr' => Array (
+	'hr' => array (
 	),
-	'hu' => Array (
+	'hu' => array (
 	),
-	'gl' => Array (
+	'gl' => array (
 	),
-	'th' => Array (
+	'th' => array (
 	),
-	'gr' => Array (
+	'gr' => array (
 	),
-	'hk' => Array (
+	'hk' => array (
 	),
-	'eu' => Array (
+	'eu' => array (
 	),
-	'bg' => Array (
+	'bg' => array (
 	),
-	'br' => Array (
+	'br' => array (
 	),
-	'et' => Array (
+	'et' => array (
 	),
-	'ar' => Array (
+	'ar' => array (
 	),
-	'he' => Array (
+	'he' => array (
 	),
-	'ua' => Array (
+	'ua' => array (
 	),
-	'lv' => Array (
+	'lv' => array (
 	),
-	'jp' => Array (
+	'jp' => array (
 	),
-	'vn' => Array (
+	'vn' => array (
 	),
-	'ca' => Array (
+	'ca' => array (
 	),
-	'ba' => Array (
+	'ba' => array (
 	),
-	'kr' => Array (
+	'kr' => array (
 	),
-	'eo' => Array (
+	'eo' => array (
 	),
-	'my' => Array (
+	'my' => array (
 	),
-	'hi' => Array (
+	'hi' => array (
 	),
 );
 ?>
