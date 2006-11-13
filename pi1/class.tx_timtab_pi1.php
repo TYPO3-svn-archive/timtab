@@ -61,15 +61,14 @@ class tx_timtab_pi1 extends tslib_pibase {
 	 */
 	function main($content, $conf)	{
 		$this->init($conf);
-		$blogroll = '<ul';
-
-		$listClass = trim($this->conf['listClass']);
-		if($listClass) {
-			$blogroll .= ' class="'.$listClass.'"';
+		$blogroll  = '';
+		$listClass = '';
+	
+		$listClassFromConf = trim($this->conf['listClass']);
+		if($listClassFromConf) {
+			$listClass = ' class="'.$listClassFromConf.'" ';
 		}
-
-		$blogroll .= '>'."\n";
-
+	
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'url, name, description, rel_identity, rel_friendship, rel_physical, rel_professional, rel_geographical, rel_family, rel_romantic, target',
 			'tx_timtab_blogroll',
@@ -77,36 +76,38 @@ class tx_timtab_pi1 extends tslib_pibase {
 			'',
 			'sorting'
 		);
-
-
+	
+	
 		while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 			$link  = "\t".'<li><a href="';
 			$link .= substr($row['url'], 0, 7) == 'http://'?$row['url']:'http://'.$row['url'];
 			$link .= '"'.$this->buildRelAttr($row);
 			$link .= !empty($row['description'])?' title="'.$row['description'].'"':'';
-
+	
 			if($row['target'] == 1) {
 				$link .= ' target="_blank"';
 			} elseif($row['target'] == 2) {
 				$link .= ' target="_top"';
 			}
-
+	
 			$link .= '>'.$row['name'].'</a></li>'."\n";
-
+	
 			$blogroll .= $link;
 		}
-
-		$blogroll .= '</ul>';
-
+	
+		if (!empty($blogroll)) {
+			$blogroll = '<ul' . $listClass . '>' ."\n". $blogroll ."\n". '</ul>';	
+		}
+	
 		$content .= $this->cObj->stdWrap($blogroll, $this->conf['header_stdWrap.']);
-
+	
 		if($this->conf['dontWrapInDiv'] == 1) {
 			return $content;
 		} else {
 			return $this->pi_wrapInBaseClass($content);
 		}
 	}
-
+	
 	/**
 	 * initializes the configuration for this plugin
 	 *
