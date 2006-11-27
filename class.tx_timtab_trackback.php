@@ -22,7 +22,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 /**
- * Trackback class for the timtab extension, the majority of the code
+ * Trackback class for the TIMTAB extension, the majority of the code
  * is originaly taken from PHP TrackBack,
  * see: http://phptrackback.sourceforge.net
  *
@@ -30,33 +30,12 @@
  *
  * @author	Ingo Renner <typo3@ingo-renner.com>
  */
-/**
- * [CLASS/FUNCTION INDEX of SCRIPT]
- *
- *
- *
- *   60: class tx_timtab_trackback
- *   80:     function init($pObj, $tt_news)
- *   99:     function ping($target)
- *  195:     function sendResponse($success = false, $err_response = '')
- *  228:     function getEmbeddedRdf($permalink, $trackbackURL)
- *  261:     function tbAutoDiscovery($content)
- *
- *              SECTION: Supporting methods
- *  330:     function getSourceURL()
- *  348:     function getTrackbackURL()
- *  368:     function getTrackbackLink()
- *  387:     function getPermalink()
- *  396:     function getExcerpt()
- *  423:     function getTrackbackStatus($TBlist, $status)
- *  459:     function setTrackbackStatus($TBstatus)
- *  477:     function getRfc2822Date($timestamp)
- *  487:     function xmlSafe($string)
- *
- * TOTAL FUNCTIONS: 14
- * (This index is automatically created/updated by the extension "extdeveval")
- *
- */
+
+
+$PATH_timtab = t3lib_extMgm::extPath('timtab');
+require_once($PATH_timtab.'class.tx_timtab_lib.php');
+require_once(PATH_tslib.'class.tslib_content.php');
+ 
 class tx_timtab_trackback {
 	var $prefixId = 'tx_timtab_trackback';		// Same as class name
 	var $scriptRelPath = 'class.tx_timtab_trackback.php';	// Path to this script relative to the extension dir.
@@ -64,27 +43,65 @@ class tx_timtab_trackback {
 
 	var $conf;
 	var $pObj;
-
+	var $post;
 	var $encoding;
 	var $timeout;
 	var $blogName;
-	var $tt_news;
 
 	/**
-	 * initialization of this class
+	 * initialization for sending trackback pings in BE
 	 *
 	 * @param	object		the parent object with our configuration
-	 * @param	array		the tt_ews record - or parts of it - which is being processed
+	 * @param	integer		id of the current post
+	 * @param	string		status of the current operation [new|update]
+	 * @param	array		the current tt_news record if available
 	 * @return	void
 	 */
-	function init($pObj, $tt_news) {
-		$this->conf = $pObj->conf;
-		$this->pObj = $pObj;
+	function initSend($config, $fullPost) {
+		$this->conf = $config;
+		$this->post = $fullPost;
+		$this->cObj = t3lib_div::makeInstance('tslib_cObj');
 
 		$this->encoding = 'UTF-8';
 		$this->timeout  = $this->conf['connectionTimeout'];
 		$this->blogName = $this->conf['title'];
-		$this->tt_news  = $tt_news;
+	}
+	
+	/**
+	 * initialization for use in FE
+	 * 
+	 * @param	object		parent object
+	 * @return	void
+	 */
+	function initFe($pObj) {
+		$this->cObj = t3lib_div::makeInstance('tslib_cObj');
+		$this->pObj = $pObj;
+	}
+	
+	function sendPings($tbField) {
+		$tbStatus = $this->getTrackbackStatus($tbField);
+		
+		foreach($tbStatus as $k => $tb) {
+			//attempt to ping the trackback URL
+			if(!empty($tb['url']) && $tb['status'] == 0) {
+				$result = $this->ping($tb['url']);
+				if($result['success']) {
+					//success
+					$tbStatus[$k]['status'] = 1;
+					unset($tbStatus[$k]['reason']);
+				} else {
+					//failed
+					$tbStatus[$k]['reason'] = $result['message'];
+				}
+			}
+		}
+		
+		//update trackback status in tt_news record
+		$GLOBALS['TYPO3_DB']->exec_UPDATEquery(
+			'tt_news',
+			'uid = '.$this->post['uid'],
+			array('tx_timtab_trackbacks' => $this->setTrackbackStatus($tbStatus))
+		);
 	}
 
 	/**
@@ -117,21 +134,25 @@ class tx_timtab_trackback {
 		}
 
 		$ping  = 'url='.rawurlencode($source);
-		$ping .= '&title='.rawurlencode($this->tt_news['title']);
+		$ping .= '&title='.rawurlencode($this->post['title']);
 		$ping .= '&blog_name='.rawurlencode($this->blogName);
 		$ping .= '&excerpt='.rawurlencode($excerpt);
+
+		$version = explode('.',($GLOBALS['TYPO3_VERSION']?$GLOBALS['TYPO3_VERSION']:$GLOBALS['TYPO_VERSION']));
+		unset($version[2]);
+		$version = implode($version,'.');
 
 		$r = "\r\n";
 		$request  = 'POST '.$bits['path'].$bits['query'].' HTTP/1.1'.$r;
 		$request .= 'Host: '.$bits['host'].$r;
 		$request .= 'Content-type: application/x-www-form-urlencoded'.$r;
 		$request .= 'Content-length: '.strlen($ping).$r;
-		$request .= 'User-Agent: TYPO3 - get.content.right'.$r;
+		$request .= 'User-Agent: TYPO3/'.$version.$r;
 		$request .= 'Connection: close'.$r.$r;
 		$request .= $ping;
 
 		// Open socket
-		$errno = 0;
+		$errno  = 0;
 		$errstr = 0;
 		if($this->timeout) {
 			$fp = fsockopen($bits['host'], $bits['port'], $errno, $errstr, $this->timeout);
@@ -147,6 +168,7 @@ class tx_timtab_trackback {
 		fputs($fp, $request);
 
 		//get results
+		$headers        = '';
 		$contents       = '';
 		$gotFirstLine   = false;
 		$gettingHeaders = true;
@@ -156,7 +178,12 @@ class tx_timtab_trackback {
 			if (!$gotFirstLine) {
 				// Check line for '200'
 				if (strstr($line, '200') === false) {
-					return array(false, 'HTTP status code was not 200');
+					$result = array(
+						'success' => false, 
+						'message' => 'HTTP status code was not 200'
+					);
+					
+					return $result;
 				}
 				$gotFirstLine = true;
 			}
@@ -165,21 +192,30 @@ class tx_timtab_trackback {
 			}
 			if (!$gettingHeaders) {
 				$contents .= trim($line);
+			} else {
+				$headers  .= trim($line);	
 			}
 		}
 
 		fclose($fp);
 
-		// Did the ping succeed?
-		if(strpos($contents, '<error>0</error>')) {
-			$result = array(true, '');
-		} elseif(strpos($contents, '<error>1</error>')) {
-			$start = strpos($contents, '<message>') + 9;
-			$end   = strpos($contents, '</message>');
-
-			$result = array(false, substr($contents, $start, $end - $start));
+		//did the ping succeed?
+		$matches = array();
+		if(preg_match('/<error>.*0.*<\/error>/s', $contents)) {
+			$result = array(
+				'success' => true,
+				'message' => ''
+			);
+		} elseif(preg_match('/<message>(.*)<\/message>/s', $contents, $matches)) {
+			$result = array(
+				'success' => false, 
+				'message' => $matches[1]
+			);
 		} else {
-			$result = array(false, trim($contents));
+			$result = array(
+				'success' => false, 
+				'message' => 'This might not be a Trackback URL!'.$contents
+			);
 		}
 
 		return $result;
@@ -225,12 +261,11 @@ class tx_timtab_trackback {
 	 * @param	string		$trackbackURL
 	 * @return	string
 	 */
-	function getEmbeddedRdf($permalink, $trackbackURL)
-	{
-		$RFC822_date = date('r', $this->tt_news['datetime']);
-		$title       = $this->tt_news['title'];
+	function getEmbeddedRdf($permalink, $trackbackURL) {
+		$RFC822_date = date('r', $this->post['datetime']);
+		$title       = $this->post['title'];
 		$excerpt     = $this->getExcerpt();
-		$author      = $this->tt_news['author'];
+		$author      = $this->post['author'];
 
 		$r = "\n";
 		$rdf  = '<!-- '.$r;
@@ -258,8 +293,7 @@ class tx_timtab_trackback {
 	 * @param	string		content to parse for trackback links
 	 * @return	array		Trackback URLs.
 	 */
-	function tbAutoDiscovery($content)
-	{
+	function discoverTrackbacks($content) {
 		// Get a list of UNIQUE links from text...
 		#$reg_exp = '/(http)+(s)?:(\\/\\/)((\\w|\\.)+)(\\/)?(\\S+)?/i';
 		$reg_exp = '/(?:http|https)(?::\/\/)(?:[^\s<>]+)/i';
@@ -283,7 +317,6 @@ class tx_timtab_trackback {
 			$uri_array = array_unique($uri_array);
 		}
 		unset($key, $link);
-
 
 		// Get the trackback URIs from those links...
 		$rdf_array = array();
@@ -331,13 +364,13 @@ class tx_timtab_trackback {
 		//FIXME respect tt_news useHRDate settings
 		
 		$urlParameters = array(
-			'tx_ttnews[year]'    => date('Y', $this->tt_news['datetime']),
-			'tx_ttnews[month]'   => date('m', $this->tt_news['datetime']),
-			'tx_ttnews[day]'     => date('d', $this->tt_news['datetime']),
-			'tx_ttnews[tt_news]' => $this->tt_news['uid']
+			'tx_ttnews[year]'    => date('Y', $this->post['datetime']),
+			'tx_ttnews[month]'   => date('m', $this->post['datetime']),
+			'tx_ttnews[day]'     => date('d', $this->post['datetime']),
+			'tx_ttnews[tt_news]' => $this->post['uid']
 		);
 
- 		$link = $this->pObj->cObj->getTypoLink_URL($this->conf['blogPid'], $urlParameters);
+ 		$link = $this->cObj->getTypoLink_URL($this->conf['blogPid'], $urlParameters);
 		return t3lib_div::getIndpEnv('TYPO3_SITE_URL').$link;
 	}
 
@@ -349,12 +382,12 @@ class tx_timtab_trackback {
 	 */
 	function getTrackbackURL() {
 		$urlParameters = array(
-			'tx_ttnews[tt_news]' => $this->tt_news['uid'],
+			'tx_ttnews[tt_news]' => $this->post['uid'],
 			'type'               => 200,
 			'tx_timtab_pi2[trackback]' => 1
 		);
 
-		$link = $this->pObj->cObj->getTypoLink_URL($this->conf['blogPid'], $urlParameters);
+		$link = $this->cObj->getTypoLink_URL($this->conf['blogPid'], $urlParameters);
 		return t3lib_div::getIndpEnv('TYPO3_SITE_URL').$link;
 	}
 
@@ -366,7 +399,7 @@ class tx_timtab_trackback {
 	 */
 	function getTrackbackLink() {
 		$urlParameters = array(
-			'tx_ttnews[tt_news]' => $this->tt_news['uid'],
+			'tx_ttnews[tt_news]' => $this->post['uid'],
 			'type'               => 200,
 			'tx_timtab_pi2[trackback]' => 1
 		);
@@ -376,7 +409,7 @@ class tx_timtab_trackback {
 	}
 
 	/**
-	 * creates the permaLink URL
+	 * creates the permaLink URL, alias for getSourceURL
 	 *
 	 * @return	string
 	 */
@@ -393,10 +426,10 @@ class tx_timtab_trackback {
 		$excerpt = '';
 		$max_length = 255; //is not limited by spec but we do
 
-		if(!empty($this->tt_news['short'])) {
-			$excerpt = $this->tt_news['short'];
+		if(!empty($this->post['short'])) {
+			$excerpt = $this->post['short'];
 	 	} else {
-			$excerpt = $this->tt_news['bodytext'];
+			$excerpt = $this->post['bodytext'];
 		}
 
 		$excerpt = str_replace(chr(10), ' ', strip_tags($excerpt));
@@ -416,30 +449,29 @@ class tx_timtab_trackback {
 	 * @param	[type]		$status: ...
 	 * @return	array		checked and transformed array of trackback URLs enriched with meta information
 	 */
-	function getTrackbackStatus($TBlist, $status) {
-		$tbField = explode("\n", $TBlist);
-
-		$trackbacks = array();
-		foreach($tbField as $line) {
-			$properties = explode('|', $line);
+	function getTrackbackStatus($tbField) {
+		$trackbacks	= array();
+		$tbList		= explode(chr(10), $tbField);
+		
+		foreach($tbList as $tb) {
+			$properties = explode('|', $tb);
 
 			if($properties[1] == 1) {
-				$reason = ''; //ping sent
+				//ping already sent
+				$reason = '';
 			} elseif($properties[2]) {
-				$reason = $properties[2]; //might be an existing error message
-			} elseif($status == 'new') {
-				$reason = 'new'; //a TB we just found
+				//might be an existing error message
+				$reason = $properties[2];
 			} elseif(!empty($properties[0])) {
-				$reason = 'unknown'; //something mysterious happend
+				//something mysterious happend
+				$reason = 'unknown';
 			}
 
-			if($properties[1] == 1 || !empty($reason)) {
-				$trackbacks[] = array(
-					'url'    => $properties[0],
-					'status' => $properties[1],
-					'reason' => $reason
-				);
-			}
+			$trackbacks[] = array(
+				'url'    => $properties[0],
+				'status' => $properties[1],
+				'reason' => $reason
+			);
 		}
 
 		return $trackbacks;
@@ -470,22 +502,65 @@ class tx_timtab_trackback {
 	 * @param	integer		timestamp to convert
 	 * @return	string
 	 */
-	function getRfc2822Date($timestamp) {
-		return date('r', $timestamp);
+	function getRfc2822Date($tstamp) {
+		return date('r', $tstamp);
 	}
 
 	/**
 	 * Converts a string into an XML-safe string (replaces &, <, >, " and ')
 	 *
-	 * @param	string		$string
-	 * @return	string
+	 * @param	string		string to make XML-safe
+	 * @return	string		XML-safe string
 	 */
 	function xmlSafe($string)
 	{
 		return htmlspecialchars($string, ENT_QUOTES);
 	}
-}
+	
+	/**
+	 * creates or updates the contents of the trackback field 
+	 * in the form of URL|status|error message if any
+	 * 
+	 * @param 	string		status: either new or update
+	 * @param	string		current content of the trackback field
+	 * @param	string		bodytext to check for new trckback URLs
+	 * @return	string		new content for the trackback field
+	 */
+	function getNewTrackbackField($status, $oldTbField, $bodytext) {
+		$newTbField = $oldTbField;
+		$foundUrls  = $this->discoverTrackbacks($bodytext);
+				
+		if(count($foundUrls)) {
+			if($status == 'update') {
+				//find new trackback URLs
+				$oldTbUrls = t3lib_div::trimExplode(chr(10), $oldTbField, true);
 
+				$tmpUrls = array();
+				foreach($oldTbUrls as $TB) {
+					$parts     = t3lib_div::trimExplode('|', $TB);
+					$tmpUrls[] = $parts[0];
+				}
+				//extract the new Trackback URLs
+				$newTbUrls = array_diff($foundUrls, $tmpUrls);
+
+				$newTbField = '';
+				foreach($newTbUrls as $newUrl) {
+					$newTbField .= $newUrl.'|0|new'.chr(10);
+				}
+				$newTbField = trim($oldTbField.chr(10).$newTbField);
+
+			} elseif($status == 'new') {
+				$newTbField = '';
+				foreach($foundUrls as $newUrl) {
+					$newTbField .= $newUrl.'|0|new'.chr(10);
+				}
+				$newTbField = trim($newTbField);
+			}
+		}
+		
+		return $newTbField;
+	}
+}
 
 
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/timtab/class.tx_timtab_trackback.php']) {

@@ -131,15 +131,15 @@ class tx_timtab_fe extends tslib_pibase {
 			$comment_count = $this->count_comments();
 			if($comment_count == 0) {
 				$this->markerArray['###BLOG_COMMENTS_COUNT###'] = '';
-				$this->markerArray['###BLOG_TEXT_COMMENTS###'] = $this->pi_getLL('no_comments');
+				$this->markerArray['###BLOG_TEXT_COMMENTS###']  = $this->pi_getLL('no_comments');
 			}
 			elseif($comment_count == 1) {
 				$this->markerArray['###BLOG_COMMENTS_COUNT###'] = 1;
-				$this->markerArray['###BLOG_TEXT_COMMENTS###'] = $this->pi_getLL('one_comment');
+				$this->markerArray['###BLOG_TEXT_COMMENTS###']  = $this->pi_getLL('one_comment');
 			}
 			else {
 				$this->markerArray['###BLOG_COMMENTS_COUNT###'] = $comment_count;
-				$this->markerArray['###BLOG_TEXT_COMMENTS###'] = $this->pi_getLL('multiple_comments');
+				$this->markerArray['###BLOG_TEXT_COMMENTS###']  = $this->pi_getLL('multiple_comments');
 			}
 			
 			//post navigation
@@ -156,12 +156,12 @@ class tx_timtab_fe extends tslib_pibase {
 			
 			//trackback
 			$tb = t3lib_div::makeInstance('tx_timtab_trackback');
-			$tb->init($this, $this->conf['data']);
-			$plink = $tb->getPermalink();
-			$tbURL = $tb->getTrackbackURL();
-
-			$rdf = $tb->getEmbeddedRdf($plink, $tbURL);
+			$tb->initFe($this);
+			$plink  = $tb->getPermalink();
+			$tbURL  = $tb->getTrackbackURL();
+			$rdf    = $tb->getEmbeddedRdf($plink, $tbURL);
 			$tbLink = $tb->getTrackbackLink();
+			
 			$this->markerArray['###BLOG_TRACKBACK_RDF###']  = $rdf;
 			$this->markerArray['###BLOG_TRACKBACK_LINK###'] = $tbLink;
 			$this->markerArray['###BLOG_TRACKBACK_URL###']  = $tbURL;
@@ -203,15 +203,15 @@ class tx_timtab_fe extends tslib_pibase {
 			$comment_count = $this->pObj->internal['res_count'];
 			if($comment_count == 0) {
 				$this->markerArray['###BLOG_COMMENTS_COUNT###'] = '';
-				$this->markerArray['###BLOG_TEXT_COMMENTS###'] = $this->pi_getLL('no_comments');
+				$this->markerArray['###BLOG_TEXT_COMMENTS###']  = $this->pi_getLL('no_comments');
 			}
 			elseif($comment_count == 1) {
 				$this->markerArray['###BLOG_COMMENTS_COUNT###'] = 1;
-				$this->markerArray['###BLOG_TEXT_COMMENTS###'] = $this->pi_getLL('one_comment');
+				$this->markerArray['###BLOG_TEXT_COMMENTS###']  = $this->pi_getLL('one_comment');
 			}
 			else {
 				$this->markerArray['###BLOG_COMMENTS_COUNT###'] = $comment_count;
-				$this->markerArray['###BLOG_TEXT_COMMENTS###'] = $this->pi_getLL('multiple_comments');
+				$this->markerArray['###BLOG_TEXT_COMMENTS###']  = $this->pi_getLL('multiple_comments');
 			}
 
 			//numbering comments
@@ -238,7 +238,7 @@ class tx_timtab_fe extends tslib_pibase {
 			}
 			
 			$tb = t3lib_div::makeInstance('tx_timtab_trackback');
-			$tb->init($this, $tt_news);
+			$tb->initFe($this);
 			$this->markerArray['###BLOG_TRACKBACK_URL###'] = $tb->getTrackbackURL();
 			
 
@@ -266,13 +266,13 @@ class tx_timtab_fe extends tslib_pibase {
 	 * @return	array
 	 */
 	function getCurrentPost() {
-		$res = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+		$tt_news = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
 			'*',
 			'tt_news',
-			'uid = '.$this->pObj->tt_news['tx_ttnews[tt_news]'].$this->cObj->enableFields('tt_news')
+			'uid = '.intval($this->pObj->tt_news['tx_ttnews[tt_news]']).$this->cObj->enableFields('tt_news')
 		);
 
-		return $res[0];
+		return $tt_news[0];
 	}
 	
 	/**
@@ -281,7 +281,7 @@ class tx_timtab_fe extends tslib_pibase {
 	 * @return	array
 	 */
 	function getPrevPost() {
-		$res = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+		$tt_news = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
 			'uid, title, datetime',
 			'tt_news',
 			'pid IN ('.$this->pObj->conf['pid_list'].') AND datetime < '.$this->conf['data']['datetime'].$this->cObj->enableFields('tt_news'),
@@ -289,7 +289,7 @@ class tx_timtab_fe extends tslib_pibase {
 			'datetime DESC'
 		);
 		
-		return $res[0];
+		return $tt_news[0];
 	}
 	
 	/**
@@ -298,7 +298,7 @@ class tx_timtab_fe extends tslib_pibase {
 	 * @return	array
 	 */
 	function getNextPost() {
-		$res = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+		$tt_news = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
 			'uid, title, datetime',
 			'tt_news',
 			'pid IN ('.$this->pObj->conf['pid_list'].') AND datetime > '.$this->conf['data']['datetime'].$this->cObj->enableFields('tt_news'),
@@ -306,7 +306,7 @@ class tx_timtab_fe extends tslib_pibase {
 			'datetime ASC'
 		);
 		
-		return $res[0];
+		return $tt_news[0];
 	}
 	
 	/**
@@ -389,7 +389,11 @@ class tx_timtab_fe extends tslib_pibase {
 			$gravatar .= ' class="'.$this->conf['gravatar.']['class'].'"';
 		}
 
-		return $gravatar.$size.' alt="" />';
+		$alt   = 'alt="Gravatar: '.$this->conf['data']['firstname'].'"';
+		$title = 'title="'.$this->pi_getLL('gravatar_this_is').' '
+				.$this->conf['data']['firstname'].' "';
+
+		return $gravatar.$size.' '.$alt.' '.$title.' />';
 	}
 
 	/***********************************************
@@ -409,9 +413,10 @@ class tx_timtab_fe extends tslib_pibase {
 	 * @return	array		processed marker array
 	 */
 	function extraItemMarkerProcessor($markerArray, $row, $lConf, &$pObj) {
+		$this->conf         = array();
 		$this->conf['data'] = $row;
-		$this->pObj = &$pObj;
-		$this->calledBy = $pObj->extKey; //who is calling?
+		$this->pObj         = &$pObj;
+		$this->calledBy     = $pObj->extKey; //who is calling?
 
 		return $this->main($markerArray, $lConf);
 	}

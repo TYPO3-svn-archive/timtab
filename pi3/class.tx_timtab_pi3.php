@@ -22,8 +22,8 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 /**
- * Plugin 'calendar' for the 'timtab' extension.
- * Code shamlesly taken from wordpress
+ * Plugin 'calendar' for the 'TIMTAB' extension.
+ * Most code shamlesly taken from wordpress ;-)
  *
  * $Id$
  *
@@ -139,15 +139,17 @@ class tx_timtab_pi3 extends tslib_pibase {
 		$addHours   = $this->conf['gmt_offset'];
 		$addMinutes = intval(60 * ($this->conf['gmt_offset'] - $addHours));
 
-		// Let's figure out when we are
-		$newsGET = t3lib_div::_GET('tx_ttnews');
-		if (!empty($newsGET)) {
-			$thisYear  = $newsGET['year'];
-			$thisMonth = intval($newsGET['month']);
-		} else {
-			$thisYear  = gmdate('Y', $this->getCurrentTime() + $this->conf['gmt_offset'] * 3600);
-			$thisMonth = gmdate('n', $this->getCurrentTime() + $this->conf['gmt_offset'] * 3600);
-		}
+		// Let's figure out where we are
+		$newsGET = t3lib_div::_GET('tx_ttnews');		
+		$thisYear = intval( $newsGET['year'] ? 
+			$newsGET['year'] : 
+			gmdate('Y', $this->getCurrentTime() + $this->conf['gmt_offset'] * 3600)
+		);
+		
+		$thisMonth = intval( $newsGET['month'] ? 
+			$newsGET['month'] : 
+			gmdate('n', $this->getCurrentTime() + $this->conf['gmt_offset'] * 3600)
+		);
 
 		$unixMonth = mktime(0, 0 , 0, $thisMonth, 1, $thisYear);
 

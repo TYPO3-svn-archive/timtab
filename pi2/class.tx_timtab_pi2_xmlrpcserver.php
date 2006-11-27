@@ -23,69 +23,17 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 /**
- * XML-RPC Server for the timtab extension
+ * XML-RPC Server for the TIMTAB extension
  *
  * $Id$
  *
  * @author    Ingo Renner <typo3@ingo-renner.com>
  * @author    Ingo Schommer <me@chillu.com>
  */
-/**
- * [CLASS/FUNCTION INDEX of SCRIPT]
- *
- *
- *
- *   95: class tx_timtab_pi2_xmlrpcServer extends IXR_Server
- *  100:     function tx_timtab_pi2_xmlrpcServer(&$pObj)
- *
- *              SECTION: Blogger
- *  185:     function blggrNewPost($args)
- *  245:     function blggrEditPost($args)
- *  303:     function blggrDeletePost($args)
- *  334:     function blggrGetRecentPosts($args)
- *  396:     function blggrGetUsersBlogs($args)
- *  421:     function blggrGetUserInfo($args)
- *
- *              SECTION: MetaWeblog
- *  456:     function mwNewPost($args)
- *  510:     function mwEditPost($args)
- *  563:     function mwGetPost($args)
- *  608:     function mwGetCategories($args)
- *  665:     function mwGetRecentPosts($args)
- *  720:     function mwNewMediaObject($args)
- *
- *              SECTION: Trackback
- *  765:     function tbDiscovery(&$fieldArray, $id)
- *  821:     function tbSendPings($fieldArray)
- *
- *              SECTION: Pingback
- *  864:     function pbPing($args)
- *  876:     function pbGetPingbacks($args)
- *
- *              SECTION: Demo
- *  894:     function demoSayHello($args)
- *  904:     function demoAddTwoNumbers($args)
- *
- *              SECTION: non webservices
- *  925:     function getPostCategories($postId)
- *  956:     function setPostCategories($postId, $cats_xmlrpc)
- * 1019:     function authUser($username, $password)
- * 1050:     function transformContent($dirRTE, $value)
- * 1104:     function getCurrentPost($tt_news_uid)
- * 1122:     function escape(&$array)
- * 1139:     function clearPageCache()
- * 1159:     function getBlggrTitle($content)
- * 1184:     function getBlggrCategory($content)
- * 1201:     function cleanBlggrPost($content)
- *
- * TOTAL FUNCTIONS: 29
- * (This index is automatically created/updated by the extension "extdeveval")
- *
- */
-
 
 $PATH_timtab = t3lib_extMgm::extPath('timtab');
-require_once($PATH_timtab.'lib.ixr.php');
+require_once($PATH_timtab.'3rdparty/lib.ixr.php');
+require_once($PATH_timtab.'class.tx_timtab_lib.php');
 require_once($PATH_timtab.'class.tx_timtab_trackback.php');
 require_once($PATH_timtab.'pi2/class.tx_timtab_pi2_xmlrpcauth.php');
 require_once(PATH_t3lib.'class.t3lib_tcemain.php');
@@ -110,13 +58,13 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 				'blogger.editPost'       => 'this:blggrEditPost',
 				'blogger.deletePost'     => 'this:blggrDeletePost',
 				'blogger.getRecentPosts' => 'this:blggrGetRecentPosts',
-				'blogger.getUsersBlogs'  => 'this:blggrGetUsersBlogs',
 				'blogger.getUserInfo'	 => 'this:blggrGetUserInfo',
+				'blogger.getUsersBlogs'  => 'this:blggrGetUsersBlogs',
 			);
 		} else {
 			// always needed
 			$blggr = array(
-				'blogger.getUsersBlogs' => 'this:blggrGetUsersBlogs',
+				'blogger.getUsersBlogs'  => 'this:blggrGetUsersBlogs',
 			);
 		}
 
@@ -141,7 +89,7 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 		$mt = array();
 		if($this->conf['enableMovableType']) {
 			$mt = array(
-			//FIXME implement MovableType API
+			//FIXME implement Movable Type API
 			/* planed, but nothing implemented yet			 
 				'mt.getCategoryList'      => 'this:mtGetCategoryList',
 				'mt.getRecentPostTitles'  => 'this:mtGetRecentPostTitles',
@@ -216,7 +164,12 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 		);
 
 		//processing of trackbacks
-		$this->tbDiscovery($insertFields, 0);
+		$tb = t3lib_div::makeInstance('tx_timtab_trackback');
+		$insertFields['tx_timtab_trackbacks'] = $tb->getNewTrackbackField(
+			$this->status, 
+			'',
+			$insertFields['bodytext']
+		);
 
 		$GLOBALS['TYPO3_DB']->exec_INSERTquery('tt_news', $insertFields);
 		$insertFields['uid'] = $insertId = $GLOBALS['TYPO3_DB']->sql_insert_id();
@@ -226,13 +179,14 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 		}
 
 		//processing of trackbacks
-		$this->tbSendPings($insertFields);
+		$tb->initSend($this->conf, $insertFields);
+		$tb->sendPings();
 
 		$this->setPostCategories($insertId, $categories);
 
 		//TODO handle pingbacks
 
-		$this->clearPageCache();
+		tx_timtab_lib::clearPageCache($this->conf['clearPageCacheOnUpdate']);
 
 		return strval($insertId);
 	}
@@ -270,11 +224,16 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 		);
 
 		//processing of trackbacks
-		$this->tbDiscovery($updateFields, $postId);
-
+		$tb = t3lib_div::makeInstance('tx_timtab_trackback');
+		$updateFields['tx_timtab_trackbacks'] = $tb->getNewTrackbackField(
+			$this->status, 
+			$this->getOldTrackbackField($postId),
+			$updateFields['bodytext']
+		);
+		
 		$res = $GLOBALS['TYPO3_DB']->exec_UPDATEquery(
 			'tt_news',
-			'uid = '.$GLOBALS['TYPO3_DB']->fullQuoteStr($postId, 'tt_news'),
+			'uid = '. (int) $postId,
 			$updateFields
 		);
 
@@ -285,12 +244,12 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 		$this->setPostCategories($postId, $categories);
 
 		//processing of trackbacks
-		$updateFields['uid'] = $postId;
-		$this->tbSendPings($updateFields);
+		$tb->initSend($this->conf, $updateFields);
+		$tb->sendPings();
 
 		//TODO handle pingbacks
 
-		$this->clearPageCache();
+		tx_timtab_lib::clearPageCache($this->conf['clearPageCacheOnUpdate']);
 
 		return true;
 	}
@@ -314,7 +273,7 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 
 		$res = $GLOBALS['TYPO3_DB']->exec_UPDATEquery(
 			'tt_news',
-			'uid = '.$GLOBALS['TYPO3_DB']->fullQuoteStr($postId, 'tt_news'),
+			'uid = '. (int) $postId,
 			array('deleted' => 1)
 		);
 
@@ -350,7 +309,7 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 			'pid = '.$this->conf['pidStorePosts'].' AND type = 3 AND deleted = 0',
 			'',
 			'datetime DESC',
-			$numPosts
+			(int) $numPosts
 		);
 
 		if(!$res) {
@@ -367,20 +326,20 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 				$content .= $this->transformContent('rte', $post['bodytext']);
 
 				$struct[] = array(
-					'userid' => 0, //??? post author uid
+					'userid'      => 0, //??? post author uid
 					'dateCreated' => new IXR_Date($post['datetime']),
-					'content' => $content,
-					'postid' => $post['uid'],
+					'content'     => $content,
+					'postid'      => $post['uid'],
 				);
 			}
 
 			//we need the reverse order of the DB result
-			$recent_posts = array();
+			$recentPosts = array();
 			foreach($struct as $post) {
-				$recent_posts[] = $post;
+				$recentPosts[] = $post;
 			}
 
-			return $recent_posts;
+			return $recentPosts;
 		} else {
 			return new IXR_Error(100, 'No Posts available');
 		}
@@ -481,7 +440,12 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 		);
 
 		//processing of trackbacks
-		$this->tbDiscovery($insertFields, 0);
+		$tb = t3lib_div::makeInstance('tx_timtab_trackback');
+		$insertFields['tx_timtab_trackbacks'] = $tb->getNewTrackbackField(
+			$this->status, 
+			'',
+			$insertFields['bodytext']
+		);
 
 		$GLOBALS['TYPO3_DB']->exec_INSERTquery('tt_news', $insertFields);
 		$insertFields['uid'] = $insertId = $GLOBALS['TYPO3_DB']->sql_insert_id();
@@ -491,13 +455,14 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 		}
 
 		//processing of trackbacks
-		$this->tbSendPings($insertFields);
+		$tb->initSend($this->conf, $insertFields);
+		$tb->sendPings();
 
 		$this->setPostCategories($insertId, $args[3]['categories']);
 
 		//TODO handle pingbacks
 
-		$this->clearPageCache();
+		tx_timtab_lib::clearPageCache($this->conf['clearPageCacheOnUpdate']);
 
 		return strval($insertId);
 	}
@@ -530,11 +495,16 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 		);
 
 		//processing of trackbacks
-		$this->tbDiscovery($updateFields, $postId);
+		$tb = t3lib_div::makeInstance('tx_timtab_trackback');
+		$updateFields['tx_timtab_trackbacks'] = $tb->getNewTrackbackField(
+			$this->status, 
+			$this->getOldTrackbackField($postId),
+			$updateFields['bodytext']
+		);
 
 		$res = $GLOBALS['TYPO3_DB']->exec_UPDATEquery(
 			'tt_news',
-			'uid = '.$GLOBALS['TYPO3_DB']->fullQuoteStr($postId, 'tt_news'),
+			'uid = ' . (int) $postId,
 			$updateFields
 		);
 
@@ -545,12 +515,12 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 		$this->setPostCategories($postId, $args[3]['categories']);
 
 		//processing of trackbacks
-		$updateFields['uid'] = $postId;
-		$this->tbSendPings($updateFields);
+		$tb->initSend($this->conf, $updateFields);
+		$tb->sendPings();
 
 		//TODO handle pingbacks
 
-		$this->clearPageCache();
+		tx_timtab_lib::clearPageCache($this->conf['clearPageCacheOnUpdate']);
 
 		return true;
 	}
@@ -571,10 +541,11 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 			return new IXR_Error(403, 'Not authorized: Bad username/password combination.');
 		}
 
+		// FIXME don't use magic numbers
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'uid, datetime, title, bodytext, category',
 			'tt_news',
-			'uid = '.$postId.' AND type = 3 AND deleted = 0'
+			'uid = '. (int) $postId.' AND type = 3 AND deleted = 0'
 		);
 
 		if(!$res) {
@@ -680,7 +651,7 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 			'pid = '.$this->conf['pidStorePosts'].' AND type = 3 AND deleted = 0',
 			'',
 			'datetime DESC',
-			$numPosts
+			(int) $numPosts
 		);
 
 		if(!$res) {
@@ -701,12 +672,12 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 			}
 
 			//we need the reverse order of the DB result
-			$recent_posts = array();
+			$recentPosts = array();
 			foreach($struct as $post) {
-				$recent_posts[] = $post;
+				$recentPosts[] = $post;
 			}
 
-			return $recent_posts;
+			return $recentPosts;
 		} else {
 			return new IXR_Error(100, 'No Posts available');
 		}
@@ -719,9 +690,10 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 	 * @return	struct
 	 */
 	function mwNewMediaObject($args) {
-		$postid   = $this->escape($args[0]);
-		$username = $this->escape($args[1]);
-		$password = $this->escape($args[2]);
+		$this->escape($args);
+		$postId   = $args[0];
+		$username = $args[1];
+		$password = $args[2];
 		$data     = $args[3];
 
 		if(!$this->authUser($username, $password)) {
@@ -747,109 +719,6 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 		}
 	}
 
-
-	/***********************************************
-	 *
-	 * Trackback
-	 *
-	 **********************************************/
-
-	/**
-	 * pre processing of posts, detecting trackback URLs and saving them into
-	 * $fieldsArray so that they get stored into the DB and we can ping them
-	 * afterwards when the INSERT query was successfull
-	 *
-	 * @param	array		$fieldArray: ...
-	 * @param	integer		$id: ...
-	 * @return	void
-	 */
-	function tbDiscovery(&$fieldArray, $id) {
-		//initialize processing of trackbacks
-		$tbObj = t3lib_div::makeInstance('tx_timtab_trackback');
-		$tbObj->init($this, $fieldArray);
-
-		$newTbURLs = '';
-		$foundURLs = $tbObj->tbAutoDiscovery($fieldArray['bodytext']);
-
-		if($foundURLs && $this->status == 'update') {
-			//update a post, find new trackbacks
-			$tbField = '';
-			if(isset($fieldArray['tx_timtab_trackbacks'])) {
-				$tbField = $fieldArray['tx_timtab_trackbacks'];
-			} else {
-				$tt_news = $this->getCurrentPost($id);
-				$tbField = $tt_news['tx_timtab_trackbacks'];
-			}
-			$oldTBarray = t3lib_div::trimExplode("\n", $tbField);
-
-			$temp = array();
-			foreach($oldTBarray as $TB) {
-				$parts = explode('|', $TB);
-				$temp[] = (string) trim($parts[0]);
-			}
-			//extract new TBs
-			$newTBarray = array_diff($foundURLs, $temp);
-
-			unset($TB);
-			reset($oldTBarray);
-			$oldTBs = '';
-			foreach($oldTBarray as $TB) {
-				$oldTBs .= $TB.chr(10);
-			}
-
-			foreach($newTBarray as $url) {
-				$newTbURLs .= $url.'|0|new'.chr(10);
-			}
-			$newTbURLs = trim($oldTBs.$newTbURLs);
-
-		} elseif($foundURLs && $this->status == 'new') {
-			//creating a new post
-			foreach($foundURLs as $url) {
-				$newTbURLs .= $url.'|0|new'.chr(10);
-			}
-			$newTbURLs = trim($newTbURLs);
-		}
-
-		$fieldArray['tx_timtab_trackbacks'] = $newTbURLs;
-	}
-
-	/**
-	 * post processing of blog posts, sending pings
-	 *
-	 * @param	array		database record
-	 * @return	void
-	 */
-	function tbSendPings($fieldArray) {
-		$tbObj = t3lib_div::makeInstance('tx_timtab_trackback');
-		$tbObj->init($this, $fieldArray);
-		$TBstatus = $tbObj->getTrackbackStatus($fieldArray['tx_timtab_trackbacks'], $this->status);
-
-		if(is_array($TBstatus)) {
-			foreach($TBstatus as $k => $TB) {
-				// Attempt to ping each trackback URL
-				if(!empty($TB['url']) && $TB['status'] == 0) {
-					$result = $tbObj->ping($TB['url']);
-					if($result[0]) {
-						//success
-						$TBstatus[$k]['status'] = 1;
-						unset($TBstatus[$k]['reason']);
-					} else {
-						//failed
-						$TBstatus[$k]['reason'] = $result[1];
-					}
-				}
-			}
-		}
-
-		//update trackback status in tt_news record
-		$GLOBALS['TYPO3_DB']->exec_UPDATEquery(
-			'tt_news',
-			'uid = '.$fieldArray['uid'],
-			array('tx_timtab_trackbacks' => $tbObj->setTrackbackStatus($TBstatus))
-		);
-	}
-
-
 	/***********************************************
 	 *
 	 * Pingback
@@ -864,7 +733,6 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 	 */
 	function pbPing($args) {
 		$this->escape($args);
-
 
 	}
 
@@ -913,7 +781,7 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 
 	/***********************************************
 	 *
-	 * non webservices
+	 * non webservices // supporting methods
 	 *
 	 **********************************************/
 
@@ -929,7 +797,7 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 			'tt_news',
 			'tt_news_cat_mm',
 			'tt_news_cat',
-			'AND tt_news.uid = '.$postId
+			'AND tt_news.uid = '. (int) $postId
 		);
 
 		$tempCategories = array();
@@ -954,9 +822,9 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 	 * @param	array		an array of category to assign to the post
 	 * @return	void
 	 */
-	function setPostCategories($postId, $cats_xmlrpc) {
-		if(count($cats_xmlrpc) > 0) {
-			$where = implode('\', \'', $cats_xmlrpc);
+	function setPostCategories($postId, $catsXmlrpc) {
+		if(count($catsXmlrpc) > 0) {
+			$where = implode('\', \'', $catsXmlrpc);
 			$where = 'AND title IN (\''.$where.'\')';
 
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
@@ -965,9 +833,9 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 				'deleted = 0 '.$where
 			);
 
-			$cats_new = array();
+			$catsNew = array();
 			while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-					$cats_new[] = $row['uid'];
+					$catsNew[] = $row['uid'];
 			}
 			unset($row, $res, $where);
 
@@ -977,17 +845,17 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 				'uid_local = '.$GLOBALS['TYPO3_DB']->fullQuoteStr($postId, 'tt_news_cat_mm')
 			);
 
-			$cats_old = array();
+			$catsOld = array();
 			while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-				$cats_old[] = $row['uid_foreign'];
+				$catsOld[] = $row['uid_foreign'];
 			}
 			unset($row, $res);
 
-			$add_cats = array_diff($cats_new, $cats_old);
-			$rmv_cats = array_diff($cats_old, $cats_new);
+			$addCats = array_diff($catsNew, $catsOld);
+			$rmvCats = array_diff($catsOld, $catsNew);
 
 			//add new categories
-			foreach($add_cats as $cat) {
+			foreach($addCats as $cat) {
 				$GLOBALS['TYPO3_DB']->exec_INSERTquery(
 					'tt_news_cat_mm',
 					array(
@@ -1000,7 +868,7 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 			unset($cat);
 
 			//remove categories which are not assigned to the post anymore
-			foreach($rmv_cats as $cat) {
+			foreach($rmvCats as $cat) {
 				$GLOBALS['TYPO3_DB']->exec_DELETEquery(
 					'tt_news_cat_mm',
 					'uid_local = '.$GLOBALS['TYPO3_DB']->fullQuoteStr($postId, 'tt_news_cat_mm').
@@ -1045,10 +913,10 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 	 * b) When content is sent from the Client into the database it needs transformation back again
 	 *
 	 * @param	string		Keyword: "rte" means direction from DB to client, "db" means direction from client to DB
-	 * @param	string		Value to transform.
+	 * @param	string		text to transform.
 	 * @return	string		transformed content
 	 */
-	function transformContent($dirRTE, $value) {
+	function transformContent($dirRTE, $content) {
 		global $TCA;
 
 		$table      = 'tt_news';
@@ -1057,7 +925,7 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 		$RTErelPath = '';
 
 		if($dirRTE == 'db') {
-			$value = stripslashes($value);
+			$content = stripslashes($content);
 		}
 
 		//start getting $specConf --- taken from t3lib_BEfunc::getTCAtypes()
@@ -1089,27 +957,11 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 				$parseHTML->setRelPath($RTErelPath);
 
 					// Perform transformation:
-				$value = $parseHTML->RTE_transform($value, $specConf, $dirRTE, $thisConfig);
+				$content = $parseHTML->RTE_transform($content, $specConf, $dirRTE, $thisConfig);
 			}
 		}
 
-		return $value;
-	}
-
-	/**
-	 * gets the current tt_news record we are working on
-	 *
-	 * @param	integer		the tt_news uid of the record we want to get
-	 * @return	array
-	 */
-	function getCurrentPost($tt_news_uid) {
-		//get the current tt_news record
-		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
- 			'*',
- 			'tt_news',
- 			'uid = '.$tt_news_uid
- 		);
- 		return $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
+		return $content;
 	}
 
 	/**
@@ -1133,22 +985,6 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 	}
 
 	/**
-	 * explicitly clears cache for the blog page as it is not updating sometimes
-	 *
-	 * @return	void
-	 */
-	function clearPageCache() {
-		$tce = t3lib_div::makeInstance('t3lib_TCEmain');
-		$tce->admin = 1;
-
-		$clearCachePages = split(',', $this->conf['clearPageCacheOnUpdate']);
-		foreach($clearCachePages as $page) {
-			$tce->clear_cacheCmd($page);
-		}
-		$tce->admin = 0;
-	}
-
-	/**
 	 * as the blogger API doesn't support title directly we'll get it from the
 	 * post content surrounded by a <title> tag
 	 *
@@ -1158,11 +994,11 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 	 * @return	string		the posts title if found, a default title otherwise
 	 */
 	function getBlggrTitle($content) {
-		$matchtitle = array();
+		$matchTitle = array();
 		$title      = $this->conf['bloggerTitle'];
 
-		if (preg_match('/<title>(.+?)<\/title>/is', $content, $matchtitle)) {
-			$title = $matchtitle[0];
+		if (preg_match('/<title>(.+?)<\/title>/is', $content, $matchTitle)) {
+			$title = $matchTitle[0];
 
 			//TODO replace with substr()
 			$title = preg_replace('/<title>/si', '', $title);
@@ -1183,10 +1019,10 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 	 * @return	array		array of category names
 	 */
 	function getBlggrCategory($content) {
-		$matchcat = $category = array();
+		$matchCat = $category = array();
 
-		if (preg_match('/<category>(.+?)<\/category>/is', $content, $matchcat)) {
-			$category = trim($matchcat[1], ',');
+		if (preg_match('/<category>(.+?)<\/category>/is', $content, $matchCat)) {
+			$category = trim($matchCat[1], ',');
 			$category = explode(',', $category);
 		}
 
@@ -1204,6 +1040,20 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 		$content = preg_replace('/<category>.+?<\/category>/si', '', $content);
 
 		return trim($content);
+	}
+	
+	/**
+	 * 
+	 */
+	function getOldTrackbackField($id) {
+		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+			'tx_timtab_trackbacks',
+			'tt_news',
+			'uid = '.intval($id)
+		);		
+		$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
+		
+		return $row['tx_timtab_trackbacks'];
 	}
 }
 

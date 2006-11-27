@@ -165,11 +165,11 @@ page {
   # add some 'dynamic' css
   includeCSS.file001 = {$page.file.css}
   CSS_inlineStyle (
-    body { background: url("{$page.file.kubrickbgcolor}"); }
-    #page { background: url("{$page.file.kubrickbgwide}") repeat-y top; border: none; }
-    #header { background: url("{$page.file.kubrickheader}") no-repeat bottom center; margin: 0 !important; margin: 0 0 0 1px; padding: 1px; height: 198px; width: 758px; }
+    body { background: url(/{$page.file.kubrickbgcolor}); }
+    #page { background: url(/{$page.file.kubrickbgwide}) repeat-y top; border: none; }
+    #header { background: url(/{$page.file.kubrickheader}) no-repeat bottom center; margin: 0 !important; margin: 0 0 0 1px; padding: 1px; height: 198px; width: 758px; }
     #headerimg { margin: 7px 9px 0; height: 192px; width: 740px; }
-    #footer { background: url("{$page.file.kubrickfooter}") no-repeat bottom; border: none;}
+    #footer { background: url(/{$page.file.kubrickfooter}) no-repeat bottom; border: none;}
   )
   
   config {

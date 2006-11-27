@@ -22,7 +22,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 /**
- * Pingback class for the timtab extension, the majority of the code
+ * Pingback class for the TIMTAB extension, the majority of the code
  * is taken from wordpress
  *
  * $Id$

@@ -25,7 +25,7 @@
  *
  * $Id$
  *
- * Plugin 'webservices' for the 'timtab' extension.
+ * Plugin 'webservices' for the 'TIMTAB' extension.
  *
  * @author    Ingo Renner <typo3@ingo-renner.com>
  * @author    Ingo Schommer <me@chillu.com>
@@ -54,19 +54,21 @@ require_once($PATH_timtab.'pi2/class.tx_timtab_pi2_xmlrpcserver.php');
 require_once($PATH_timtab.'class.tx_timtab_trackback.php');
 
 class tx_timtab_pi2 extends tslib_pibase {
-    var $prefixId      = 'tx_timtab_pi2';               // Same as class name
-    var $scriptRelPath = 'pi2/class.tx_timtab_pi2.php'; // Path to this script relative to the extension dir.
-    var $extKey        = 'timtab';                      // The extension key.
+    var $prefixId        = 'tx_timtab_pi2';					// Same as class name
+    var $scriptRelPath   = 'pi2/class.tx_timtab_pi2.php';	// Path to this script relative to the extension dir.
+    var $extKey          = 'timtab';						// The extension key.
+    var $pi_USER_INT_obj = 1;								// Configuring so caching is not expected. This value means that no cHash params are ever set. We do this, because it's a USER_INT object!
 
+	var $conf;
     var $tt_news;
 
     /**
- * main function of pi2 decides whether to process a XML-RPC request or Trackbacks
- *
- * @param	string		content
- * @param	array		configuration array
- * @return	string
- */
+	 * main function of pi2 decides whether to process a XML-RPC request or Trackback
+	 *
+	 * @param	string		content
+	 * @param	array		configuration array
+	 * @return	string
+	 */
     function main($content, $conf)    {
     	$this->init($conf);
 
@@ -81,16 +83,15 @@ class tx_timtab_pi2 extends tslib_pibase {
     }
 
     /**
- * initializes the configuration for the extension
- *
- * @param	array		configuration array
- * @return	void
- */
+	 * initializes the configuration for the extension
+	 *
+	 * @param	array		configuration array
+	 * @return	void
+	 */
     function init($conf) {
     	$this->conf = array_merge($conf, $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_timtab.']);
         $this->pi_setPiVarDefaults();
-        $this->pi_USER_INT_obj=1;    // Configuring so caching is not expected. This value means that no cHash params are ever set. We do this, because it's a USER_INT object!
-
+        
     	if($this->piVars['trackback'] == '1') {
     		$tt_news = t3lib_div::_GP('tx_ttnews');
     		$this->tt_news = intval($tt_news['tt_news']);
@@ -98,12 +99,12 @@ class tx_timtab_pi2 extends tslib_pibase {
     }
 
     /**
- * processing of tracbacks, checks for a tt_news uid, whether pings are enabled
- * for this post, the URL of the backtracker and whether we already have a
- * ping from that URL
- *
- * @return	string
- */
+	 * processing of tracbacks, checks for a tt_news uid, whether pings are enabled
+	 * for this post, the URL of the backtracker and whether we already have a
+	 * ping from that URL
+	 *
+	 * @return	string
+	 */
     function processTrackback() {
     	$tb = t3lib_div::makeInstance('tx_timtab_trackback');
     	$tb->encoding = 'UTF-8';

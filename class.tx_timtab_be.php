@@ -24,87 +24,105 @@
 /**
  * class.tx_timtab_be.php
  *
- * Class which implements methods to connect to hooks in TCEmain
+ * class which implements methods to connect to hooks in TCEmain for processinng of trackbacks
  *
  * $Id$
  *
  * @author Ingo Renner <typo3@ingo-renner.com>
  */
-/**
- * [CLASS/FUNCTION INDEX of SCRIPT]
- *
- *
- *
- *   66: class tx_timtab_be
- *   85:     function preInit($status, $id, $fieldArray, $pObj)
- *  114:     function init()
- *  159:     function processDatamap_postProcessFieldArray($status, $table, $id, &$fieldArray, $pObj)
- *  227:     function processDatamap_afterDatabaseOperations($status, $table, $id, $fieldArray, $pObj)
- *  274:     function getCurrentPost($tt_news_uid)
- *  291:     function isBlogPost($id, $tt_news = '')
- *  308:     function clearPageCache()
- *
- * TOTAL FUNCTIONS: 7
- * (This index is automatically created/updated by the extension "extdeveval")
- *
- */
+
 $PATH_timtab = t3lib_extMgm::extPath('timtab');
-define('PATH_tslib', PATH_site.'tslib/');
+define('PATH_tslib', PATH_site.'typo3/sysext/cms/tslib/');
 require_once($PATH_timtab.'class.tx_timtab_trackback.php');
 #require_once($PATH_timtab.'class.tx_timtab_pingback.php');
+require_once($PATH_timtab.'class.tx_timtab_lib.php');
 require_once(PATH_t3lib.'class.t3lib_tstemplate.php');
 require_once(PATH_t3lib.'class.t3lib_page.php');
 require_once(PATH_t3lib.'class.t3lib_timetrack.php');
 require_once(PATH_t3lib.'class.t3lib_userauth.php');
 require_once(PATH_tslib.'class.tslib_feuserauth.php');
 require_once(PATH_tslib.'class.tslib_fe.php');
-require_once(PATH_tslib.'class.tslib_content.php');
 
 $TT = new t3lib_timeTrack;
 $TT->start();
 
 class tx_timtab_be {
-	var $prefixId 		= 'tx_timtab_be';		// Same as class name
-	var $scriptRelPath 	= 'class.tx_timtab_be.php';	// Path to this script relative to the extension dir.
-	var $extKey 		= 'timtab';	// The extension key.
+	var $prefixId      = 'tx_timtab_be';		// Same as class name
+	var $scriptRelPath = 'class.tx_timtab_be.php';	// Path to this script relative to the extension dir.
+	var $extKey        = 'timtab';	// The extension key.
 
-	var $conf;
-	var $cObj;
-	var $pid;
 	var $status;
+	var $table;
+	var $post;
+	var $pObj;
+	
+	var $hookUsed; //for debugging only
 
-	/**
-	 * perform some checks before doing the big init
-	 *
-	 * @param	string		the current status of the operation: eather 'new' or 'update'
-	 * @param	integer		the uid of the current post
-	 * @param	array		array of changed fields for an update, all fields for a new post
-	 * @param	object		$pObj: ...
-	 * @return	array
-	 */
-	function preInit($status, $id, $fieldArray, $pObj) {
-		$tt_news      = array();
-		$isBlogPost   = false;
+
+	function init($status, $table, $id, $fieldArray, $pObj) {
 		$this->status = $status;
+		$this->table  = $table;
+		$this->post   = $fieldArray;
+		$this->pObj   = $pObj;
+		
+		$this->post['uid'] = $this->getPostId($id);
+	}
 
-		if($status == 'new') { //new record
-			if(!$id = $pObj->substNEWwithIDs[$id]) {
-				$id = 0;
+	function getPostId($id) {
+		$postId = $id;
+		
+		if($this->status == 'new') {
+			if(!$this->pObj->substNEWwithIDs[$id]) {
+				//postProcessFieldArray
+				$postId = 0;
+			} else {
+				//afterDatabaseOperations
+				$postId = $this->pObj->substNEWwithIDs[$id];
 			}
 		}
-
-		if($id) {
-			//update
-			$isBlogPost = $this->isBlogPost($id, array());
-			if($isBlogPost) {
-				$tt_news = $this->getCurrentPost($id);
-			}
-		} else {
-			//new
-			$isBlogPost  = $this->isBlogPost($id, $fieldArray);
+		
+		return $postId;
+	}
+	
+	/**
+	 * get's the full post if status is update as the post is completly
+	 * available already when status is new. The post from the DB is also
+	 * combined with the current updates from $fieldArray
+	 * 
+	 * @return	void
+	 */
+	function getFullPost() {
+		if($this->status == 'update') {
+			$currentPost = $this->post;
+			
+			$post = tx_timtab_lib::getPost($this->post['uid']);
+			$post = t3lib_div::array_merge_recursive_overrule(
+				$post, 
+				$currentPost
+			);
+			
+			$this->post = $post;			
+		}	
+	}
+	
+	/**
+	 * checks whether the current tt_news record is a blog post
+	 *
+	 * @return	boolean		returns true if record is a blog post, false otherwise
+	 */
+	function isBlogPost() {
+		$check = false;
+		
+		if($this->table != 'tt_news') return $check;
+		
+		if(isset($this->post['type']) && $this->post['type'] == 3) {
+			$check = true;
+		} elseif(!isset($this->post['type']) && $this->status == 'update') {
+			$post = tx_timtab_lib::getPost($this->post['uid']);
+			$post['type'] == 3 ? $check = true : $check = false;
 		}
-
-		return array($isBlogPost, $tt_news);
+		
+		return $check;
 	}
 
 	/**
@@ -113,25 +131,26 @@ class tx_timtab_be {
 	 *
 	 * @return	void
 	 */
-	function init() {
-		global $TSFE;
+	function getTsfeConfig() {
+		global $TSFE;  //get rid of this sometime
 
-		$this->pid  = intval(t3lib_div::_GP('popViewId'));
-		$this->cObj = t3lib_div::makeInstance('tslib_cObj');
+		$pid = intval(t3lib_div::_GP('popViewId'));
 
-		//we need a nearly whole TSFE for getting plugin setup and creation of correct source URLs
+		//we need a nearly whole TSFE to get the plugin setup 
+		//and to create correct source URLs
 		if(!is_object($GLOBALS['TSFE'])) {
 			$temp_TSFEclassName = t3lib_div::makeInstanceClassName('tslib_fe');
 			$TSFE = new $temp_TSFEclassName(
-				$GLOBALS['TYPO3_CONF_VARS'],
-				$this->pid,
-				'',
-				0,
-				'',
-				'',
-				'',
-				''
+				$GLOBALS['TYPO3_CONF_VARS'],	//TYPO3_CONF_VARS
+				$pid,							//pid	
+				'',								//type
+				0,								//no_cache
+				'',								//cHash
+				'',								//jumpurl
+				'',								//MP
+				''								//RDCT
 			);
+			//do we need all this?
 			$TSFE->forceTemplateParsing = 1;
 			$TSFE->showHiddenPage = false;
 			$TSFE->initFEuser();
@@ -140,188 +159,78 @@ class tx_timtab_be {
 			$TSFE->getConfigArray();
 		}
 
-		$this->conf = array_merge(
+		$config = array_merge(
 			$TSFE->tmpl->setup['plugin.']['tx_timtab.'],
 			$TSFE->tmpl->setup['plugin.']['tx_timtab_pi2.']
 		);
+		
+		//free some memory
+		unset($TSFE);
+		
+		return $config;
 	}
 
 	/**
 	 * pre processing of posts, detecting trackback URLs and saving
-	 * them into $fieldsArray so that they get stored into the DB and we can ping
-	 * them afterwards
+	 * them into $fieldArray so that they get stored into the DB 
+	 * and we can ping them afterwards when saving was successful
 	 *
-	 * @param	string		$status: ...
-	 * @param	string		$table: ...
-	 * @param	integer		$id: ...
-	 * @param	array		$fieldArray: ...
-	 * @param	object		$pObj: ...
+	 * @param	string		action status: new/update is relevant for us
+	 * @param	string		db table
+	 * @param	integer		record uid
+	 * @param	array		record
+	 * @param	object		parent object
 	 * @return	void
 	 */
 	function processDatamap_postProcessFieldArray($status, $table, $id, &$fieldArray, $pObj) {
-		//only do something when we get a tt_news record and the bodytext is changed
-		if($table == 'tt_news' && $fieldArray['bodytext']) {
-			$result = $this->preInit($status, $id, $fieldArray, $pObj);
-			if(!$result[0]) { return; }
-			$this->init();
-
-			//initialize processing of trackbacks
-			$tbObj = t3lib_div::makeInstance('tx_timtab_trackback');
-			$tbObj->init($this, $fieldArray);
-
-			if($foundURLs = $tbObj->tbAutoDiscovery($fieldArray['bodytext'])) {
-
-				$newTbURLs = '';
-				if($this->status == 'update') {
-					//update a post, find new trackbacks
-					$tbField = '';
-					if(isset($fieldArray['tx_timtab_trackbacks'])) {
-						$tbField = $fieldArray['tx_timtab_trackbacks'];
-					} else {
-						$tt_news = $this->getCurrentPost($id);
-						$tbField = $tt_news['tx_timtab_trackbacks'];
-					}
-					$oldTBarray = t3lib_div::trimExplode("\n", $tbField);
-
-					$temp = array();
-					foreach($oldTBarray as $TB) {
-						$parts = explode('|', $TB);
-						$temp[] = (string) trim($parts[0]);
-					}
-					//extract new TBs
-					$newTBarray = array_diff($foundURLs, $temp);
-
-					unset($TB);
-					reset($oldTBarray);
-					$oldTBs = '';
-					foreach($oldTBarray as $TB) {
-						$oldTBs .= $TB.chr(10);
-					}
-
-					foreach($newTBarray as $url) {
-						$newTbURLs .= $url.'|0|new'.chr(10);
-					}
-					$newTbURLs = trim($oldTBs.$newTbURLs);
-
-				} elseif($this->status == 'new') {
-					//creating a new post
-					foreach($foundURLs as $url) {
-						$newTbURLs .= $url.'|0|new'.chr(10);
-					}
-					$newTbURLs = trim($newTbURLs);
-				}
-
-				$fieldArray['tx_timtab_trackbacks'] = $newTbURLs;
-			}
+		$this->hookUsed = 'postProcessFieldArray';
+		$this->init($status, $table, $id, $fieldArray, $pObj);
+		
+		if($this->isBlogPost()) {
+			$this->getFullPost();
+			
+			//find trackbacks
+			$tb = t3lib_div::makeInstance('tx_timtab_trackback');
+			$fieldArray['tx_timtab_trackbacks'] = $tb->getNewTrackbackField(
+				$this->status, 
+				$this->post['tx_timtab_trackbacks'],
+				$this->post['bodytext']
+			);		
 		}
 	}
 
 	/**
 	 * post processing of tt_news entries, sending pings
 	 *
-	 * @param	string		not relevant for us
+	 * @param	string		not relevant here
 	 * @param	string		telling us which table the record belongs to, we will process tt_news records only
 	 * @param	integer		record uid
 	 * @param	array		database record
-	 * @param	object		the parentobject (TCEmain)
+	 * @param	object		the parent object (TCEmain)
 	 * @return	void
 	 */
 	function processDatamap_afterDatabaseOperations($status, $table, $id, $fieldArray, $pObj) {
-		//only do something when we get a tt_news record and the bodytext is changed
-		if($table == 'tt_news' && $fieldArray['bodytext']) {
-			$result = $this->preInit($status, $id, $fieldArray, $pObj);
-			if(!$result[0]) { return; } else { $tt_news = $result[1]; }
-			$this->init();
-
-			//processing trackbacks
-			$tbObj = t3lib_div::makeInstance('tx_timtab_trackback');
-			$tbObj->init($this, $tt_news);
-			$TBstatus = $tbObj->getTrackbackStatus($tt_news['tx_timtab_trackbacks'], $this->status);
-
-			if(is_array($TBstatus)) {
-				foreach($TBstatus as $k => $TB) {
-					// Attempt to ping each trackback URL
-					if(!empty($TB['url']) && $TB['status'] == 0) {
-						$result = $tbObj->ping($TB['url']);
-						if($result[0]) {
-							//success
-							$TBstatus[$k]['status'] = 1;
-							unset($TBstatus[$k]['reason']);
-						} else {
-							//failed
-							$TBstatus[$k]['reason'] = $result[1];
-						}
-					}
-				}
-			}
-
-			//update trackback status in tt_news record
-			$GLOBALS['TYPO3_DB']->exec_UPDATEquery(
-				'tt_news',
-				'uid = '.$tt_news['uid'],
-				array('tx_timtab_trackbacks' => $tbObj->setTrackbackStatus($TBstatus))
-			);
-			//end processing trackbacks
-
-			$this->clearPageCache();
+		$this->hookUsed = 'afterDatabaseOperations';
+		$this->init($status, $table, $id, $fieldArray, $pObj);
+		
+		if($this->isBlogPost()) {
+			$this->getFullPost();
+			
+			if($this->post['hidden'] != 1) {
+				//send pings
+				$config = $this->getTsfeConfig();
+				
+				$tb = t3lib_div::makeInstance('tx_timtab_trackback');
+				$tb->initSend($config, $this->post);
+				$tb->sendPings($this->post['tx_timtab_trackbacks']);
+				
+				tx_timtab_lib::clearPageCache($config['clearPageCacheOnUpdate']);
+			}			
 		}
-	}
-
-	/**
-	 * gets the current tt_news record we are working on
-	 *
-	 * @param	integer		the tt_news uid of the record we want to get
-	 * @return	array
-	 */
-	function getCurrentPost($tt_news_uid) {
-		//get the current tt_news record
-		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
- 			'*',
- 			'tt_news',
- 			'uid = '.$tt_news_uid
- 		);
- 		return $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
-	}
-
-	/**
-	 * checks whether the current tt_news record is a blog post
-	 *
-	 * @param	integer		tt_news uid to fetch the record in case the available information is not sufficent
-	 * @param	array		tt_news record or parts of it
-	 * @return	boolean
-	 */
-	function isBlogPost($id, $tt_news = '') {
-		$result = false;
-		if(isset($tt_news['type']) && $tt_news['type'] == 3) {
-			$result = true;
-		} elseif(!isset($tt_news['type']) && $this->status == 'update') {
-			$tt_news = $this->getCurrentPost($id);
-			$tt_news['type'] == 3 ? $result = true : $result = false;
-		}
-
-		return $result;
-	}
-
-	/**
-	 * explicitly clears cache for the blog page as it is not updating sometimes
-	 *
-	 * @return	void
-	 */
-	function clearPageCache() {
-		//TODO put this in a class timtab_lib
-		$tce = t3lib_div::makeInstance('t3lib_TCEmain');
-		$tce->admin = 1;
-
-		$clearCachePages = split(',', $this->conf['clearPageCacheOnUpdate']);
-		foreach($clearCachePages as $page) {
-			$tce->clear_cacheCmd($page);
-		}
-		$tce->admin = 0;
 	}
 }
 
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/timtab/class.tx_timtab_be.php']) {
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/timtab/class.tx_timtab_be.php']);
 }
-
 ?>

@@ -30,6 +30,7 @@ $LOCAL_LANG = Array (
 		'rememberInfo' => 'remember my information',
 		'view_category_posts' => 'View all posts filed under %s',
 		'no_categories' => 'No categories',
+		'gravatar_this_is' => 'This is',
 	),
 	'dk' => Array (
 	),
@@ -55,6 +56,7 @@ $LOCAL_LANG = Array (
 		'rememberInfo' => 'Meine Informationen merken',
 		'view_category_posts' => 'Zeige alle Posts in %s',
 		'no_categories' => 'Keine Kategorien',
+		'gravatar_this_is' => 'Das ist',
 	),
 	'no' => Array (
 		'pi1_title' => 'Blogliste',

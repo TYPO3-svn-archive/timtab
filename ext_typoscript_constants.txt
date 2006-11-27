@@ -4,8 +4,8 @@
 
 plugin.tx_timtab {
 
-	# cat=plugin.tx_timtab/basic/10; type=string; label= Title: your blog name, this is also used as the title when sending Trackback pings
-  title = timtab
+	# cat=plugin.tx_timtab/basic/10; type=string; label= Title: your blog name
+  title = TIMTAB
   
 	# cat=plugin.tx_timtab/basic/20; type=string; label= Tagline: A short description for your Blog
   tagline = Blogging with TYPO3

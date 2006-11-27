@@ -2,10 +2,16 @@
 
 	* FIX 0004106: Empty blogroll still wrapped in UL, thanks Mario!
 
+2006-04-15	Ingo Renner  <typo3@ingo-renner.com>
+
+	* FIX incompatibility with TYPO3 4.0.0
+	* ADD fixed bug 1719: added usefull alt and title for gravatar picture
+	* FIX fixed bug 2942: calendar: click on a category the calendar shows: December 1999, thanks to Frank Nägler
+
 2006-02-22	Ingo Renner  <typo3@ingo-renner.com>
 
 	* FIX tt_news GRSP handling
-	
+
 2005-11-15	Ingo Renner  <typo3@ingo-renner.com>
 
 	* CHG Kubrick is now a one click install theme
@@ -54,7 +60,7 @@
 	
 2005-08-24	Ingo Renner  <typo3@ingo-renner.com>
 
-	* ADD timtab now remembers the name, e-mail and homepage when someone leaves a comment
+	* ADD TIMTAB now remembers the name, e-mail and homepage when someone leaves a comment
 	
 2005-08-23	Ingo Renner  <typo3@ingo-renner.com>
 

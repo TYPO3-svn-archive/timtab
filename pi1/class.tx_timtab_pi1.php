@@ -22,7 +22,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 /**
- * Plugin 'blogroll' for the 'timtab' extension.
+ * Plugin 'blogroll' for the 'TIMTAB' extension.
  *
  * $Id$
  *
@@ -76,22 +76,22 @@ class tx_timtab_pi1 extends tslib_pibase {
 			'',
 			'sorting'
 		);
-	
-	
+
+
 		while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 			$link  = "\t".'<li><a href="';
 			$link .= substr($row['url'], 0, 7) == 'http://'?$row['url']:'http://'.$row['url'];
 			$link .= '"'.$this->buildRelAttr($row);
 			$link .= !empty($row['description'])?' title="'.$row['description'].'"':'';
-	
+
 			if($row['target'] == 1) {
 				$link .= ' target="_blank"';
 			} elseif($row['target'] == 2) {
 				$link .= ' target="_top"';
 			}
-	
+
 			$link .= '>'.$row['name'].'</a></li>'."\n";
-	
+
 			$blogroll .= $link;
 		}
 	
@@ -100,14 +100,14 @@ class tx_timtab_pi1 extends tslib_pibase {
 		}
 	
 		$content .= $this->cObj->stdWrap($blogroll, $this->conf['header_stdWrap.']);
-	
-		if($this->conf['dontWrapInDiv'] == 1) {
-			return $content;
-		} else {
-			return $this->pi_wrapInBaseClass($content);
+
+		if($this->conf['dontWrapInDiv'] != 1) {
+			$content = $this->pi_wrapInBaseClass($content);
 		}
+
+		return $content;
 	}
-	
+
 	/**
 	 * initializes the configuration for this plugin
 	 *

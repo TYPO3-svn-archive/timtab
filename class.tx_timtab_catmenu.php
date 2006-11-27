@@ -67,18 +67,20 @@ class tx_timtab_catmenu extends tslib_pibase {
 		$this->pi_loadLL(); // Loading language-labels
 		
 		//not nice, but works
-		$defaults = array( 'displayCatMenu.' => array(
-			'wrap'            => '<ul>|</ul>',
-			'showCount'       => '1',
-			'hierarchical'    => '0',
-			'sortBy'          => 'title',
-			'sortOrder'       => 'ASC',
-			'list'            => '1',
-			'showLatestDate'  => '0',
-			'catLatestDate.'  => array('strftime' => '%d.%m.%Y'),
-			'hideEmpty'       => '1',
-			'useDescForTitle' => '1'			
-		));
+		$defaults = array( 
+				'displayCatMenu.' => array(
+				'wrap'            => '<ul>|</ul>',
+				'showCount'       => '1',
+				'hierarchical'    => '0',
+				'sortBy'          => 'title',
+				'sortOrder'       => 'ASC',
+				'list'            => '1',
+				'showLatestDate'  => '0',
+				'catLatestDate.'  => array('strftime' => '%d.%m.%Y'),
+				'hideEmpty'       => '1',
+				'useDescForTitle' => '1'			
+			)
+		);
 		
 		$this->conf = t3lib_div::array_merge_recursive_overrule(
 			$defaults,
@@ -98,9 +100,9 @@ class tx_timtab_catmenu extends tslib_pibase {
 	 * @return	string		the category menu
 	 */
 	function userDisplayCatmenu($conf, $pObj) {
-		$this->init($conf, $pObj);		
 		$content = '';
-		
+		$this->init($conf, $pObj);		
+				
 		if($pObj->conf['displayCatMenu.']['mode'] == 'timtab') {			
 			$this->categories = $this->getCategories();			
 			$catCounts        = $this->getCategoryCounts();
@@ -197,17 +199,19 @@ class tx_timtab_catmenu extends tslib_pibase {
 	}
 	
 	/**
+	 * gets the tt_news categories
 	 * 
+	 * @return	array		returns an array with the categories from table tt_news_cat
 	 */
-	function getCategories() {
+	function getCategories() {		
 		$categories = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
 			'uid, title, description, parent_category',
 			'tt_news_cat',
-			'uid > 0'.$this->pObj->SPaddWhere.$this->catEnableFields,
+			'1 = 1 '.$this->pObj->SPaddWhere.$this->catEnableFields,
 			'',
 			$this->conf['displayCatMenu.']['sortBy']
 		);
-		
+				
 		return $categories;
 	}
 	

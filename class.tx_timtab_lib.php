@@ -30,13 +30,6 @@
  *
  * @author Ingo Renner <typo3@ingo-renner.com>
  */
-/**
- * [CLASS/FUNCTION INDEX of SCRIPT]
- *
- *
- *
- *
- */
 
 require_once(PATH_t3lib.'class.t3lib_tcemain.php');
 
@@ -57,6 +50,22 @@ class tx_timtab_lib {
 			$tce->clear_cacheCmd((int) $page);
 		}
 		$tce->admin = 0;
+	}
+	
+	/**
+	 * gets the tt_news record with the given ID
+	 *
+	 * @param	integer		the tt_news uid of the record we want to get
+	 * @return	array		the full tt_news record
+	 */
+	function getPost($id) {
+		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+ 			'*',
+ 			'tt_news',
+ 			'uid = '.$id
+ 		);
+ 		
+ 		return $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
 	}
 }
 
