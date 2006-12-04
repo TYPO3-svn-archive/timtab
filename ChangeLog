@@ -1,4 +1,9 @@
+2006-12-03	Ingo Renner  <typo3@ingo-renner.com>
+	
+	* FIX fixed the way content is fetched from foreign URL for Trackback auto discovery
+
 2006-11-13	Ingo Renner  <typo3@ingo-renner.com>
+
 	* FIX 0004106: Empty blogroll still wrapped in UL, thanks Mario!
 
 2006-10-17	Ingo Renner  <typo3@ingo-renner.com>

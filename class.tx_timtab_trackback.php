@@ -288,9 +288,9 @@ class tx_timtab_trackback {
 		// Get the trackback URIs from those links...
 		$rdf_array = array();
 		foreach($uri_array as $key => $link) {
-			if ($link_content = implode('', file($link))) {
+			if ($link_content = t3lib_div::getURL($link)) {
 				$link_rdf = array();
-				preg_match_all('/(<rdf:RDF.*?<\/rdf:RDF>)/sm', $link_content, $link_rdf, PREG_SET_ORDER);
+				preg_match_all('/(<rdf:RDF.*?<\/rdf:RDF>)/smi', $link_content, $link_rdf, PREG_SET_ORDER);
 
 				for ($i = 0; $i < count($link_rdf); $i++) {
 					if (preg_match('|dc:identifier="' . preg_quote($link) . '"|ms', $link_rdf[$i][1])) {
