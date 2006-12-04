@@ -32,7 +32,7 @@
  */
 
 $PATH_timtab = t3lib_extMgm::extPath('timtab');
-define('PATH_tslib', PATH_site.'typo3/sysext/cms/tslib/');
+define('PATH_tslib', PATH_site.TYPO3_mainDir.'sysext/cms/tslib/');
 require_once($PATH_timtab.'class.tx_timtab_trackback.php');
 #require_once($PATH_timtab.'class.tx_timtab_pingback.php');
 require_once($PATH_timtab.'class.tx_timtab_lib.php');
