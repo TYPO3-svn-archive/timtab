@@ -47,10 +47,10 @@ require_once(PATH_t3lib.'class.t3lib_userauthgroup.php');
 require_once(PATH_t3lib.'class.t3lib_beuserauth.php');
 
 class tx_timtab_pi2_xmlrpcAuth extends t3lib_beuserauth {
-	var $loginType = 'BE';
-	var $security_level = 'normal';
+	var $loginType       = 'BE';
+	var $security_level  = 'normal';
 	var $writeAttemptLog = true;
-	var $writeDevLog = true;
+	var $writeDevLog     = true;
 
 	var $xmlrpcLoginData;
 	var $xmlrpcAuthInfo;
