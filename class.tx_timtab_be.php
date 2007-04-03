@@ -150,7 +150,6 @@ class tx_timtab_be {
 				'',								//MP
 				''								//RDCT
 			);
-			//do we need all this?
 			$TSFE->forceTemplateParsing = 1;
 			$TSFE->showHiddenPage = false;
 			$TSFE->initFEuser();
