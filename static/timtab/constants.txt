@@ -18,9 +18,6 @@ plugin.tx_timtab {
   
 	# cat=plugin.tx_timtab/basic/50; type=int+; label= Home pid: The pid of your Homepage
   homePid = 0
-}
-
-plugin.tx_timtab_pi2 {
   
 	# cat=plugin.tx_timtab/webservices/10; type=int+; label= pid to store the posts in: The page or sysfolder where your posts from external tools will be saved
   pidStorePosts = 0

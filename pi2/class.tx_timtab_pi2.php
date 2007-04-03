@@ -45,8 +45,9 @@
  *
  */
 
-define('TYPE_TRACKBACK', 1);
-define('TYPE_PINGBACK', 2);
+define('TYPE_TRACKBACK',      1);
+define('TYPE_PINGBACK',       2);
+define('TYPE_TRACKBACK_SPAM', 3);
 
 $PATH_timtab = t3lib_extMgm::extPath('timtab');
 require_once(PATH_tslib.'class.tslib_pibase.php');
@@ -138,6 +139,13 @@ class tx_timtab_pi2 extends tslib_pibase {
 			if(!$tt_news['tx_timtab_ping_allowed']) {
 				return $tb->sendResponse(false, 'Sorry, trackbacks are closed for this item.');
 			}
+			
+				//check for existing link to us - SPAM check
+			$permalink = $tb->getPermalink();
+			$tbType = TYPE_TRACKBACK;
+			if($this->conf['trackback.']['validate'] && $this->isTbSpam($tbURL, $permalink)) {
+				$tbType = TYPE_TRACKBACK_SPAM;
+			}
 
 			$title   = htmlspecialchars(strip_tags($title));
 			$title   = $GLOBALS['TSFE']->csConv($title, $charset);
@@ -149,7 +157,7 @@ class tx_timtab_pi2 extends tslib_pibase {
 
 			$blogName = $GLOBALS['TSFE']->csConv($blogName, $charset);
 
-			//do we have a ping, already?
+				//do we have a ping, already?
 			unset($res);
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 				'uid',
@@ -173,21 +181,61 @@ class tx_timtab_pi2 extends tslib_pibase {
 					'remote_addr' => $_SERVER['REMOTE_ADDR'],
 					'tx_timtab_type' => TYPE_TRACKBACK
 				);
-				$res = $GLOBALS['TYPO3_DB']->exec_INSERTquery(
-					'tx_veguestbook_entries',
-					$insertFields
-				);
-				$insertId = $GLOBALS['TYPO3_DB']->sql_insert_id($res);
 
+					//mark spam
+				if($tbType == TYPE_TRACKBACK_SPAM) {
+					$insertFields['tx_timtab_type'] = TYPE_TRACKBACK_SPAM;
+					
+					switch(int($this->conf['trackback.']['spam.']['mark'])) {
+						case -2: //don't save it at all
+							$saveComment = false;
+						case -1: //mark deleted
+							$insertFields['deleted'] = 1;
+							break;
+						case 0:	//do nothing
+							break;
+						case 1:	//mark hidden, default
+						default:
+							$insertFields['hidden'] = 1;
+					}
+				}
+				
+				$insertId = 0;
+				if($saveComment) {
+					$res = $GLOBALS['TYPO3_DB']->exec_INSERTquery(
+						'tx_veguestbook_entries',
+						$insertFields
+					);
+					$insertId = $GLOBALS['TYPO3_DB']->sql_insert_id($res);
+				}
 				if($insertId) {
 					return $tb->sendResponse(true);
 				} else {
 					return $tb->sendResponse(false, 'Something went wrong while saving your ping.');
 				}
+				
 			}
 		} else {
 			return $tb->sendResponse(false, 'At least the URL to your entry is required.');
 		}
+    }
+    
+	/**
+	 * checks whether the trackback link has a link to us, if not the trackback
+	 * is considered SPAM
+	 * 
+	 * @param
+	 * @param
+	 * @return
+	 * @author Thomas Hempel?
+	 */
+    function isTrackbackSpam($remoteUrl, $permalink) {
+    	$remoteContent   = t3lib_div::getURL($remoteUrl);
+    	$permalinkQuoted = preg_quote($permalink, '/');
+    	//pattern from TBValidator WP plugin
+    	$pattern = "/<\s*a.*href\s*=[\"'\s]*".$permalinkQuoted."[\"'\s]*.*>.*<\s*\/\s*a\s*>/i";
+    	
+    	return !(preg_match($pattern, $remoteContent));
     }
 }
 
