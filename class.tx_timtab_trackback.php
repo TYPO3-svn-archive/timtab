@@ -139,7 +139,7 @@ class tx_timtab_trackback {
 		$ping .= '&blog_name='.rawurlencode($this->blogName);
 		$ping .= '&excerpt='.rawurlencode($excerpt);
 
-		$version = explode('.',($GLOBALS['TYPO3_VERSION']?$GLOBALS['TYPO3_VERSION']:$GLOBALS['TYPO_VERSION']));
+		$version = explode('.',(TYPO3_version?TYPO3_version:$GLOBALS['TYPO_VERSION']));
 		unset($version[2]);
 		$version = implode($version,'.');
 
