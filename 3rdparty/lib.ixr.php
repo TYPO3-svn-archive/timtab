@@ -1,12 +1,13 @@
 <?php
 
-/* 
+/*
    IXR - The Incutio XML-RPC Library - (c) Incutio Ltd 2002-2005
    Version 1.7 (beta) - Simon Willison, 23rd May 2005
    Site:   http://scripts.incutio.com/xmlrpc/
    Manual: http://scripts.incutio.com/xmlrpc/manual.php
+
    Made available for TYPO3 under the BSD License: http://www.opensource.org/licenses/bsd-license.php
-   
+
    Changed in 1.7:
    * Fixed bug where whitespace between elements accumulated in _currentTagContents
    * Fixed bug in IXR_Date where Unix timestamps were parsed incorrectly
@@ -17,7 +18,7 @@
    * Added optional timeout parameter to IXR_Client: http://trac.wordpress.org/changeset/1673
    * Added support for class object callbacks: http://trac.wordpress.org/ticket/708
      (thanks Owen Winkler)
-   
+
    Previous version was 1.61, released 11th July 2003
 
 */
@@ -64,7 +65,7 @@ class IXR_Value {
         }
         // If it is a normal PHP object convert it in to a struct
         if (is_object($this->data)) {
-            
+
             $this->data = get_object_vars($this->data);
             return 'struct';
         }
@@ -264,7 +265,7 @@ class IXR_Message {
             }
         }
 		$this->_currentTagContents = '';
-    }       
+    }
 }
 
 
@@ -289,9 +290,9 @@ class IXR_Server { //TODO maybe extend this class to log with TYPO3 features
             }
             $data = $HTTP_RAW_POST_DATA;
         }
-        
+
         $this->debug($data);
-        
+
         $this->message = new IXR_Message($data);
         if (!$this->message->parse()) {
             $this->error(-32700, 'parse error. not well formed');
@@ -376,9 +377,9 @@ EOD;
         header('Content-Type: text/xml');
         header('Date: '.date('r'));
         echo $xml;
-        
+
         $this->debug($xml);
-        
+
         exit;
     }
     function hasMethod($method) {
@@ -399,7 +400,7 @@ EOD;
                 'specUrl' => 'http://www.xmlrpc.com/discuss/msgReader$1208',
                 'specVersion' => 1
             ),
-        );   
+        );
     }
     function getCapabilities($args) {
         return $this->capabilities;
@@ -436,13 +437,13 @@ EOD;
         }
         return $return;
     }
-    
+
     function debug($msg) {
-    	if(XMLRPC_DEBUG) {        	
+    	if(XMLRPC_DEBUG) {
 	        $handle = fopen(DEBUG_FILENAME, 'a');
 	        fwrite($handle, $msg.chr(10));
 	        fclose($handle);
-        }	
+        }
     }
 }
 
@@ -453,7 +454,7 @@ class IXR_Request {
     function IXR_Request($method, $args) {
         $this->method = $method;
         $this->args = $args;
-        $this->xml = 
+        $this->xml =
 '<?xml version="1.0"?>
 <methodCall>
 	<methodName>'.$this->method.'</methodName>
@@ -519,7 +520,7 @@ class IXR_Client {
         $request .= "User-Agent: {$this->useragent}$r";
         $request .= "Content-length: {$length}$r$r";
         $request .= $xml;
-        
+
         // Now send the request
         $errno  = 0;
         $errstr = 0;
@@ -556,9 +557,9 @@ class IXR_Client {
                 $contents .= trim($line).chr(10);
             }
         }
-        
+
         fclose($fp);
-        
+
         if ($this->debug) {
             echo '<pre>'.htmlspecialchars($contents)."\n</pre>\n\n";
         }
@@ -601,7 +602,7 @@ class IXR_Error {
         $this->message = $message;
     }
     function getXml() {
-        $xml = 
+        $xml =
 '<methodResponse>
   <fault>
     <value>
@@ -689,27 +690,27 @@ class IXR_IntrospectionServer extends IXR_Server {
             'specVersion' => 1
         );
         $this->addCallback(
-            'system.methodSignature', 
-            'this:methodSignature', 
-            array('array', 'string'), 
+            'system.methodSignature',
+            'this:methodSignature',
+            array('array', 'string'),
             'Returns an array describing the return type and required parameters of a method'
         );
         $this->addCallback(
-            'system.getCapabilities', 
-            'this:getCapabilities', 
-            array('struct'), 
+            'system.getCapabilities',
+            'this:getCapabilities',
+            array('struct'),
             'Returns a struct describing the XML-RPC specifications supported by this server'
         );
         $this->addCallback(
-            'system.listMethods', 
-            'this:listMethods', 
-            array('array'), 
+            'system.listMethods',
+            'this:listMethods',
+            array('array'),
             'Returns an array of available methods on this server'
         );
         $this->addCallback(
-            'system.methodHelp', 
-            'this:methodHelp', 
-            array('string', 'string'), 
+            'system.methodHelp',
+            'this:methodHelp',
+            array('string', 'string'),
             'Returns a documentation string for the specified method'
         );
     }
