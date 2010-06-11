@@ -1,0 +1,3 @@
+
+#	$Id: constants.txt 2509 2005-06-15 21:32:11Z flyguide $
+
