@@ -37,6 +37,7 @@ plugin.tx_timtab {
     size = 60
   }
   
+  displayCatMenu.targetPid = {$plugin.tx_timtab.catPid}
   categoryMenu {
     #everything else is set in timtab/class.tx_timtab_catmenu.php
     targetPid = 0

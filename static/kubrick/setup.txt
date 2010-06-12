@@ -9,6 +9,7 @@ plugin.tt_news {
   templateFile = {$page.file.template_tt_news}
   
   singlePid = {$plugin.tx_timtab.blogPid}
+  pid_list = {$plugin.tx_timtab.pidStorePosts}
   
   displayList.date_stdWrap.strftime = %B %d, %Y
   displaySingle.date_stdWrap.strftime =  %A, %B %d, %Y at %I:%M %p
@@ -21,6 +22,8 @@ plugin.tt_news {
   useSubCategories = 1
   limit = 10
   
+  
+  catSelectorTargetPid = {$plugin.tx_timtab.catPid}
   displayCatMenu {
     mode = timtab
     catmenu_stdWrap.wrap = <li><h2 class="news-catmenu">Categories</h2>|</li>

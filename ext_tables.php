@@ -67,19 +67,31 @@ $TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY.'_pi3']='la
 t3lib_extMgm::addPlugin(Array('LLL:EXT:timtab/locallang_db.php:tt_content.list_type_pi1', $_EXTKEY.'_pi1'),'list_type');
 t3lib_extMgm::addPlugin(Array('LLL:EXT:timtab/locallang_db.php:tt_content.list_type_pi3', $_EXTKEY.'_pi3'),'list_type');
 
-t3lib_div::loadTCA('tt_news');
-t3lib_extMgm::addTCAcolumns('tt_news', $tempColumns, 1);
-$TCA['tt_news']['ctrl']['typeicons'][] = $thisExtRelPath.'icon_tx_timtab_post.gif';
-$TCA['tt_news']['columns']['type']['config']['items'][] = Array('LLL:EXT:timtab/locallang_db.php:tt_news.type.I.timtab', 3);
-$TCA['tt_news']['interface']['showRecordFieldList'] .= ',tx_timtab_trackbacks,tx_timtab_ping_allowed,tx_timtab_comments_allowed';
-$TCA['tt_news']['types']['3'] = array();
+if(version_compare($tt_news_version, '3.0.0', '>=')) {
+	t3lib_div::loadTCA('tt_news');
+	t3lib_extMgm::addTCAcolumns('tt_news', $tempColumns, 1);
+	$TCA['tt_news']['ctrl']['typeicons'][] = $thisExtRelPath.'icon_tx_timtab_post.gif';
+	$TCA['tt_news']['columns']['type']['config']['items'][] = Array('LLL:EXT:timtab/locallang_db.php:tt_news.type.I.timtab', 3);
+	$TCA['tt_news']['interface']['showRecordFieldList'] .= ',tx_timtab_trackbacks,tx_timtab_ping_allowed,tx_timtab_comments_allowed';
+	$TCA['tt_news']['types']['3'] = clone $TCA['tt_news']['types']['0'];
+	//t3lib_extMgm::addToAllTCAtypes('tt_news', 'title;;1;;,type,editlock,datetime;;2;;1-1-1,author;;3;;,short,bodytext;;4;richtext[paste|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|table|image]:rte_transform[flag=rte_enabled|mode=ts];4-4-4,no_auto_pb,--div--;Relations,category,image;;;;1-1-1,imagecaption;;5;;,links;;;;2-2-2,related;;;;3-3-3,news_files;;;;4-4-4,--div--;Blog Post,tx_timtab_trackbacks;;;;1-1-1,tx_timtab_comments_allowed;;;;2-2-2,tx_timtab_ping_allowed;;;;', 3);
+} else {
+	t3lib_div::loadTCA('tt_news');
+	t3lib_extMgm::addTCAcolumns('tt_news', $tempColumns, 1);
+	$TCA['tt_news']['ctrl']['typeicons'][] = $thisExtRelPath.'icon_tx_timtab_post.gif';
+	$TCA['tt_news']['columns']['type']['config']['items'][] = Array('LLL:EXT:timtab/locallang_db.php:tt_news.type.I.timtab', 3);
+	$TCA['tt_news']['interface']['showRecordFieldList'] .= ',tx_timtab_trackbacks,tx_timtab_ping_allowed,tx_timtab_comments_allowed';
+	$TCA['tt_news']['types']['3'] = array();
+	t3lib_extMgm::addToAllTCAtypes('tt_news', 'title;;1;;,type,editlock,datetime;;2;;1-1-1,author;;3;;,short,bodytext;;4;richtext[paste|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|table|image]:rte_transform[flag=rte_enabled|mode=ts];4-4-4,no_auto_pb,--div--;Relations,category,image;;;;1-1-1,imagecaption;;5;;,links;;;;2-2-2,related;;;;3-3-3,news_files;;;;4-4-4,--div--;Blog Post,tx_timtab_trackbacks;;;;1-1-1,tx_timtab_comments_allowed;;;;2-2-2,tx_timtab_ping_allowed;;;;', 3);
+}
 
 t3lib_div::loadTCA('tx_veguestbook_entries');
 $TCA['tx_veguestbook_entries']['columns']['homepage']['config']['max'] = 2083;
 
-t3lib_extMgm::addToAllTCAtypes('tt_news', 'title;;1;;,type,editlock,datetime;;2;;1-1-1,author;;3;;,short,bodytext;;4;richtext[paste|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|table|image]:rte_transform[flag=rte_enabled|mode=ts];4-4-4,no_auto_pb,--div--;Relations,category,image;;;;1-1-1,imagecaption;;5;;,links;;;;2-2-2,related;;;;3-3-3,news_files;;;;4-4-4,--div--;Blog Post,tx_timtab_trackbacks;;;;1-1-1,tx_timtab_comments_allowed;;;;2-2-2,tx_timtab_ping_allowed;;;;', 3);
+
 
 t3lib_extMgm::addStaticFile($_EXTKEY,'static/kubrick/','Kubrick (default weblog template)');
+t3lib_extMgm::addStaticFile($_EXTKEY,'static/timtab/','Timtab');
 t3lib_extMgm::addStaticFile($_EXTKEY,'static/webservice/','Blog Webservices');
 
 if (TYPO3_MODE=="BE") {

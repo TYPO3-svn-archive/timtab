@@ -81,10 +81,9 @@ class tx_timtab_catmenu extends tslib_pibase {
 				'useDescForTitle' => '1'			
 			)
 		);
-		
 		$this->conf = t3lib_div::array_merge_recursive_overrule(
 			$defaults,
-			array_merge($conf, $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_timtab.'])
+			array_merge($conf, (array) $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_timtab.'])
 		);		
 		$this->conf['allowCaching'] = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tt_news.']['allowCaching'];
 	

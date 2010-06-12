@@ -1,3 +1,9 @@
+2010-06-12	Lina Wolf 	<2010@lotypo3.de>
+	* FIX Made catmenu fit for PHP 5
+	* FIX Template of timtab importable
+	* FIX tx_timtab_lib::getPost had been removed even though still in use
+	* FIX kubrik add tt_news_pid_list
+
 2007-02-18	Ingo Renner  <typo3@ingo-renner.com>
 
 	* UPD small refinements to the manual
