@@ -80,3 +80,10 @@ plugin.tx_timtab {
     strictAPI = {$plugin.tx_timtab_pi2.strictAPI}
   }
 }
+
+/**
+* Blogroll Default Konfiguration
+* @author Lina Wolf
+*/
+plugin.tx_timtab_pi1 {
+}

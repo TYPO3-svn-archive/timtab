@@ -1,11 +1,57 @@
+
+
+plugin.tt_news {
+  displayXML {
+    rss091_tmplFile = {$plugin.tt_news.displayXML.rss091_tmplFile}
+    rss2_tmplFile = {$plugin.tt_news.displayXML.rss2_tmplFile}
+    rdf_tmplFile = {$plugin.tt_news.displayXML.rdf_tmplFile}
+    atom03_tmplFile = {$plugin.tt_news.displayXML.atom03_tmplFile}
+    atom1_tmplFile = {$plugin.tt_news.displayXML.atom1_tmplFile}
+
+    # possibile values: rss091 / rss2 / rdf / atom03
+    xmlFormat = {$plugin.tt_news.displayXML.xmlFormat}
+
+    xmlTitle = {$plugin.tx_timtab.title}
+    xmlLink = {$plugin.tx_timtab.homepage}
+    xmlDesc = {$plugin.tx_timtab.tagline}
+    xmlLang = {$plugin.tt_news.displayXML.xmlLang}
+    xmlIcon = {$plugin.tt_news.displayXML.xmlIcon}
+    xmlLimit = {$plugin.tt_news.displayXML.xmlLimit}
+    xmlCaching = {$plugin.tt_news.displayXML.xmlCaching}
+
+  #  title_stdWrap.wrap = <![CDATA[|]]>
+  #  subheader_stdWrap.wrap = <![CDATA[|]]>
+  }
+}
+
+
 #
 #	$Id$
 #
+xmlnews = PAGE
+xmlnews {
+  typeNum = 100
+
+  10 < plugin.tt_news
+  10.pid_list >
+  10.pid_list = {$plugin.tx_timtab.pidStorePosts}
+  10.singlePid = {$plugin.tx_timtab.blogPid}
+  10.defaultCode = XML
+  10.catTextMode = 1
+  10.catImageMode = 0
+
+
+  config {
+    disableAllHeaderCode = 1
+    additionalHeaders = Content-type:application/xml
+    xhtml_cleaning = 0
+    admPanel = 0
+  }
+}
 
 
 # tt_news
 plugin.tt_news {
-
   templateFile = {$page.file.template_tt_news}
   
   singlePid = {$plugin.tx_timtab.blogPid}
@@ -13,20 +59,50 @@ plugin.tt_news {
   
   displayList.date_stdWrap.strftime = %B %d, %Y
   displaySingle.date_stdWrap.strftime =  %A, %B %d, %Y at %I:%M %p
+  limit = 10
 
-  dontUseBackPid = 1
   catTextMode = 3
-  newsAmenuUserFunc =
+  
+  /*
+  * Link configuration of tt_news
+  * @description add year and month to path, no backpid
+  * @author Ingo Renner
+  */
   useHRDates = 1
   useHRDatesSingle = 1
   useSubCategories = 1
-  limit = 10
+  dontUseBackPid = 1
   
+  /*
+  * AMENU Settings
+  * @description Amenu should show non-archived and categories not be added to amenu
+  * @author Lina Wolf
+  */
+	enableArchiveDate = 0
+	disableCategoriesInAmenuLinks = 1
+	amenuWithCatSelector = 0
   
+  /*
+  * CATMENU Settings
+  * @description Display Timtab CATMENU. Link it automatically
+  * @author Ingo Renner, Lina Wolf
+  */
   catSelectorTargetPid = {$plugin.tx_timtab.catPid}
   displayCatMenu {
     mode = timtab
     catmenu_stdWrap.wrap = <li><h2 class="news-catmenu">Categories</h2>|</li>
+  }
+  
+  
+  /*
+  * tt_news LIST Pagebrowser
+  * @description Simplified Pagebrowser
+  * @author Lina Wolf
+  */
+  pageBrowser {
+  	showResultCount = 0
+  	showFirstLast = 0
+  	showRange = 0
   }
 
   _LOCAL_LANG.default {
@@ -40,6 +116,10 @@ plugin.tt_news.limit = 100
 [global]
 [globalVar = GP:tx_ttnews|ps > 0]
 plugin.tt_news.limit = 100
+[global]
+[globalVar = GP:tx_ttnews|cat > 0]
+plugin.tt_news.categoryMode = 1
+#plugin.tt_news.categorySelection = 
 [global]
 
 # posts list
@@ -61,6 +141,8 @@ temp.archives < plugin.tt_news
 temp.archives {
   code >
   code = AMENU
+  # Fix for Bug #14715, Bugtracker
+  categoryMode = 0
 }
 
 # categories
@@ -119,11 +201,21 @@ temp.blogTagline = TEXT
 temp.blogTagline.value = {$plugin.tx_timtab.tagline}
 temp.blogHomepage = TEXT
 temp.blogHomepage.value = {$plugin.tx_timtab.homepage}
-temp.blogRoll =< plugin.tx_timtab_pi1
+
+
+
+temp.blogRoll = COA
 temp.blogRoll {
-  header_stdWrap.wrap = <li><h2>Blogroll</h2>|</li>
-  dontWrapInDiv = 1
+	10 =< plugin.tx_timtab_pi1
+	10 {
+		pidList = {$plugin.tx_timtab.pidStorePosts}
+	  header_stdWrap.wrap = |
+	  dontWrapInDiv = 1
+	}
+	stdWrap.wrap = <li><h2>Blogroll</h2>|</li>
+	stdWrap.required = 1
 }
+
 
 # page cObject
 page >
@@ -176,6 +268,7 @@ page {
   )
   
   config {
+		baseURL = {$plugin.tx_timtab.homepage}
     # get XHTML compliant output
     xmlprologue = none
     doctype = xhtml_trans
@@ -200,6 +293,10 @@ page {
   } # end page.config
   
 } # end page (PAGE)
+
+config {
+	tx_realurl_enable = 1
+}
 
 #remove cleargif
 content.headerSpace = 0|0

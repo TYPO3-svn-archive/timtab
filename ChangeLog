@@ -2,7 +2,17 @@
 	* FIX Made catmenu fit for PHP 5
 	* FIX Template of timtab importable
 	* FIX tx_timtab_lib::getPost had been removed even though still in use
-	* FIX kubrik add tt_news_pid_list
+	* ADD RealURL Autoconf Support
+	* FIX Removed overriding of pidList in Blogroll Plugin. Handled by TS Script instead
+	
+	* FIX Kubrik add tt_news_pid_list
+	* ADD Kubrik BaseURL set by default
+	* ADD Kubrik RealURL used by default
+	* ADD Kubrik Pagebrowser by Default
+	* FIX	Kubrik Blogroll should come from storage Folder
+	* FIX Kubrik Show Blogroll only if non-empty
+	* FIX Kubrik AMENU should ignore catselection will not work otherwise. 
+	
 
 2007-02-18	Ingo Renner  <typo3@ingo-renner.com>
 
