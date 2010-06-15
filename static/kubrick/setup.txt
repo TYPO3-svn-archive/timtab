@@ -58,7 +58,18 @@ plugin.tt_news {
   pid_list = {$plugin.tx_timtab.pidStorePosts}
   
   displayList.date_stdWrap.strftime = %B %d, %Y
-  displaySingle.date_stdWrap.strftime =  %A, %B %d, %Y at %I:%M %p
+  displaySingle {
+  	date_stdWrap.strftime =  %A, %B %d, %Y at %I:%M %p
+  	prevLinkTitle_stdWrap.wrap = |" rel="prev
+    prevLinkLabel_stdWrap.wrap = |
+    prevLink_stdWrap.wrap = <div class="alignleft">&laquo;&nbsp;|</div>
+
+    nextLinkTitle_stdWrap.wrap = |" rel="next
+    nextLinkLabel_stdWrap.wrap = |
+    nextLink_stdWrap.wrap = <div class="alignright">| &nbsp;&raquo;</div>
+    nextLink_stdWrap.addParams = 
+
+  }
   limit = 10
 
   catTextMode = 3
@@ -227,7 +238,11 @@ page {
   headTag = <head profile="http://gmpg.org/xfn/11">
   headerData {
     10 = TEXT
-    10.value = <link rel="pingback" href="{$plugin.tx_timtab.homepage}/?type=200" />
+    10 {
+    	wrap = <link rel="pingback" href="{$plugin.tx_timtab.homepage}/|" />
+    	typolink.parameter = {$plugin.tx_timtab.blogPid},200
+    	typolink.returnLast = url
+    }
     
     20 = TEXT
     20.value = <link rel="alternate" type="application/rss+xml" title="RSS-Feed" href="{$plugin.tx_timtab.homepage}/?type=100" />

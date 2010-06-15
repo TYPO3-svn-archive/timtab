@@ -62,6 +62,7 @@ class tx_timtab_pi2 extends tslib_pibase {
 
 	var $conf;
     var $tt_news;
+    var $fullPost;
 
     /**
 	 * main function of pi2 decides whether to process a XML-RPC request or Trackback
@@ -98,6 +99,7 @@ class tx_timtab_pi2 extends tslib_pibase {
     		$this->tt_news = intval($tt_news['tt_news']);
     	}
     }
+  
 
     /**
 	 * processing of tracbacks, checks for a tt_news uid, whether pings are enabled
@@ -108,8 +110,7 @@ class tx_timtab_pi2 extends tslib_pibase {
 	 */
     function processTrackback() {
     	$tb = t3lib_div::makeInstance('tx_timtab_trackback');
-    	$tb->encoding = 'UTF-8';
-
+    	$tb->initSend($this->conf, array('uid', $this->tt_news));
     	if(!$this->tt_news || !is_int($this->tt_news)) {
     		return $tb->sendResponse(false, 'I really need an ID for this to work.');
     	}
@@ -134,7 +135,7 @@ class tx_timtab_pi2 extends tslib_pibase {
 				'uid = '.$this->tt_news
 			);
 			$tt_news = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
-
+			$tb->post = $tt_news;
 			//ping disabled
 			if(!$tt_news['tx_timtab_ping_allowed']) {
 				return $tb->sendResponse(false, 'Sorry, trackbacks are closed for this item.');
@@ -183,6 +184,7 @@ class tx_timtab_pi2 extends tslib_pibase {
 				);
 
 					//mark spam
+				$saveComment = true;
 				if($tbType == TYPE_TRACKBACK_SPAM) {
 					$insertFields['tx_timtab_type'] = TYPE_TRACKBACK_SPAM;
 					
@@ -202,6 +204,7 @@ class tx_timtab_pi2 extends tslib_pibase {
 				
 				$insertId = 0;
 				if($saveComment) {
+					t3lib_div::debug($insertFields);
 					$res = $GLOBALS['TYPO3_DB']->exec_INSERTquery(
 						'tx_veguestbook_entries',
 						$insertFields
@@ -219,6 +222,16 @@ class tx_timtab_pi2 extends tslib_pibase {
 			return $tb->sendResponse(false, 'At least the URL to your entry is required.');
 		}
     }
+    
+  /**
+  * This Method was missing TODO: implement
+  * @author Lina Wolf
+  * @return boolean always returns fasle
+  */
+  function isTbSpam() {
+  	return false;
+  }
+
     
 	/**
 	 * checks whether the trackback link has a link to us, if not the trackback

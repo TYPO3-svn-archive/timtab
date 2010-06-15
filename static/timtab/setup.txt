@@ -86,4 +86,5 @@ plugin.tx_timtab {
 * @author Lina Wolf
 */
 plugin.tx_timtab_pi1 {
+		pidList = this
 }

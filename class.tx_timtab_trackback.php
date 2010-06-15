@@ -41,9 +41,15 @@ class tx_timtab_trackback {
 	var $prefixId = 'tx_timtab_trackback';		// Same as class name
 	var $scriptRelPath = 'class.tx_timtab_trackback.php';	// Path to this script relative to the extension dir.
 	var $extKey = 'timtab';	// The extension key.
-
+	
+	/**
+	 * Configuration array of timtab
+	 */
 	var $conf;
-	var $pObj;
+	
+	/**
+	 * array representing tt_news post
+	 */
 	var $post;
 	var $encoding;
 	var $timeout;
@@ -52,10 +58,8 @@ class tx_timtab_trackback {
 	/**
 	 * initialization for sending trackback pings in BE
 	 *
-	 * @param	object		the parent object with our configuration
-	 * @param	integer		id of the current post
-	 * @param	string		status of the current operation [new|update]
-	 * @param	array		the current tt_news record if available
+	 * @param	array	conf 			the configuration of timtab
+	 * @param	array	fullPost 	the current tt_news record if available
 	 * @return	void
 	 */
 	function initSend($config, $fullPost) {
@@ -71,12 +75,19 @@ class tx_timtab_trackback {
 	/**
 	 * initialization for use in FE
 	 * 
-	 * @param	object		parent object
+	 * @author Ingo Renner, Lina Wolf
+	 * @param	array	conf 			the configuration of timtab
+	 * @param	array	fullPost 	the current tt_news record if available
 	 * @return	void
 	 */
-	function initFe($pObj) {
+	function initFe($config, $fullPost) {
 		$this->cObj = t3lib_div::makeInstance('tslib_cObj');
-		$this->pObj = $pObj;
+		$this->conf = $config;
+		$this->post = $fullPost;
+		
+		$this->encoding = 'UTF-8';
+		$this->timeout  = $this->conf['connectionTimeout'];
+		$this->blogName = $this->conf['title'];
 	}
 	
 	function sendPings($tbField) {
@@ -405,8 +416,8 @@ class tx_timtab_trackback {
 			'tx_timtab_pi2[trackback]' => 1
 		);
 
-		$link = $this->pObj->pi_linkToPage('trackback', $this->conf['blogPid'], '', $urlParameters);
-		return /*t3lib_div::getIndpEnv('TYPO3_SITE_URL').*/$link;
+		$link = $this->cObj->getTypoLink('trackback', $this->conf['blogPid'], $urlParameters);
+		return $link;
 	}
 
 	/**

@@ -142,21 +142,9 @@ class tx_timtab_fe extends tslib_pibase {
 				$this->markerArray['###BLOG_TEXT_COMMENTS###']  = $this->pi_getLL('multiple_comments');
 			}
 			
-			//post navigation
-			$this->markerArray['###BLOG_PREV_POST###'] = '';
-			$this->markerArray['###BLOG_NEXT_POST###'] = '';
-			$prev = $this->getPrevPost();
-			if($prev) {
-				$this->markerArray['###BLOG_PREV_POST###'] = '&laquo; '.$this->makePostLink($prev);
-			}
-			$next = $this->getNextPost();
-			if($next) {
-				$this->markerArray['###BLOG_NEXT_POST###'] = $this->makePostLink($next).' &raquo;';
-			}
-			
 			//trackback
 			$tb = t3lib_div::makeInstance('tx_timtab_trackback');
-			$tb->initFe($this);
+			$tb->initFe($this->conf, $this->conf['data']);
 			$plink  = $tb->getPermalink();
 			$tbURL  = $tb->getTrackbackURL();
 			$rdf    = $tb->getEmbeddedRdf($plink, $tbURL);
@@ -166,8 +154,6 @@ class tx_timtab_fe extends tslib_pibase {
 			$this->markerArray['###BLOG_TRACKBACK_LINK###'] = $tbLink;
 			$this->markerArray['###BLOG_TRACKBACK_URL###']  = $tbURL;
 
-			//misc
-			$this->markerArray['###BLOG_POST_TITLE###'] = $this->buildPostTitle($this->conf['data']['title']);
 		} elseif($this->calledBy == 've_guestbook') {
 
 			$tt_news = $this->getCurrentPost();
@@ -238,7 +224,7 @@ class tx_timtab_fe extends tslib_pibase {
 			}
 			
 			$tb = t3lib_div::makeInstance('tx_timtab_trackback');
-			$tb->initFe($this);
+			$tb->initFe($this->conf, $this->conf['data']);
 			$this->markerArray['###BLOG_TRACKBACK_URL###'] = $tb->getTrackbackURL();
 			
 
@@ -251,11 +237,12 @@ class tx_timtab_fe extends tslib_pibase {
 	 * @return	integer		number of comments for the current post
 	 */
 	function count_comments() {
-		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-			'uid',
-			'tx_veguestbook_entries',
-			'uid_tt_news = '.$this->conf['data']['uid'].$this->cObj->enableFields('tx_veguestbook_entries')
-		);
+		$select = 'uid';
+		$table = 'tx_veguestbook_entries';
+		// Entries on page 0 should not be counted as they are never displayed
+		$where = 'tx_veguestbook_entries.uid_tt_news = '.$this->conf['data']['uid'].$this->cObj->enableFields('tx_veguestbook_entries').
+			' AND tx_veguestbook_entries.pid > 0';
+		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($select,$table,$where);
 
 		return $GLOBALS['TYPO3_DB']->sql_num_rows($res);
 	}
@@ -273,85 +260,6 @@ class tx_timtab_fe extends tslib_pibase {
 		);
 
 		return $tt_news[0];
-	}
-	
-	/**
-	 * gets previous post if available
-	 * 
-	 * @return	array
-	 */
-	function getPrevPost() {
-		$tt_news = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
-			'uid, title, datetime',
-			'tt_news',
-			'pid IN ('.$this->pObj->conf['pid_list'].') AND datetime < '.$this->conf['data']['datetime'].$this->cObj->enableFields('tt_news'),
-			'',
-			'datetime DESC'
-		);
-		
-		return $tt_news[0];
-	}
-	
-	/**
-	 * gets previous post if available
-	 * 
-	 * @return	array
-	 */
-	function getNextPost() {
-		$tt_news = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
-			'uid, title, datetime',
-			'tt_news',
-			'pid IN ('.$this->pObj->conf['pid_list'].') AND datetime > '.$this->conf['data']['datetime'].$this->cObj->enableFields('tt_news'),
-			'',
-			'datetime ASC'
-		);
-		
-		return $tt_news[0];
-	}
-	
-	/**
-	 * builds a link to a given post
-	 * 
-	 * @param	array		the post data
-	 * @return	string		the post link
-	 */
-	function makePostLink($tt_news) {
-		$addParams  = '&tx_ttnews[tt_news]='.$tt_news['uid'];
-		$addParams .= '&tx_ttnews[year]='.date('Y', $tt_news['datetime']);
-		$addParams .= '&tx_ttnews[month]='.date('m', $tt_news['datetime']);
-		$addParams .= '&tx_ttnews[day]='.date('d', $tt_news['datetime']);
-
-		$conf = array(
-			'parameter'        => $GLOBALS['TSFE']->id,
-			'additionalParams' => $addParams,
-			'no_cache'         => $this->pObj->allowCaching?0:1,
-			'useCacheHash'     => $this->pObj->allowCaching,
-		);
-
-		return $this->cObj->typolink($tt_news['title'], $conf);
-	}
-
-	/**
-	 * builds the title for the post in single view, wraps it with a link
-	 *
-	 * @param	string		the title of the post
-	 * @return	string		title, ready for output
-	 */
-	function buildPostTitle($title) {
-		$addParams  = '&tx_ttnews[tt_news]='.$this->conf['data']['uid'];
-		$addParams .= '&tx_ttnews[year]='.$this->pObj->piVars['year'];
-		$addParams .= '&tx_ttnews[month]='.$this->pObj->piVars['month'];
-		$addParams .= '&tx_ttnews[day]='.$this->pObj->piVars['day'];
-
-		$conf = array(
-			'parameter'        => $GLOBALS['TSFE']->id,
-			'ATagParams'       => 'rel="bookmark" title="Permanent Link: '.$title.'"',
-			'additionalParams' => $addParams,
-			'no_cache'         => $this->pObj->allowCaching?0:1,
-			'useCacheHash'     => $this->pObj->allowCaching,
-		);
-
-		return $this->cObj->typolink($title, $conf);
 	}
 
 	/**

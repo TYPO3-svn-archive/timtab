@@ -46,6 +46,8 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 	var $status;
 
 	function tx_timtab_pi2_xmlrpcServer(&$pObj) {
+    global $HTTP_RAW_POST_DATA;
+    $HTTP_RAW_POST_DATA = t3lib_div::_POST();
 		$this->conf = $pObj->conf;
 		$this->pObj = $pObj;
 		$this->cObj = $pObj->cObj; // needed for sending trackback pings

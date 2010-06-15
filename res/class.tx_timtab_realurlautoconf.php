@@ -1,5 +1,5 @@
 <?php
-class tx_album3x_realurl {
+class tx_timtab_realurlautoconf {
 
 	/**
 	 * Generates additional RealURL configuration and merges it with provided configuration
@@ -10,36 +10,35 @@ class tx_album3x_realurl {
 	 */
 	function generateUrlWithDate($params, &$pObj) {
 		$myConf = array(
-	   	'init' => array(
-	      		'enableCHashCache' => 1,
-	      		'enableUrlDecodeCache' => 1,
-	      		'enableUrlEncodeHash' => 1,
-	   	),
-			'pagePath' => array(
-	   		'type' => 'user',
-	   		'userFunc' => 'EXT:realurl/class.tx_realurl_advanced.php:&tx_realurl_advanced->main',
-	   		'spaceCharacter' => '-',
-	   		'languageGetVar' => 'L',
-	   		'expireDays' => 3,
-	   		'rootpage_id' => $root
-			),
 			'fileName' => array (
 			  'defaultToHTMLsuffixOnPrev' => 1,
-		 		'index' => array(
-					'page.html' => array(
-		 				'keyValues' => array (
-		    			'type' => 1,
-		 				),
-					),
-		 		),
-				'rss.xml' => array(
-					'keyValues' => array (
-		  			'type' => 100,
-					),
-				),
+	   		'index' => array(
+    			'page.html' => array(
+     				'keyValues' => array (
+        				'type' => 1,
+     				),
+    			),
+    			'rss.xml' => array(
+     				'keyValues' => array (
+        				'type' => 100,
+     				),
+    			),
+    			'ping.xml' => array(
+     				'keyValues' => array (
+        				'type' => 1,
+     				),
+    			),
+	   		),
 			),
 			'postVarSets'   => array(
 				'_DEFAULT' => array(
+				
+					'ping' => array(
+						'type' => 'single',
+						'keyValues' => array(
+							'type' => 200,
+						),
+					),	
 					// news archive parameters
 					'archive' => array(
 						array(
@@ -65,6 +64,8 @@ class tx_album3x_realurl {
 						array(
 							'GETvar' => 'tx_ttnews[day]',
 						),
+					),
+					'article' => array (
 						array(
 							'GETvar'      => 'tx_ttnews[tt_news]',
 							'lookUpTable' => array(
@@ -79,13 +80,10 @@ class tx_album3x_realurl {
 								)						
 							),
 						),
-					),
-					// news pagebrowser
-					'browse' => array(
 						array(
-							'GETvar' => 'tx_ttnews[pointer]',
+							'GETvar' => 'tx_timtab_pi2[trackback]',
 						),
-					),			
+					),		
 					// news categories
 					'category' => array(
 						array(
@@ -102,26 +100,14 @@ class tx_album3x_realurl {
 								),
 							),
 						),
-					),					
-					'not_cached' => array(
-						'type' => 'single',
-						'keyValues' => array(
-							'no_cache' => 1,
+					),	
+					// news pagebrowser
+					'browse' => array(
+						array(
+							'GETvar' => 'tx_ttnews[pointer]',
 						),
-					),
-					'xmlrpc' => array(
-						'type' => 'single',
-						'keyValues' => array(
-							'type' => 200,
-						),
-					),
-					'trackback' => array(
-						'type' => 'single',
-						'keyValues' => array(
-							'type' => 200,
-						),
-					),
-				),
+					),	
+			),
 			),
 		);
 		return array_merge_recursive($params['config'], $myConf);
