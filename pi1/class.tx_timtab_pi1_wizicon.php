@@ -48,8 +48,7 @@ class tx_timtab_pi1_wizicon {
 	}
 	function includeLocalLang()	{
 		global $LOCAL_LANG;
-		
-		include(t3lib_extMgm::extPath('timtab').'locallang.php');
+		$LOCAL_LANG = $GLOBALS['LANG']->includeLLFile(t3lib_extMgm::extPath('timtab').'locallang.xml',FALSE);
 		return $LOCAL_LANG;
 	}
 }
