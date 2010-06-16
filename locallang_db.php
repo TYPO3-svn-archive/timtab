@@ -55,6 +55,7 @@ $LOCAL_LANG = Array (
 		'tx_timtab_blogroll.target.I.2' => '_top',
 		'tt_content.list_type_pi1' => 'Blogroll',
 		'tt_content.list_type_pi3' => 'Calendar',
+		'tx_comments_comments.tx_timtab_type' => 'Type (Comment or trackback)',
 	),
 	'dk' => Array (
 	),
@@ -105,6 +106,7 @@ $LOCAL_LANG = Array (
 		'tx_timtab_blogroll.target.I.2' => '_top',
 		'tt_content.list_type_pi1' => 'Blogroll',
 		'tt_content.list_type_pi3' => 'Kalender',
+		'tx_comments_comments.tx_timtab_type' => 'Typ (Kommentar oder Trackback)',
 	),
 	'no' => Array (
 		'tt_news.tx_timtab_trackbacks' => 'Trackbacks',

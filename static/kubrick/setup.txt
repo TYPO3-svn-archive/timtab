@@ -24,7 +24,6 @@ plugin.tt_news {
   }
 }
 
-
 #
 #	$Id$
 #
@@ -141,10 +140,22 @@ temp.list {
 }
 
 #post single view
-temp.single < plugin.tt_news 
+temp.single = COA
 temp.single {
-  code >
-  code = SINGLE
+	10 < plugin.tt_news 
+	10 {
+	  code >
+	  code = SINGLE
+	}
+	20 < plugin.tx_comments_pi1
+	20 {
+		storagePid = {$plugin.tx_timtab.pidStoreComments}
+		templateFile = EXT:timtab/res/kubrick/comments.tmpl
+		content_stdWrap.wrap = <div class="comment_content">|</div>
+		 _LOCAL_LANG.default {
+			pi1_template.add_comment = Leave a Reply
+		}
+	}
 }
 
 # archives
@@ -161,23 +172,6 @@ temp.categories < plugin.tt_news
 temp.categories {
   code >
   code = CATMENU
-}
-
-
-# ve_guestbook
-plugin.tx_veguestbook_pi1 {
-
-  templateFile = {$page.file.template_ve_guestbook}
-  limit = 1000
-  
-  _LOCAL_LANG.default {
-    form_firstname = Name
-    form_submit = Submit Comment
-    form_email = Mail
-    form_homepage = Website
-  }
-
-  _CSS_DEFAULT_STYLE =  
 }
 
 # pagenav, default: 2 levels
@@ -227,6 +221,34 @@ temp.blogRoll {
 	stdWrap.required = 1
 }
 
+temp.footer = COA
+temp.footer {
+	wrap = <p>|</p>
+	10 = TEXT
+	10 {
+		value = {$plugin.tx_timtab.title}
+		typolink.parameter = {$plugin.tx_timtab.homepage}
+		wrap (
+		 |&#32;is proudly powered by 
+				<a href="http://www.typo3.com" title="TYPO3 - inspiring people to share">TYPO3</a> and
+				<a href="http://www.ingo-renner.com/" title="TIMTAB development">TIMTAB</a>
+		)
+	}
+	20 = TEXT
+	20 {
+		value = Entries (RSS)
+		typolink.parameter = {$plugin.tx_timtab.blogPid},100
+	  wrap = <br />|
+	}
+	#TODO Add comments RSS
+	x30 = TEXT
+	x30 {
+		value = Comments (RSS)
+		typolink.parameter = {$plugin.tx_timtab.blogPid},300
+		wrap = and&#32;|.
+	}
+}
+
 
 # page cObject
 page >
@@ -245,7 +267,21 @@ page {
     }
     
     20 = TEXT
-    20.value = <link rel="alternate" type="application/rss+xml" title="RSS-Feed" href="{$plugin.tx_timtab.homepage}/?type=100" />
+    20 {
+    	wrap = <link rel="alternate" type="application/rss+xml" title="{$plugin.tx_timtab.title} &raquo; Feed" href="{$plugin.tx_timtab.homepage}/|" />
+    	typolink.parameter = {$plugin.tx_timtab.blogPid},100
+    	typolink.returnLast = url
+    }
+		#TODO Add comments RSS
+		
+    x30 = TEXT
+    x30 {
+    	wrap = <link rel="alternate" type="application/rss+xml" title="{$plugin.tx_timtab.title} &raquo; Comments Feed" href="{$plugin.tx_timtab.homepage}/|" />
+    	typolink.parameter = {$plugin.tx_timtab.blogPid},300
+    	typolink.returnLast = url
+    }
+    
+    #40 will be used for the feed of comments in single view
   }
 
   # <body>
@@ -269,6 +305,7 @@ page {
       BLOG_CONTENT_NORMAL < styles.content.get
       BLOG_CONTENT_RIGHT < styles.content.getRight
       BLOG_BLOGROLL < temp.blogRoll
+      FOOTER < temp.footer
     } # end marks
   } # end page.10 (TEMPLATE)
   
@@ -324,7 +361,15 @@ page.10.template.file = {$page.file.template_main}
 
 # single view
 [globalVar = TSFE:id = {$plugin.tx_timtab.blogPid}]
-plugin.tx_timtab.gravatar.size = 23
 
 page.10.template.file = {$page.file.template_single}
+
+page.headerData {
+	x40 = TEXT
+  x40 {
+  	wrap = <link rel="alternate" type="application/rss+xml" title="{$plugin.tx_timtab.title} &raquo; Comments Feed" href="{$plugin.tx_timtab.homepage}/|" />
+  	typolink.parameter = {$plugin.tx_timtab.blogPid},400
+  	typolink.returnLast = url
+  }
+}
 [global]

@@ -113,9 +113,11 @@ class tx_timtab_fe extends tslib_pibase {
 		$pValKey = $this->pObj->cObj->currentValKey;
 		$this->pObj->cObj->currentValKey = 'commentNum';
 		
+		/*
 		if($this->calledBy == 've_guestbook' && !$this->pObj->cObj->getCurrentVal()) {
 				$this->pObj->cObj->setCurrentVal(0);
 		}
+		*/
 
 		$this->pObj->cObj->currentValKey = $pValKey;
 	}
@@ -127,22 +129,11 @@ class tx_timtab_fe extends tslib_pibase {
 	 */
 	function substituteMarkers() {
 		if($this->calledBy == 'tt_news') {
-			//comments
-			$comment_count = $this->count_comments();
-			if($comment_count == 0) {
-				$this->markerArray['###BLOG_COMMENTS_COUNT###'] = '';
-				$this->markerArray['###BLOG_TEXT_COMMENTS###']  = $this->pi_getLL('no_comments');
-			}
-			elseif($comment_count == 1) {
-				$this->markerArray['###BLOG_COMMENTS_COUNT###'] = 1;
-				$this->markerArray['###BLOG_TEXT_COMMENTS###']  = $this->pi_getLL('one_comment');
-			}
-			else {
-				$this->markerArray['###BLOG_COMMENTS_COUNT###'] = $comment_count;
-				$this->markerArray['###BLOG_TEXT_COMMENTS###']  = $this->pi_getLL('multiple_comments');
-			}
+			
+			
 			
 			//trackback
+			
 			$tb = t3lib_div::makeInstance('tx_timtab_trackback');
 			$tb->initFe($this->conf, $this->conf['data']);
 			$plink  = $tb->getPermalink();
@@ -154,7 +145,9 @@ class tx_timtab_fe extends tslib_pibase {
 			$this->markerArray['###BLOG_TRACKBACK_LINK###'] = $tbLink;
 			$this->markerArray['###BLOG_TRACKBACK_URL###']  = $tbURL;
 
-		} elseif($this->calledBy == 've_guestbook') {
+		} 
+		/*
+		elseif($this->calledBy == 've_guestbook') {
 
 			$tt_news = $this->getCurrentPost();
 
@@ -229,13 +222,173 @@ class tx_timtab_fe extends tslib_pibase {
 			
 
 		}
+		*/
+	}
+	
+	/**
+	 * Hook called for each comment item
+	 * You can set additional markers here
+	 *
+	 * borrowed from from comments_gravator, Michael Cannon
+	 * @param	array		an array of markers coming from tt_news
+	 * @param	array		the configuration coming from tt_news
+	 * @return	array		modified marker array
+	 */
+	function comments_getComments($params, $pObj) {
+		$this->init();
+
+		$markers = $params['markers'];
+		$markers['###GRAVATAR###'] = '';
+
+		if ($this->conf['gravatar.']['enable'] ) {
+
+			$row = $params['row'];
+	
+			$email = $row['email'];
+	
+			$name = array();
+			$name[] = $row['firstname'];
+			$name[] = $row['lastname'];
+			$name = trim(implode(' ', $name));
+	
+			// generate gravatar
+			$gravatarImage = $email;
+	
+			// borrowed from t3blog/pi1/widgets/blogList/class.blogList.php
+			// Default needed if user don't have a gravatar and don't have a local pic, but email is stated
+			$default 	= (! $this->conf['gravatar.']['defaultIcon'])
+				? 'http://'. $_SERVER['HTTP_HOST']. '/'.  t3lib_extMgm::siteRelPath($this->extKey). 'res/buttons/nopic_50_f.jpg'
+				: $this->conf['gravatar.']['defaultIcon'];
+	
+			$size 		= $this->conf['gravatar.']['iconSize'] ? $this->conf['gravatar.']['iconSize'] : 48;
+			$class 		= $this->conf['gravatar.']['class'] ? $this->conf['gravatar.']['class'] : '';
+	
+			$grav_url 	= 'http://www.gravatar.com/avatar/'. md5($email).	'?d='. urlencode($default).'&amp;s='.intval($size).'&amp;r='.$this->conf['gravatar.']['rating'];
+			$gravatar 	= '<img src="'. $grav_url . '" alt="Gravatar: '. $name . '"
+			title="Gravatar: '. $name . '. Visit gravatar.com for your own icon" height="' . $size . '" height="' . $size
+			. '" class="'.$class.'" />';
+	
+			$markers['###GRAVATAR###'] = $gravatar;
+		}
+		if ($this->conf['allowSafeTags'] ) {
+			// allow safer tags in comments
+			$comment	= $markers['###COMMENT_CONTENT###'];
+			$search		= array(
+				'&lt;pre&gt;'
+				, '&lt;/pre&gt;'
+				, '[pre]'
+				, '[/pre]'
+				, '&lt;code&gt;'
+				, '&lt;/code&gt;'
+				, '[code]'
+				, '[/code]'
+				, '&lt;blockquote&gt;'
+				, '&lt;/blockquote&gt;'
+				, '[blockquote]'
+				, '[/blockquote]'
+				, '&lt;blockquote&gt;'
+				, '&lt;/blockquote&gt;'
+				, '[blockquote]'
+				, '[/blockquote]'
+				, '&lt;p&gt;'
+				, '&lt;/p&gt;'
+				, '[p]'
+				, '[/p]'
+				, '&lt;ul&gt;'
+				, '&lt;/ul&gt;'
+				, '[ul]'
+				, '[/ul]'
+				, '&lt;ol&gt;'
+				, '&lt;/ol&gt;'
+				, '[ol]'
+				, '[/ol]'
+				, '&lt;li&gt;'
+				, '&lt;/li&gt;'
+				, '[li]'
+				, '[/li]'
+				, '&lt;b&gt;'
+				, '&lt;/b&gt;'
+				, '[b]'
+				, '[/b]'
+				, '&lt;i&gt;'
+				, '&lt;/i&gt;'
+				, '[i]'
+				, '[/i]'
+				, '&lt;cite&gt;'
+				, '&lt;/cite&gt;'
+				, '[cite]'
+				, '[/cite]'
+				, '&lt;h2&gt;'
+				, '&lt;/h2&gt;'
+				, '[h2]'
+				, '[/h2]'
+				, '&lt;h3&gt;'
+				, '&lt;/h3&gt;'
+				, '[h3]'
+				, '[/h3]'
+			);
+			$replace	= array(
+				'<pre>'
+				, '</pre>'
+				, '<pre>'
+				, '</pre>'
+				, '<code>'
+				, '</code>'
+				, '<code>'
+				, '</code>'
+				, '<blockquote>'
+				, '</blockquote>'
+				, '<blockquote>'
+				, '</blockquote>'
+				, '<p>'
+				, '</p>'
+				, '<p>'
+				, '</p>'
+				, '<ul>'
+				, '</ul>'
+				, '<ul>'
+				, '</ul>'
+				, '<ol>'
+				, '</ol>'
+				, '<ol>'
+				, '</ol>'
+				, '<li>'
+				, '</li>'
+				, '<li>'
+				, '</li>'
+				, '<b>'
+				, '</b>'
+				, '<b>'
+				, '</b>'
+				, '<i>'
+				, '</i>'
+				, '<i>'
+				, '</i>'
+				, '<cite>'
+				, '</cite>'
+				, '<cite>'
+				, '</cite>'
+				, '<h2>'
+				, '</h2>'
+				, '<h2>'
+				, '</h2>'
+				, '<h3>'
+				, '</h3>'
+				, '<h3>'
+				, '</h3>'
+			);
+			$comment	= str_replace($search, $replace, $comment);
+			$markers['###COMMENT_CONTENT###']	= $comment;
+		}
+
+		return $markers;
 	}
 
 	/**
 	 * counts comments for the current post
 	 *
 	 * @return	integer		number of comments for the current post
-	 */
+	 
 	function count_comments() {
 		$select = 'uid';
 		$table = 'tx_veguestbook_entries';
@@ -246,12 +399,13 @@ class tx_timtab_fe extends tslib_pibase {
 
 		return $GLOBALS['TYPO3_DB']->sql_num_rows($res);
 	}
+	*/
 
 	/**
 	 * gets the current post when called by ve_guestbook
 	 *
 	 * @return	array
-	 */
+	 
 	function getCurrentPost() {
 		$tt_news = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
 			'*',
@@ -261,6 +415,7 @@ class tx_timtab_fe extends tslib_pibase {
 
 		return $tt_news[0];
 	}
+	*/
 
 	/**
 	 * builds the URL to get the gravatar from for the comments
@@ -268,7 +423,7 @@ class tx_timtab_fe extends tslib_pibase {
 	 * @param	string		the email of the person who left a comment
 	 * @return	string		img tag for the gravatar
 	 * @see http://www.gravatar.com
-	 */
+	 
 	function getGravatar() {
 		$gravatar  = '<img src="http://www.gravatar.com/avatar.php?gravatar_id=';
 		$gravatar .= md5($this->conf['data']['email']);
@@ -303,6 +458,7 @@ class tx_timtab_fe extends tslib_pibase {
 
 		return $gravatar.$size.' '.$alt.' '.$title.' />';
 	}
+	*/
 
 	/***********************************************
 	 *
@@ -334,7 +490,7 @@ class tx_timtab_fe extends tslib_pibase {
 	 *
 	 * @param	object		parentObject the calling ve_guestbook object
 	 * @return	void
-	 */
+	 
 	function postEntryInsertedProcessor($pObj) {
 		$this->init(array(), array());
 
@@ -359,6 +515,7 @@ class tx_timtab_fe extends tslib_pibase {
 		}
 
 	}	
+	*/
 
 	/**
 	 * checks whether we are are used in a blog environment

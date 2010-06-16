@@ -160,9 +160,9 @@ class IXR_Message {
         xml_set_element_handler($this->_parser, 'tag_open', 'tag_close');
         xml_set_character_data_handler($this->_parser, 'cdata');
         if (!xml_parse($this->_parser, $this->message)) {
-            /* die(sprintf('XML error: %s at line %d',
+             die(sprintf('XML error: %s at line %d',
                 xml_error_string(xml_get_error_code($this->_parser)),
-                xml_get_current_line_number($this->_parser))); */
+                xml_get_current_line_number($this->_parser))); 
             return false;
         }
         xml_parser_free($this->_parser);

@@ -162,9 +162,10 @@ class tx_timtab_pi2 extends tslib_pibase {
 			unset($res);
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 				'uid',
-				'tx_veguestbook_entries',
-				'uid_tt_news = '.$tt_news['uid'].' AND homepage = \''.$tbURL.'\''
+				'tx_comments_comments',
+				'external_ref = "tt_news_'.$tt_news['uid'].'" AND homepage = \''.$tbURL.'\''
 			);
+			
 			$tbEntry = $GLOBALS['TYPO3_DB']->sql_num_rows($res);
 			if($tbEntry) {
 				return $tb->sendResponse(false, 'We already have a ping from that URI for this post.');
@@ -173,16 +174,21 @@ class tx_timtab_pi2 extends tslib_pibase {
 				$time = time();
 				$insertFields = array(
 					'pid' => $this->conf['pidStoreComments'],
-					'uid_tt_news' => $tt_news['uid'],
+					'external_ref' => 'tt_news_'.$tt_news['uid'],
+					'external_prefix' => 'tx_ttnews',
 					'tstamp' => $time,
 					'crdate' => $time,
 					'firstname' => $blogName,
 					'homepage' => $tbURL,
-					'entry' => $excerpt,
+					'content' => $excerpt,
+					'approved' => '0',
 					'remote_addr' => $_SERVER['REMOTE_ADDR'],
 					'tx_timtab_type' => TYPE_TRACKBACK
 				);
-
+				//auto approve trackbacks if desired
+				if($this->conf['trackback.']['autoapprove']) {
+					$insertFields['approved'] = '1';
+				}
 					//mark spam
 				$saveComment = true;
 				if($tbType == TYPE_TRACKBACK_SPAM) {
@@ -204,9 +210,8 @@ class tx_timtab_pi2 extends tslib_pibase {
 				
 				$insertId = 0;
 				if($saveComment) {
-					t3lib_div::debug($insertFields);
 					$res = $GLOBALS['TYPO3_DB']->exec_INSERTquery(
-						'tx_veguestbook_entries',
+						'tx_comments_comments',
 						$insertFields
 					);
 					$insertId = $GLOBALS['TYPO3_DB']->sql_insert_id($res);

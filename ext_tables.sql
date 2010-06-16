@@ -11,12 +11,8 @@ CREATE TABLE tt_news (
 	tx_timtab_ping_allowed tinyint(4) unsigned DEFAULT '1' NOT NULL,
 );
 
-#
-# Table structure for table 'tx_veguestbook_entries'
-#
-CREATE TABLE tx_veguestbook_entries (
-	tx_timtab_type tinyint(4) unsigned DEFAULT '0' NOT NULL,
-	homepage text NOT NULL,
+CREATE TABLE tx_comments_comments (
+	tx_timtab_type varchar(255) DEFAULT '' NOT NULL,
 );
 
 #
