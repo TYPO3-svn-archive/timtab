@@ -150,7 +150,7 @@ temp.single {
 	20 < plugin.tx_comments_pi1
 	20 {
 		storagePid = {$plugin.tx_timtab.pidStoreComments}
-		templateFile = EXT:timtab/res/kubrick/comments.tmpl
+		templateFile = {$page.file.template_comments}
 		content_stdWrap.wrap = <div class="comment_content">|</div>
 		 _LOCAL_LANG.default {
 			pi1_template.add_comment = Leave a Reply
@@ -248,6 +248,13 @@ temp.footer {
 		wrap = and&#32;|.
 	}
 }
+
+# Timtab does not allow H1 Tags beside the main heading
+lib.stdheader.10.1.fontTag = <h2{register:headerStyle}{register:headerClass}>|</h2>
+lib.stdheader.10.2.fontTag = <h3{register:headerStyle}{register:headerClass}>|</h3>
+lib.stdheader.10.3.fontTag = <h4{register:headerStyle}{register:headerClass}>|</h4>
+lib.stdheader.10.3.fontTag = <h5{register:headerStyle}{register:headerClass}>|</h5>
+lib.stdheader.10.5.fontTag = <h6{register:headerStyle}{register:headerClass}>|</h6>
 
 
 # page cObject

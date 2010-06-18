@@ -112,9 +112,9 @@ $tempColumns = Array (
 t3lib_extMgm::addTCAcolumns('tx_comments_comments', $tempColumns, 1);
 t3lib_extMgm::addToAllTCAtypes('tx_comments_comments', 'tx_timtab_type');
 
-t3lib_extMgm::addStaticFile($_EXTKEY,'static/kubrick/','Kubrick (default weblog template)');
-t3lib_extMgm::addStaticFile($_EXTKEY,'static/timtab/','Timtab');
+t3lib_extMgm::addStaticFile($_EXTKEY,'static/timtab/','Timtab Template');
 t3lib_extMgm::addStaticFile($_EXTKEY,'static/webservice/','Blog Webservices');
+t3lib_extMgm::addStaticFile($_EXTKEY,'static/kubrick/','Kubrick (default weblog template)');
 
 if (TYPO3_MODE=="BE") {
 	$TBE_MODULES_EXT["xMOD_db_new_content_el"]["addElClasses"]["tx_timtab_pi1_wizicon"] = t3lib_extMgm::extPath($_EXTKEY).'pi1/class.tx_timtab_pi1_wizicon.php';

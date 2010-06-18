@@ -1,3 +1,7 @@
+2010-06-18	Lina Wolf 	<2010@lotypo3.de>
+	* ADD		Template for comments in kubrick example
+	*	CHANGE Footer created by TypoScript now
+
 2010-06-16	Lina Wolf 	<2010@lotypo3.de>
 	* CHANGE Remove Dependencies to ve_guestbook, use comments instead
 	* Remove comment counting, extension comments already offers marker ###TX_COMMENTS_COUNT### this needs to be updated in designs
