@@ -14,6 +14,8 @@
 		        <label index="tt_news.tx_timtab_trackbacks">Trackbacks</label>
 			        <label index="tt_news.tx_timtab_ping_allowed">Allow Pings</label>
 			        <label index="tt_news.tx_timtab_comments_allowed">Allow Comments</label>
+			        
+			        <label index="tt_news_cat.sorting">Sorting</label>
 
 			        <label index="tt_news.type.I.timtab">Blog Post</label>
 			        <label index="tx_timtab_blogroll">Link</label>

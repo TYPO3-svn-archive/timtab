@@ -1,7 +1,7 @@
 #
 #	$Id: ext_typoscript_setup.txt 2589 2005-10-31 14:36:49 -0600 (Mo, 31 Okt 2005) ingorenner $
 #
-
+includeLibs.tx_timtabCatMenuUserFunc = EXT:timtab/class.tx_timtabCatMenuUserFunc.php
 
 #
 #	TIMTAB configuration

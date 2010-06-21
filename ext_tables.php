@@ -38,7 +38,22 @@ $TCA['tx_timtab_blogroll'] = array (
 	)
 );
 
-$tempColumns = Array (
+$tempColumns = array (
+	'sorting' => array (	
+		'label' => 'LLL:EXT:timtab/locallang_db.xml:tt_news_cat.sorting',		
+		'config' => array (
+			'type' => "passthrough",
+		)
+	),
+);
+
+$GLOBALS['TCA']['tt_news_cat']['ctrl']['sortby'] = 'sorting';
+unset($GLOBALS['TCA']['tt_news_cat']['ctrl']['default_sortby']);
+
+t3lib_div::loadTCA('tt_news_cat');
+t3lib_extMgm::addTCAcolumns('tt_news_cat',$tempColumns,1);
+t3lib_extMgm::addToAllTCAtypes('tt_news','sorting;;;;1-1-1');
+array (
 	'tx_timtab_trackbacks' => array (		
 		'exclude' => 1,		
 		'label' => 'LLL:EXT:timtab/locallang_db.xml:tt_news.tx_timtab_trackbacks',		

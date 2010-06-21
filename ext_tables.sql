@@ -11,6 +11,13 @@ CREATE TABLE tt_news (
 	tx_timtab_ping_allowed tinyint(4) unsigned DEFAULT '1' NOT NULL,
 );
 
+#
+# Table structure for table 'tt_news_cat'
+#
+CREATE TABLE tt_news_cat (
+	sorting int(10) DEFAULT '0' NOT NULL,
+);
+
 CREATE TABLE tx_comments_comments (
 	tx_timtab_type varchar(255) DEFAULT '' NOT NULL,
 );

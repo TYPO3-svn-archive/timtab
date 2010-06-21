@@ -1,3 +1,8 @@
+2010-06-21	Lina Wolf 	<2010@lotypo3.de>
+	* ADD HMENU based CATMENU userfunc
+	*	ADD sorting for tt_news_cat
+	*	CHANGE remove deprecated api functions
+
 2010-06-18	Lina Wolf 	<2010@lotypo3.de>
 	* ADD		Template for comments in kubrick example
 	*	CHANGE Footer created by TypoScript now

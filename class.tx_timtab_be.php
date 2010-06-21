@@ -139,8 +139,7 @@ class tx_timtab_be {
 		//we need a nearly whole TSFE to get the plugin setup 
 		//and to create correct source URLs
 		if(!is_object($GLOBALS['TSFE'])) {
-			$temp_TSFEclassName = t3lib_div::makeInstanceClassName('tslib_fe');
-			$TSFE = new $temp_TSFEclassName(
+			$TSFE = t3lib_div::makeInstance('tslib_fe',
 				$GLOBALS['TYPO3_CONF_VARS'],	//TYPO3_CONF_VARS
 				$pid,							//pid	
 				'',								//type

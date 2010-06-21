@@ -130,8 +130,6 @@ class tx_timtab_fe extends tslib_pibase {
 	function substituteMarkers() {
 		if($this->calledBy == 'tt_news') {
 			
-			
-			
 			//trackback
 			
 			$tb = t3lib_div::makeInstance('tx_timtab_trackback');
