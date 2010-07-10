@@ -52,8 +52,9 @@ unset($GLOBALS['TCA']['tt_news_cat']['ctrl']['default_sortby']);
 
 t3lib_div::loadTCA('tt_news_cat');
 t3lib_extMgm::addTCAcolumns('tt_news_cat',$tempColumns,1);
-t3lib_extMgm::addToAllTCAtypes('tt_news','sorting;;;;1-1-1');
-array (
+t3lib_extMgm::addToAllTCAtypes('tt_news_cat','sorting;;;;1-1-1');
+
+$tempColumns = array (
 	'tx_timtab_trackbacks' => array (		
 		'exclude' => 1,		
 		'label' => 'LLL:EXT:timtab/locallang_db.xml:tt_news.tx_timtab_trackbacks',		
