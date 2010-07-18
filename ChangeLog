@@ -1,3 +1,6 @@
+2010-07-18 	Lina Wolf 	<2010@lotypo3.de>
+	* Implement comments hook for comment-disabling
+
 2010-06-21	Lina Wolf 	<2010@lotypo3.de>
 	* ADD HMENU based CATMENU userfunc
 	*	ADD sorting for tt_news_cat

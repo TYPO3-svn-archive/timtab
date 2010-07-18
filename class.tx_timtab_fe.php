@@ -514,6 +514,23 @@ class tx_timtab_fe extends tslib_pibase {
 
 	}	
 	*/
+	
+	/**
+	* Implementation of "closeCommentsAfter"-Hook of Extension "comments"
+	* @return 1 ( = 1.1.1970 0:001) if comments are closed, false otherwise
+	*/
+	function closeComments($params, $pObj) {
+		if($params['table'] == 'tt_news' && $params['uid'] > 0) {
+			$where = 'uid=' . intval($params['uid']). $pObj->cObj->enableFields($params['table']);
+			$rowArray = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows('tx_timtab_comments_allowed', $params['table'], $where); 
+			if($rowArray) {
+				$row = $rowArray[0];
+				if(!$row['tx_timtab_comments_allowed'])
+					return 1;
+			}
+		}
+		return false;
+	}
 
 	/**
 	 * checks whether we are are used in a blog environment
