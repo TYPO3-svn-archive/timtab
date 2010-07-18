@@ -34,6 +34,12 @@ plugin.tx_timtab {
 	# cat=plugin.tx_timtab/webservice/30; type=string; label= Blogger Title: The subject/title for posts created via blogger API
   bloggerTitle = Blog post
   
+	# cat=plugin.tx_timtab/webservice/40; type=boolean; label= Enable Automatic notification of Site update Services 
+  enableUpdateServices = 0
+  
+  	# cat=plugin.tx_timtab/webservice/50; type=string; label= Site update Services Url's, separate multiple url's by Space	
+  UpdateServicesUrl = http://rpc.pingomatic.com/
+  
 	# cat=plugin.tx_timtab/enable/30; type=boolean; label= Blogger API: Enable Weblogging with external tools which are capable of using the Blogger API
   enableBlogger = 0
   

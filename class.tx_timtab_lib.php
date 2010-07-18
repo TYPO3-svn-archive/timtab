@@ -52,7 +52,7 @@ class tx_timtab_lib {
 		$tce = t3lib_div::makeInstance('t3lib_TCEmain');
 		$tce->admin = 1;
 
-		$clearCachePages = split(',', $pageIDs);
+		$clearCachePages = t3lib_div::intExplode(',', $pageIDs);
 		foreach($clearCachePages as $page) {
 			$tce->clear_cacheCmd((int) $page);
 		}
