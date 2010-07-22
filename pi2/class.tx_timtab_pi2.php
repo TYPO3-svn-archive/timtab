@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2005 Ingo Renner (typo3@ingo-renner.com)
+*  (c) 2005 Ingo Renner (typo3@ingo-renner.com), 2010 Werner Trunk und Lina Wolf (2010@lotypo3.de)
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -29,6 +29,8 @@
  *
  * @author    Ingo Renner <typo3@ingo-renner.com>
  * @author    Ingo Schommer <me@chillu.com>
+ * @author 		Werner Trunk 
+ * @author 		Lina Wolf <2010@lotypo3.de>
  */
 /**
  * [CLASS/FUNCTION INDEX of SCRIPT]

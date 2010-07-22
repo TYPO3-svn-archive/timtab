@@ -34,7 +34,7 @@ plugin.tx_timtab {
 	# cat=plugin.tx_timtab/webservice/30; type=string; label= Blogger Title: The subject/title for posts created via blogger API
   bloggerTitle = Blog post
   
-	# cat=plugin.tx_timtab/webservice/40; type=boolean; label= Enable Automatic notification of Site update Services 
+  	# cat=plugin.tx_timtab/webservice/40; type=boolean; label= Enable Automatic notification of Site update Services 
   enableUpdateServices = 0
   
   	# cat=plugin.tx_timtab/webservice/50; type=string; label= Site update Services Url's, separate multiple url's by Space	
@@ -50,8 +50,10 @@ plugin.tx_timtab {
   #enableMovableType = 0
   
 	# cat=plugin.tx_timtab/enable/60; type=boolean; label= Uploads: Enable file uploads from external tools
-  #enableUploads = 0
+  enableUploads = 0
   
-	# cat=plugin.tx_timtab/enable/60; type=boolean; label= Strict API: Force the XML-RPC Server to be API compliant instead of behaving the more common way
+	# cat=plugin.tx_timtab/enable/70; type=boolean; label= Strict API: Force the XML-RPC Server to be API compliant instead of behaving the more common way
   strictAPI = 0
+  
+  
 }

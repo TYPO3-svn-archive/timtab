@@ -45,9 +45,12 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 	var $xmlrpcUser;
 	var $status;
 
-	function tx_timtab_pi2_xmlrpcServer(&$pObj) {
-    global $HTTP_RAW_POST_DATA;
-    $HTTP_RAW_POST_DATA = t3lib_div::_POST();
+	function tx_timtab_pi2_xmlrpcServer(&$pObj) { //wtweb ToDo: austauschen gegen function __construct($name) ?,  &$pObj wird belegt, wo ?
+		 
+    // wtweb : t3lib_div::_POST() = oefter null ,ueberschreibt das schon gefuellte globale Server ?! $HTTP_RAW_POST_DATA , 
+    // wird nochmal abgefragt in base class lib_ixr
+    //global $HTTP_RAW_POST_DATA;
+    //$HTTP_RAW_POST_DATA = t3lib_div::_POST();
 		$this->conf = $pObj->conf;
 		$this->pObj = $pObj;
 		$this->cObj = $pObj->cObj; // needed for sending trackback pings
@@ -82,7 +85,7 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 				'metaWeblog.newMediaObject' => 'this:mwNewMediaObject',
 				// MetaWeblog API aliases for Blogger API
 				// see http://www.xmlrpc.com/stories/storyReader$2460
-				'metaWeblog.deletePost'     => 'this:blggrDeletePost',
+				'metaWeblog.deletePost'     => 'this:mwDeletePost',
 				'metaWeblog.getUsersBlogs'  => 'this:blggrGetUsersBlogs',
 			);
 		}
@@ -328,7 +331,7 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 				$content .= $this->transformContent('rte', $post['bodytext']);
 
 				$struct[] = array(
-					'userid'      => 0, //??? post author uid
+					'userid'      => '11', //??? post author uid
 					'dateCreated' => new IXR_Date($post['datetime']),
 					'content'     => $content,
 					'postid'      => $post['uid'],
@@ -391,7 +394,7 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 		}
 
 		$struct = array(
-			'userid'    => '',
+			'userid'    => '12',
 			'firstname' => '',
 			'lastname'  => '',
 			'nickname'  => '',
@@ -545,7 +548,7 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 
 		// FIXME don't use magic numbers
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-			'uid, datetime, title, bodytext, category',
+			'uid, datetime, title, bodytext, category, author',
 			'tt_news',
 			'uid = '. (int) $postId.' AND type = 3 AND deleted = 0'
 		);
@@ -558,7 +561,7 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 			$post   = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
 			$struct = array(
 				'dateCreated' => new IXR_Date($post['datetime']),
-				'userid'      => 0, //??? post author uid
+				'userid'      => $post['author'], //??? post author uid
 				'postid'      => $post['uid'],
 				'description' => $this->transformContent('rte', $post['bodytext']),
 				'title'       => $post['title'],
@@ -606,9 +609,13 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 
 		$categories_struct = array();
 		while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+			//wtweb cause word uses description for dropdown
+			$CatDescTemp = $row['description'];
+			if ($CatDescTemp == "") $CatDescTemp = $row['title'];
+			
 			$struct = array(
 				'categoryId'   => $row['uid'],
-				'description'  => $row['description'],
+				'description'  => $CatDescTemp,
 				'categoryName' => $row['title'],
 				'htmlUrl'      => '',
 				'rssUrl'       => '',
@@ -664,7 +671,7 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 			while($post = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 				$struct[] = array(
 					'dateCreated' => new IXR_Date($post['datetime']),
-					'userid'      => 0, //??? post author uid
+					'userid'      => '10', //??? post author uid
 					'postid'      => $post['uid'],
 					'description' => $this->transformContent('rte', $post['bodytext']),
 					'title'       => $post['title'],
@@ -692,10 +699,10 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 	 * @return	struct
 	 */
 	function mwNewMediaObject($args) {
-		$this->escape($args);
-		$postId   = $args[0];
-		$username = $args[1];
-		$password = $args[2];
+		//$this->escape($args); //wtweb wegen png error, args[3]
+		$postId   = addslashes($args[0]); //wtweb addslashes eingefuegt = muss ?
+		$username = addslashes($args[1]);
+		$password = addslashes($args[2]);
 		$data     = $args[3];
 
 		if(!$this->authUser($username, $password)) {
@@ -707,7 +714,7 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 		}
 
 		if( t3lib_div::validPathStr($data['name']) ) {
-			$filename = t3lib_div::getFileAbsFileName( $GLOBALS['TYPO3_CONF_VARS']['BE']['RTE_imageStorageDir'].substr($data['name'],1) );
+			$filename = t3lib_div::getFileAbsFileName( $GLOBALS['TYPO3_CONF_VARS']['BE']['RTE_imageStorageDir'].substr($data['name'],1) ); //wtweb ToDo: image pload folder per TS const, oder /uploads/timtab ?
 		} else {
 			return new IXR_Error(100, 'Invalid Filename.');
 		}
@@ -717,8 +724,46 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 		} elseif(t3lib_div::writeFile($filename, $data['bits']) != true) {
 			return new IXR_Error(500, 'File could not be written.');
 		} else {
-			return array('url' => t3lib_div::getIndpEnv('TYPO3_SITE_URL').$filename);
+			//$this->debug("img path:------------------------------------\r\n"
+			//	. "filename: " . $filename ."\r\n"
+			//	. "TYPO3_SITE_URL: " . t3lib_div::getIndpEnv('TYPO3_SITE_URL') ."\r\n"
+			//	. "RTE_imageStorageDir: " . $GLOBALS['TYPO3_CONF_VARS']['BE']['RTE_imageStorageDir']
+			//	. "\r\n----------------------------------------------");
+			
+			//return array('url' => t3lib_div::getIndpEnv('TYPO3_SITE_URL').$filename); //wtweb ToDo: Problem auf xampp wird der pfad absolut mit Laufwerksbuchstaben angegeben 
+			//return array('url' => t3lib_div::getIndpEnv('TYPO3_SITE_URL'). $GLOBALS['TYPO3_CONF_VARS']['BE']['RTE_imageStorageDir'] . substr($data['name'],1)); //wtweb :  funktionert
+			return array('url' => $GLOBALS['TYPO3_CONF_VARS']['BE']['RTE_imageStorageDir'] . substr($data['name'],1));
 		}
+	}
+	
+	/**
+	 * deletes a post from the server (actually marks it deleted) using the metaWeblog API
+	 *
+	 * @param	array		array of arguments: [0]appKey, [1]postId, [2]username, [3]password
+	 * @return	boolean
+	 */
+	function mwDeletePost($args) {
+		$this->escape($args);
+		$appKey   = $args[0]; //unused
+		$postId   = $args[1];
+		$username = $args[2];
+		$password = $args[3];
+
+		if(!$this->authUser($username, $password)) {
+			return new IXR_Error(403, 'Not authorized: Bad username/password combination.');
+		}
+
+		$res = $GLOBALS['TYPO3_DB']->exec_UPDATEquery(
+			'tt_news',
+			'uid = '. (int) $postId,
+			array('deleted' => 1)
+		);
+
+		if(!$res) {
+			return new IXR_Error(500, 'Internal Server Error. Couldn\'t connect to database.');
+		}
+
+		return true;
 	}
 
 	/***********************************************
@@ -919,6 +964,8 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 	 * @return	string		transformed content
 	 */
 	function transformContent($dirRTE, $content) {
+    //$this->debug("content vor transform:------------------------------------\r\n" . $content . "\r\n------END------------------------------"); 
+		
 		global $TCA;
 
 		$table      = 'tt_news';
@@ -957,12 +1004,22 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 				$parseHTML = t3lib_div::makeInstance('t3lib_parsehtml_proc');
 				$parseHTML->init($table.':'.$field, $pid);
 				$parseHTML->setRelPath($RTErelPath);
-
+			   // $this->debug("RTE  config:------------------------------------\r\n" 
+			   // 	. print_r($specConf, true) . "\r\n------" . print_r($dirRTE, true) . "\r\n------" . print_r($thisConfig, true) . "\r\n------" 
+			   // 	."\r\n------END------------------------------"); 
+				
+				//$this->debug("content vor RTE  transform:------------------------------------\r\n" 
+				//	. $content 
+				//	. "\r\n------END------------------------------"); 
+				
 					// Perform transformation:
 				$content = $parseHTML->RTE_transform($content, $specConf, $dirRTE, $thisConfig);
 			}
 		}
-
+	    //$this->debug("content nach transform:------------------------------------\r\n" 
+		//    . $content 
+		//    . "\r\n------END------------------------------"); 
+		
 		return $content;
 	}
 

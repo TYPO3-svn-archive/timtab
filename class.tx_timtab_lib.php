@@ -58,7 +58,7 @@ class tx_timtab_lib {
 		}
 		$tce->admin = 0;
 	}
-	
+
 	/**
 	* gets the tt_news record with the given ID
 	*
@@ -71,11 +71,11 @@ class tx_timtab_lib {
 			'tt_news',
 			'uid = '.$id
 		);
-		
+
 		return $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
 	}
 
-	
+
 }
 
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/timtab/class.tx_timtab_lib.php']) {

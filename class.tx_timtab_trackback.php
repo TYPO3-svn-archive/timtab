@@ -333,7 +333,7 @@ class tx_timtab_trackback {
 		// Get the trackback URIs from those links...
 		$rdf_array = array();
 		foreach($uri_array as $key => $link) {
-			if ($link_content = t3lib_div::getURL($link)) {
+			if ($link_content = t3lib_div::getURL($link)) { //ToDo wtweb haut daneben weil muss post sein
 				$link_rdf = array();
 				preg_match_all('/(<rdf:RDF.*?<\/rdf:RDF>)/smi', $link_content, $link_rdf, PREG_SET_ORDER);
 
@@ -578,5 +578,4 @@ class tx_timtab_trackback {
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/timtab/class.tx_timtab_trackback.php']) {
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/timtab/class.tx_timtab_trackback.php']);
 }
-
 ?>

@@ -72,7 +72,7 @@ plugin.tx_timtab {
     pidStoreComments = {$plugin.tx_timtab_pi2.pidStoreComments}
     connectionTimeout = {$plugin.tx_timtab_pi2.connectionTimeout}
     bloggerTitle = {$plugin.tx_timtab_pi2.bloggerTitle}
-
+  
     enableBlogger = {$plugin.tx_timtab_pi2.enableBlogger}
     //wtweb uncommentiert wegen xmlrpc post
     enableMetaWeblog = {$plugin.tx_timtab_pi2.enableMetaWeblog}

@@ -514,9 +514,9 @@ class tx_timtab_fe extends tslib_pibase {
 
 	}	
 	*/
-	
+
 	/**
-	* Implementation of "closeCommentsAfter"-Hook of Extension "comments"
+* Implementation of "closeCommentsAfter"-Hook of Extension "comments"
 	* @return 1 ( = 1.1.1970 0:001) if comments are closed, false otherwise
 	*/
 	function closeComments($params, $pObj) {

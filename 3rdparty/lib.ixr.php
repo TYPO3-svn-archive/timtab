@@ -22,8 +22,8 @@
    Previous version was 1.61, released 11th July 2003
 
 */
-define('XMLRPC_DEBUG', true);
-define('DEBUG_FILENAME', 'D:/Projects/ingo-renner.com/www_v2/log/xmlrpc.log');
+define('XMLRPC_DEBUG', false);
+define('DEBUG_FILENAME', 'E:/xampp2/htdocs/fileadmin/xmlrpc.log');
 
 class IXR_Value {
     var $data;
@@ -146,8 +146,13 @@ class IXR_Message {
     function IXR_Message ($message) {
         $this->message = $message;
     }
+
+    
     function parse() {
-        // first remove the XML declaration
+    	    //wtweb wegen decode fehler bei bild, $this->debug knallt in dieser klasse, wegen callback ?
+    //$this->debug("message:------------------------------------" . $message . "------END------------------------------"); 
+
+    // first remove the XML declaration
         $this->message = preg_replace('/<\?xml(.*)?\?'.'>/', '', $this->message);
         if (trim($this->message) == '') {
             return false;
@@ -484,7 +489,7 @@ class IXR_Client {
     var $useragent;
     var $response;
     var $message = false;
-    var $debug = false;
+    var $debug = false; // wtweb wie kann ne funktion auf false gesetzt werden ?
 	var $timeout;
     // Storage place for an error message
     var $error = false;

@@ -1,3 +1,7 @@
+2010-07-22 Lina Wolf <2010@lotypo3.de>
+	* Improve Metaweblog API
+	* Pingbacks prepared, not supported yet
+
 2010-07-18 	Lina Wolf 	<2010@lotypo3.de>
 	* Implement comments hook for comment-disabling
 
@@ -6,6 +10,10 @@
 	*	ADD sorting for tt_news_cat
 	*	CHANGE remove deprecated api functions
 
+2010-07-16 Werner Trunk trunk@wtweb.com 
+	* FIX Remote blogging XML RPC mwNewMediaObject is working now
+	* CHANGE mwGetCategories use title for description if empty 
+	
 2010-06-18	Lina Wolf 	<2010@lotypo3.de>
 	* ADD		Template for comments in kubrick example
 	*	CHANGE Footer created by TypoScript now
@@ -51,7 +59,7 @@
 
 	* FIX incompatibility with TYPO3 4.0.0
 	* ADD fixed bug 1719: added usefull alt and title for gravatar picture
-	* FIX fixed bug 2942: calendar: click on a category the calendar shows: December 1999, thanks to Frank Nägler
+	* FIX fixed bug 2942: calendar: click on a category the calendar shows: December 1999, thanks to Frank Nï¿½gler
 
 2006-02-22	Ingo Renner  <typo3@ingo-renner.com>
 
@@ -165,7 +173,7 @@
 2005-06-03	Ingo Renner  <typo3@ingo-renner.com>
 
 	* CHG !!! renamed classes and files for XML-RPC Server, now meets naming conventions
-	* ADD Authentification class, thanks a lot to René Fritz for his help
+	* ADD Authentification class, thanks a lot to Renï¿½ Fritz for his help
 	* ADD configuration variables for Blooger and Movable Type APIs
 	* CHG code clean up and comments added in XML-RPC server
 	

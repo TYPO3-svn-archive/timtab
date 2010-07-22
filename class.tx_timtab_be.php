@@ -222,6 +222,11 @@ class tx_timtab_be {
 				$tb->initSend($config, $this->post);
 				$tb->sendPings($this->post['tx_timtab_trackbacks']);
 				
+				
+				$pb = t3lib_div::makeInstance('tx_timtab_pingback');
+				$pb->initSend($config, $this->post);
+				$pb->sendPings($this->post['tx_timtab_pingback']);
+				
 				tx_timtab_lib::clearPageCache($config['clearPageCacheOnUpdate']);
 			}			
 		}
