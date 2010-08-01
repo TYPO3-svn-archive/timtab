@@ -1,6 +1,6 @@
-2010-07-22 Lina Wolf <2010@lotypo3.de>
-	* Improve Metaweblog API
-	* Pingbacks prepared, not supported yet
+2010-07-21
+	* ToDo fertig : ADD TS options UploadFolder + UploadRelativeUrl
+	* ADD wordpress xmlrpc api ,implements only wp.uploadFile
 
 2010-07-18 	Lina Wolf 	<2010@lotypo3.de>
 	* Implement comments hook for comment-disabling

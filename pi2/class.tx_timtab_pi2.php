@@ -2,7 +2,8 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2005 Ingo Renner (typo3@ingo-renner.com), 2010 Werner Trunk und Lina Wolf (2010@lotypo3.de)
+*  (c) 	2005 Ingo Renner (typo3@ingo-renner.com)
+*				2010 Werner Trunk und Lina Wolf (2010@lotypo3.de)
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -54,7 +55,7 @@ define('TYPE_TRACKBACK_SPAM', 3);
 $PATH_timtab = t3lib_extMgm::extPath('timtab');
 require_once(PATH_tslib.'class.tslib_pibase.php');
 require_once($PATH_timtab.'pi2/class.tx_timtab_pi2_xmlrpcserver.php');
-require_once($PATH_timtab.'class.tx_timtab_trackback.php');
+require_once($PATH_timtab.'lib/class.tx_timtab_trackback.php');
 
 class tx_timtab_pi2 extends tslib_pibase {
     var $prefixId        = 'tx_timtab_pi2';					// Same as class name

@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2005 Ingo Renner (typo3@ingo-renner.com)
+*  (c) 2010 Lina Wolf (2010@lotypo3.de)
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -22,26 +22,11 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 /**
- * Pingback class for the TIMTAB extension, the majority of the code
- * is taken from wordpress
+ * Pingback class for the TIMTAB extension
  *
- * $Id$
- *
- * @author    Ingo Renner <typo3@ingo-renner.com>
+ * @author    Lina Wolf <2010@lotypo3.de>
  */
-/**
- * [CLASS/FUNCTION INDEX of SCRIPT]
- *
- *
- *
- *   45: class tx_timtabb_trackback
- *   47:     function pingSent()
- *   56:     function discoverPingbackServerURI()
- *
- * TOTAL FUNCTIONS: 2
- * (This index is automatically created/updated by the extension "extdeveval")
- *
- */
+ 
 class tx_timtab_pingback {
 	var $prefixId = 'tx_timtab_pingback';        // Same as class name
     var $scriptRelPath = 'class.tx_timtab_pingback.php';    // Path to this script relative to the extension dir.

@@ -1,7 +1,4 @@
 <?php
-//
-//	$Id: ext_localconf.php 2587 2005-10-30 23:11:41Z flyguide $
-//
 
 if (!defined ('TYPO3_MODE')) 	die ('Access denied.');
 
@@ -9,10 +6,10 @@ if (!defined ('TYPO3_MODE')) 	die ('Access denied.');
 $PATH_timtab = t3lib_extMgm::extPath('timtab');
 
 if (TYPO3_MODE == 'FE')	{
-	require_once($PATH_timtab.'class.tx_timtab_fe.php');
-	require_once($PATH_timtab.'class.tx_timtab_catmenu.php');
+	require_once($PATH_timtab.'lib/class.tx_timtab_hook_ttnews.php');
+	require_once($PATH_timtab.'lib/class.tx_timtab_hook_comments.php');
 } else {
-	require_once($PATH_timtab.'class.tx_timtab_be.php');
+	require_once($PATH_timtab.'lib/class.tx_timtab_be.php');
 }
 
 //presetting userTS
@@ -33,20 +30,17 @@ t3lib_extMgm::addPItoST43($_EXTKEY,'pi2/class.tx_timtab_pi2.php','_pi2','list_ty
 t3lib_extMgm::addPItoST43($_EXTKEY,'pi3/class.tx_timtab_pi3.php','_pi3','list_type',1);
 
 //registering for several hooks
-$TYPO3_CONF_VARS['EXTCONF']['tt_news']['extraItemMarkerHook'][]        = 'tx_timtab_fe';
-$TYPO3_CONF_VARS['EXTCONF']['tt_news']['userDisplayCatmenuHook'][]     = 'tx_timtab_catmenu';
-/*
-$TYPO3_CONF_VARS['EXTCONF']['ve_guestbook']['extraItemMarkerHook'][]   = 'tx_timtab_fe';
-$TYPO3_CONF_VARS['EXTCONF']['ve_guestbook']['postEntryInsertedHook'][] = 'tx_timtab_fe';
-*/
+$TYPO3_CONF_VARS['EXTCONF']['tt_news']['extraItemMarkerHook'][]        = 'tx_timtab_hook_ttnews';
+
 $TYPO3_CONF_VARS['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = 'tx_timtab_be'; 
 
+# RealURL Autokonfiguration
 $TYPO3_CONF_VARS['SC_OPTIONS']['ext/realurl/class.tx_realurl_autoconfgen.php']['extensionConfiguration']['timtab'] 
 	= 'EXT:timtab/res/class.tx_timtab_realurlautoconf.php:tx_timtab_realurlautoconf->generateUrlWithDate';
 	
-//Hook for closing comments
-$TYPO3_CONF_VARS['EXTCONF']['comments']['closeCommentsAfter'][] = 'EXT:timtab/class.tx_timtab_fe.php:tx_timtab_fe->closeComments';
-// hook for comments
-$TYPO3_CONF_VARS['EXTCONF']['comments']['comments_getComments']['timtab'] = 'EXT:timtab/class.tx_timtab_fe.php:&tx_timtab_fe->comments_getComments';
+#Hook for closing comments
+$TYPO3_CONF_VARS['EXTCONF']['comments']['closeCommentsAfter'][] = 'EXT:timtab/lib/class.tx_timtab_hook_comments.php:tx_timtab_hook_comments->closeComments';
+# Hook for addittional markers
+$TYPO3_CONF_VARS['EXTCONF']['comments']['comments_getComments']['timtab'] = 'EXT:timtab/lib/class.tx_timtab_hook_comments.php:&tx_timtab_hook_comments->comments_getComments';
 
 ?>

@@ -1,7 +1,4 @@
 <?php
-//
-//	$Id: ext_tables.php 2590 2005-11-16 10:42:31Z flyguide $
-//
 
 if (!defined ('TYPO3_MODE')) 	die ('Access denied.');
 
@@ -132,8 +129,8 @@ t3lib_extMgm::addStaticFile($_EXTKEY,'static/timtab/','Timtab Template');
 t3lib_extMgm::addStaticFile($_EXTKEY,'static/webservice/','Blog Webservices');
 t3lib_extMgm::addStaticFile($_EXTKEY,'static/kubrick/','Kubrick (default weblog template)');
 
-if (TYPO3_MODE=="BE") {
-	$TBE_MODULES_EXT["xMOD_db_new_content_el"]["addElClasses"]["tx_timtab_pi1_wizicon"] = t3lib_extMgm::extPath($_EXTKEY).'pi1/class.tx_timtab_pi1_wizicon.php';
-	$TBE_MODULES_EXT["xMOD_db_new_content_el"]["addElClasses"]["tx_timtab_pi3_wizicon"] = t3lib_extMgm::extPath($_EXTKEY).'pi3/class.tx_timtab_pi3_wizicon.php';
+if (TYPO3_MODE=='BE') {
+	$TBE_MODULES_EXT['xMOD_db_new_content_el']['addElClasses']['tx_timtab_pi1_wizicon'] = t3lib_extMgm::extPath($_EXTKEY).'pi1/class.tx_timtab_pi1_wizicon.php';
+	$TBE_MODULES_EXT['xMOD_db_new_content_el']['addElClasses']['tx_timtab_pi3_wizicon'] = t3lib_extMgm::extPath($_EXTKEY).'pi3/class.tx_timtab_pi3_wizicon.php';
 }
 ?>

@@ -56,4 +56,15 @@ plugin.tx_timtab {
   strictAPI = 0
   
   
-}
+    # forceSSL = {$plugin.tx_timtab.forceSSL} wtweb geplant
+  	# cat=plugin.tx_timtab/enable/80; type=boolean; label= Force the XML-RPC Remote blog functions to use https SSL only
+  forceSSL = 0
+  
+    	# cat=plugin.tx_timtab/webservice/60; type=string; label= Remote blog Storege Dir 	
+  UploadFolder = 
+  
+  #wegen response newMedia Absoluter oder Relativer Pfad
+  # UploadRelativeUrl = UploadFolder = {$plugin.tx_timtab.UploadRelativeUrl} 
+}	# cat=plugin.tx_timtab/enable/70; type=boolean; label= Use abolsute (default), or relative URL's, be cearefull with https uploads
+  UploadRelativeUrl = 0
+  

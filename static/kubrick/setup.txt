@@ -70,8 +70,6 @@ plugin.tt_news {
 
   }
   limit = 10
-
-  catTextMode = 3
   
   /*
   * Link configuration of tt_news
@@ -118,6 +116,20 @@ plugin.tt_news {
   _LOCAL_LANG.default {
     archiveHeader = Archives
   }
+  
+  /*
+  timtab {
+  	catsOfPostList = TEXT
+  	catsOfPostList {
+  		field = catsOfPostItem
+  	}
+  	catsOfPostItem = TEXT
+  	catsOfPostItem {
+  		field = title
+  		typolink.parameter = 
+  	}
+  }
+  */
 }
 
 #list all posts of the current month when in archive
@@ -139,6 +151,15 @@ temp.list {
   code = LIST
 }
 
+plugin.tx_comments_pi1 {
+	storagePid = {$plugin.tx_timtab.pidStoreComments}
+	templateFile = {$page.file.template_comments}
+	content_stdWrap.wrap = <div class="comment_content">|</div>
+	 _LOCAL_LANG.default {
+		pi1_template.add_comment = Leave a Reply
+	}
+}
+
 #post single view
 temp.single = COA
 temp.single {
@@ -149,12 +170,7 @@ temp.single {
 	}
 	20 < plugin.tx_comments_pi1
 	20 {
-		storagePid = {$plugin.tx_timtab.pidStoreComments}
 		templateFile = {$page.file.template_comments}
-		content_stdWrap.wrap = <div class="comment_content">|</div>
-		 _LOCAL_LANG.default {
-			pi1_template.add_comment = Leave a Reply
-		}
 	}
 }
 

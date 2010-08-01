@@ -1,11 +1,28 @@
-#
-#	$Id: ext_typoscript_setup.txt 2589 2005-10-31 14:36:49 -0600 (Mo, 31 Okt 2005) ingorenner $
-#
+
 includeLibs.tx_timtabCatMenuUserFunc = EXT:timtab/class.tx_timtabCatMenuUserFunc.php
 
 #
 #	TIMTAB configuration
 #
+
+plugin.tx_comments_pi1 {
+	timtab {
+		gravatar {
+			enable = 1
+	    # values for rating are: [ G | PG | R | X | 0 = none]
+	    # G is suitable for display on all sites
+	    # PG may contain disputably offensive imagery
+	    # R things as harsh profanity, intense violence, explicit sexual content, and drug use 
+	    # X may contain hardcore sexual imagery or extremely disturbing violence
+	    # see http://www.gravatar.com/rating.php
+			rating = 0
+			iconSize = 32
+			class = avatar avatar-32 photo
+			defaultIcon = 
+	  }
+	  allowSafeTags = 1
+	}
+}
 
 plugin.tx_timtab {
   
@@ -18,23 +35,6 @@ plugin.tx_timtab {
   blogPid = {$plugin.tx_timtab.blogPid}
   homePid = {$plugin.tx_timtab.homePid}
   
-	gravatar {
-		enable = 1
-    # values for rating are: [ G | PG | R | X | 0 = none]
-    # G is suitable for display on all sites
-    # PG may contain disputably offensive imagery
-    # R things as harsh profanity, intense violence, explicit sexual content, and drug use 
-    # X may contain hardcore sexual imagery or extremely disturbing violence
-    # see http://www.gravatar.com/rating.php
-		rating = 0
-		iconSize = 32
-		class = avatar avatar-32 photo
-		defaultIcon = 
-  }
-  
-  comments {
-  	allowSafeTags = 1
-  }
   
   displayCatMenu.targetPid = {$plugin.tx_timtab.catPid}
   categoryMenu {

@@ -11,6 +11,12 @@ plugin.tx_timtab_pi2 {
   enableMovableType = {$plugin.tx_timtab.enableMovableType}
   enableUploads = {$plugin.tx_timtab.enableUploads}
   strictAPI = {$plugin.tx_timtab.strictAPI}
+  
+  forceSSL = {$plugin.tx_timtab.forceSSL} wtweb geplant
+  UploadFolder = {$plugin.tx_timtab.UploadFolder} 
+  #wegen response newMedia Absoluter oder Relativer Pfad
+  UploadRelativeUrl = UploadFolder = {$plugin.tx_timtab.UploadRelativeUrl}  
+  
 }
 
 blogWebservice = PAGE

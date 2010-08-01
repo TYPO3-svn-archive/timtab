@@ -22,7 +22,7 @@
    Previous version was 1.61, released 11th July 2003
 
 */
-define('XMLRPC_DEBUG', false);
+define('XMLRPC_DEBUG', true);
 define('DEBUG_FILENAME', 'E:/xampp2/htdocs/fileadmin/xmlrpc.log');
 
 class IXR_Value {
@@ -150,7 +150,7 @@ class IXR_Message {
     
     function parse() {
     	    //wtweb wegen decode fehler bei bild, $this->debug knallt in dieser klasse, wegen callback ?
-    //$this->debug("message:------------------------------------" . $message . "------END------------------------------"); 
+    //$this->debug("message:------------------------------------\r\n" . $message . "\r\n------END------------------------------"); 
 
     // first remove the XML declaration
         $this->message = preg_replace('/<\?xml(.*)?\?'.'>/', '', $this->message);
@@ -296,7 +296,7 @@ class IXR_Server { //TODO maybe extend this class to log with TYPO3 features
             $data = $HTTP_RAW_POST_DATA;
         }
 
-        $this->debug($data);
+        //$this->debug($data);
 
         $this->message = new IXR_Message($data);
         if (!$this->message->parse()) {
@@ -383,7 +383,7 @@ EOD;
         header('Date: '.date('r'));
         echo $xml;
 
-        $this->debug($xml);
+        //$this->debug($xml);
 
         exit;
     }

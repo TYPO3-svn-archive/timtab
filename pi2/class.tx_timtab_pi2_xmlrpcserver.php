@@ -33,8 +33,8 @@
 
 $PATH_timtab = t3lib_extMgm::extPath('timtab');
 require_once($PATH_timtab.'3rdparty/lib.ixr.php');
-require_once($PATH_timtab.'class.tx_timtab_lib.php');
-require_once($PATH_timtab.'class.tx_timtab_trackback.php');
+require_once($PATH_timtab.'lib/class.tx_timtab_lib.php');
+require_once($PATH_timtab.'lib/class.tx_timtab_trackback.php');
 require_once($PATH_timtab.'pi2/class.tx_timtab_pi2_xmlrpcauth.php');
 require_once(PATH_t3lib.'class.t3lib_tcemain.php');
 require_once(PATH_t3lib.'class.t3lib_befunc.php');
@@ -90,6 +90,49 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 			);
 		}
 
+			// Wordpress API
+		$wp = array();
+		//$this->conf['enableWordpress'] = TRUE;
+		//if($this->conf['enableWordpress']) {
+			$wp = array(
+				//'metaWeblog.newPost'        => 'this:mwNewPost',
+				//'metaWeblog.editPost'       => 'this:mwEditPost',
+				////'metaWeblog.getPost'        => 'this:mwGetPost',
+				//'metaWeblog.getCategories'  => 'this:mwGetCategories',
+				//'metaWeblog.getRecentPosts' => 'this:mwGetRecentPosts',
+				'wp.uploadFile' => 'this:mwNewMediaObject',				// Alias
+				// MetaWeblog API aliases for Blogger API
+				// see http://www.xmlrpc.com/stories/storyReader$2460
+				//'metaWeblog.deletePost'     => 'this:blggrDeletePost',
+				//'wp.getUsersBlogs'  => 'this:blggrGetUsersBlogs',
+				'wp.getCategories'		=> 'this:mwGetCategories',		// Alias
+				'wp.getTags'		=> 'this:wpGetTags',		
+			
+				/*
+				 * Original wordpress 2.? api :
+				'wp.getUsersBlogs'		=> 'this:wp_getUsersBlogs',
+				'wp.getPage'			=> 'this:wp_getPage',
+				'wp.getPages'			=> 'this:wp_getPages',
+				'wp.newPage'			=> 'this:wp_newPage',
+				'wp.deletePage'			=> 'this:wp_deletePage',
+				'wp.editPage'			=> 'this:wp_editPage',
+				'wp.getPageList'		=> 'this:wp_getPageList',
+				'wp.getAuthors'			=> 'this:wp_getAuthors',
+				'wp.getCategories'		=> 'this:mw_getCategories',		// Alias
+				'wp.newCategory'		=> 'this:wp_newCategory',
+				'wp.deleteCategory'		=> 'this:wp_deleteCategory',
+				'wp.suggestCategories'	=> 'this:wp_suggestCategories',
+				'wp.uploadFile'			=> 'this:mw_newMediaObject',	// Alias
+				'wp.getCommentCount'	=> 'this:wp_getCommentCount',
+				'wp.getPostStatusList'	=> 'this:wp_getPostStatusList',
+				'wp.getPageStatusList'	=> 'this:wp_getPageStatusList',
+				'wp.getPageTemplates'	=> 'this:wp_getPageTemplates',
+				'wp.getOptions'			=> 'this:wp_getOptions',
+				'wp.setOptions'			=> 'this:wp_setOptions',
+				*/
+			);
+		//}
+		
 		// Movable Type API
 		$mt = array();
 		if($this->conf['enableMovableType']) {
@@ -120,7 +163,7 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 			'demo.addTwoNumbers' => 'this:demoAddTwoNumbers',
 		);
 
-		$this->IXR_Server( array_merge($blggr, $mw, $mt, $pb, $demo) );
+		$this->IXR_Server( array_merge($blggr, $mw, $wp, $mt, $pb, $demo) );
 	}
 
 
@@ -311,7 +354,7 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'uid, datetime, title, bodytext, category',
 			'tt_news',
-			'pid = '.$this->conf['pidStorePosts'].' AND type = 3 AND deleted = 0',
+			'pid = '.$this->conf['pidStorePosts'].' AND type = 3 '.$this->cObj->enableFields('tt_news'),
 			'',
 			'datetime DESC',
 			(int) $numPosts
@@ -550,7 +593,7 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'uid, datetime, title, bodytext, category, author',
 			'tt_news',
-			'uid = '. (int) $postId.' AND type = 3 AND deleted = 0'
+			'uid = '. (int) $postId.' AND type = 3'.$this->cObj->enableFields('tt_news')
 		);
 
 		if(!$res) {
@@ -574,6 +617,50 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 		} else {
 			return new IXR_Error(404, 'Sorry, no such post.');
 		}
+	}
+	
+	function wpGetTags($args) {
+		$this->escape($args);
+		$blogId   = $args[0]; //unused
+		$username = $args[1];
+		$password = $args[2];
+		
+		if(!$this->authUser($username, $password)) {
+			return new IXR_Error(403, 'Not authorized: Bad username/password combination.');
+		}
+		
+		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+			'keywords',
+			'tt_news',
+			'keywords != \'\' '.$this->cObj->enableFields('tt_news')
+		);
+		
+		if(!$res) {
+			return new IXR_Error(500, 'Internal Server Error. Couldn\'t connect to database.');
+		}
+		
+		$tagStruct = array();
+		$i = 1;
+		while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+			$keywords = explode(',',$row['keywords']);
+			foreach($keywords AS $kword) {
+				$struct = array(
+					'tag_id'   => $i++,
+					'name' => $kword,
+					'count'      => 1,
+					'html_url'       => '',
+					'rss_url'       => '',
+				);
+				// API says it is a struct, but everybody is implementing it as an array
+				if($this->conf['strictAPI'] == 1) {
+					$tagStruct[$kword] = $struct;
+				} else {
+					$tagStruct[] = $struct;
+				}
+			}
+		}
+		
+		return $tagStruct;
 	}
 
 	/**
@@ -600,7 +687,7 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'uid, title, description',
 			'tt_news_cat',
-			'deleted = 0'
+			'1=1 '.$this->cObj->enableFields('tt_news_cat')
 		);
 
 		if(!$res) {
@@ -657,7 +744,7 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'uid, datetime, title, bodytext, category',
 			'tt_news',
-			'pid = '.$this->conf['pidStorePosts'].' AND type = 3 AND deleted = 0',
+			'pid = '.$this->conf['pidStorePosts'].' AND type = 3 '.$this->cObj->enableFields('tt_news'),
 			'',
 			'datetime DESC',
 			(int) $numPosts
@@ -765,6 +852,7 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 
 		return true;
 	}
+
 
 	/***********************************************
 	 *
