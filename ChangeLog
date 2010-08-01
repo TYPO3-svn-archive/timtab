@@ -1,3 +1,9 @@
+2010-08-01
+* moved files to folder lib. 
+* Hooks of tt_news now called by lib/class.tx_timtab_hook_ttnews.php
+* hooks of comments by lib/class.tx_timtab_hook_comments.php therefore clas.tx_timtab_fe.php not needed anymore. 
+* catmenu replaced by HMENU
+
 2010-07-21
 	* ToDo fertig : ADD TS options UploadFolder + UploadRelativeUrl
 	* ADD wordpress xmlrpc api ,implements only wp.uploadFile
