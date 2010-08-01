@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2004 Ingo Renner (typo3@ingo-renner.com)
+*  (c) 2010 Lina Wolf (2010@lotypo3.de)
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -51,6 +51,8 @@ class tx_timtab_pi1 extends tslib_pibase {
 	var $scriptRelPath = 'pi1/class.tx_timtab_pi1.php';	// Path to this script relative to the extension dir.
 	var $extKey = 'timtab';	// The extension key.
 	var $enableFields;
+	var $conf = array();
+	var $temp_cObj = null;
 
 	/**
 	 * main funtction for blogroll
@@ -62,57 +64,220 @@ class tx_timtab_pi1 extends tslib_pibase {
 	 */
 	function main($content, $conf)	{
 		$this->init($conf);
-		$blogroll  = '';
-		$listClass = '';
-	
-		$listClassFromConf = trim($this->conf['listClass']);
-		if($listClassFromConf) {
-			$listClass = ' class="'.$listClassFromConf.'" ';
+		$widgetType = $conf['widgetType'];
+		
+		if($widgetType == 'blogroll') {
+			$content = $this->renderBlogrollList();
+		} elseif($widgetType == 'latestComments') {
+			$content = $this->renderLatestCommentsList();
 		}
 		
-		$checkPid = '';
-		if(trim($this->conf['pidList']) == 'this')
+		return $content;
+	}
+	
+	function getPidList($pidList) {
+		$pidList = trim($pidList);
+		if($pidList == 'this') {
 			$checkPid = ' AND pid ='.$GLOBALS['TSFE']->id;
-		elseif($this->conf['pidList'])
-			$checkPid = ' AND pid IN ('.$this->conf['pidList'].')';
+		} elseif(!$pidList || $pidList == '*') {
+			$checkPid = '';
+		} elseif($pidList) {
+			$pidArray = explode(',',$pidList);
+			foreach($pidArray AS $key => $value) {
+				$pidArray[$key] = intval($value);
+			} 
+			$pidArray = implode(',',$pidList);
+			$checkPid = ' AND pid IN ('.$pidList.')';
+		}
+		return $checkPid;
+	}
+	
+	
+	
+	
+	function renderLatestCommentsItem($row) {
+		$confWidget = $this->conf['widgets.']['latestComments.'];
+		$content = '';
+		$linkAnchor = $this->cObj->stdWrap( $confWidget['linkAnchor'], $confWidget['linkAnchor.']);
+		
+		$commentLinkAnchor = $this->cObj->wrap($row['uid'],$linkAnchor);
+		$this->temp_cObj->data = $row;
+		
+		$this->temp_cObj->data['tt_news_uid'] = intval($row['external_ref']);
+		$ttnews_uid = explode('_',$row['external_ref']);
+		$ttnews_uid = $ttnews_uid[count($ttnews_uid)-1];
+		$this->temp_cObj->data['renderedLink'] = $this->getSingleViewLink($ttnews_uid, $commentLinkAnchor );
+		$content = $this->temp_cObj->cObjGetSingle($confWidget['renderLatestCommentsItem'], $confWidget['renderLatestCommentsItem.']);
+		return $content;
+	}
+	
+	
+	
+	
+	
+	function renderLatestCommentsList() {
+		$content = '';
+		$confWidget = $this->conf['widgets.']['latestComments.'];
+		$checkPid = $this->getPidList($confWidget['pidList']);
+		$max = $this->cObj->stdWrap( $confWidget['max'], $confWidget['max.']);
+		$showTrackbacks = $this->cObj->stdWrap( $confWidget['showTrackbacks'], $confWidget['showTrackbacks.']);
+		
+		$trackbacksWhere = '';
+		if(!$showTrackbacks) {
+			$trackbacksWhere = ' AND tx_timtab_type != "trackback"';
+		}
+		$where = 'external_prefix="tx_ttnews" '.$this->cObj->enableFields('tx_comments_comments').' AND approved=1 '.$checkPid.$trackbacksWhere;
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-			'url, name, description, rel_identity, rel_friendship, rel_physical, rel_professional, rel_geographical, rel_family, rel_romantic, target',
+			'*',
+			'tx_comments_comments',
+			$where,
+			'',
+			'uid DESC',
+			$max
+		);
+		$renderLatestCommentsItem = '';
+		$count = 0;
+		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+			$renderLatestCommentsItem .= $this->renderLatestCommentsItem($row);
+			$count++;
+		}
+		
+		$this->temp_cObj = t3lib_div::makeInstance('tslib_cObj');
+		$this->temp_cObj->data = array();
+		$this->temp_cObj->data['renderLatestCommentsItem'] = $renderLatestCommentsItem;
+		$this->temp_cObj->data['count'] = $count;
+		$content = $this->temp_cObj->cObjGetSingle($confWidget['renderLatestCommentsList'], $confWidget['renderLatestCommentsList.']);
+		return $content;
+	}
+	
+	/**
+	* borrowed from tt_news
+	*/
+	function getSingleViewLink($uid, $section='', $urlOnly = false) {
+		$conf = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tt_news.'];
+		$where = 'uid="'.intval($uid).'" '.$this->cObj->enableFields('tt_news').' ';
+		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+			'uid,datetime',
+			'tt_news',
+			$where
+		);
+		if ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+			$token = '|';
+			$singlePid = $conf['singlePid'];
+			$allowCaching = 1;
+			$piVars = array();
+			$piVars['year'] = date('Y', $row['datetime']);
+			$piVars['month'] = date('m', $row['datetime']);
+			
+			
+			$piVarsArray = array('backPid' => ($conf['dontUseBackPid'] ? null : $config['backPid']),
+					'year' => ($conf['dontUseBackPid'] ? null : ($piVars['year'] ? $piVars['year'] : null)),
+					'month' => ($conf['dontUseBackPid'] ? null : ($piVars['month'] ? $piVars['month'] : null)));
+			
+			if (! $conf['useHRDatesSingleWithoutDay']) {
+				$piVars['day'] = date('d', $row['datetime']);
+			}
+			
+			if ($conf['useHRDates']) {
+				$piVarsArray['pS'] = null;
+				$piVarsArray['pL'] = null;
+				$piVarsArray['arc'] = null;
+				if ($conf['useHRDatesSingle']) {
+					$tmpY = $piVars['year'];
+					$tmpM = $piVars['month'];
+					$tmpD = $piVars['day'];
+	
+					$piVarsArray['year'] = $piVars['year'];
+					$piVarsArray['month'] = $piVars['month'];
+					$piVarsArray['day'] = ($piVars['day'] ? $piVars['day'] : null);
+				}
+			} else {
+				$piVarsArray['year'] = null;
+				$piVarsArray['month'] = null;
+			}
+	
+			$piVarsArray['tt_news'] = $row['uid'];
+
+			$additionalParams = '';
+			foreach($piVarsArray AS $key => $value) {
+				if (!is_null($value)){
+					$additionalParams .= '&tx_ttnews['.$key.']='.$value;
+				}
+			}
+			$params = array(
+				'additionalParams' => $additionalParams,
+				'no_cache' => $GLOBALS['TSFE']->no_cache,
+				'parameter' => $singlePid,
+				'useCacheHash' => !$GLOBALS['TSFE']->no_cache,
+				'section' => $section
+			);
+			
+			$linkWrap = $this->cObj->typolink($token, $params);
+			$url = $this->cObj->lastTypoLinkUrl;
+	
+			// hook for processing of links
+			if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['tt_news']['getSingleViewLinkHook'])) {
+				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['tt_news']['getSingleViewLinkHook'] as $_classRef) {
+					$_procObj = & t3lib_div::getUserObj($_classRef);
+					$params = array('singlePid' => &$singlePid, 'row' => &$row, 'piVarsArray' => $piVarsArray);
+					$_procObj->processSingleViewLink($linkWrap, $url, $params, $this);
+				}
+			}
+	
+			if ($conf['useHRDates'] && $conf['useHRDatesSingle']) {
+				$piVars['year'] = $tmpY;
+				$piVars['month'] = $tmpM;
+				$piVars['day'] = $tmpD;
+			}
+	
+			if ($urlOnly) {
+				return $url;
+			} else {
+				return $linkWrap;
+			}
+		}
+		return '';
+	}
+	
+	function renderBlogrollItem($row) {
+		$confWidget = $this->conf['widgets.']['blogroll.'];
+		$content = '';
+		$this->temp_cObj = t3lib_div::makeInstance('tslib_cObj');
+		$this->temp_cObj->data = $row;
+		$this->temp_cObj->data['foaf'] = $this->buildRelAttr($row);
+		$content = $this->temp_cObj->cObjGetSingle($confWidget['renderBlogrollItem'], $confWidget['renderBlogrollItem.']);
+		return $content;
+	}
+	
+	function renderBlogrollList() {
+		$confWidget = $this->conf['widgets.']['blogroll.'];
+		$content = '';
+		
+		$checkPid = $this->getPidList($confWidget['pidList']);
+		
+			
+		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+			'*',
 			'tx_timtab_blogroll',
 			'1=1'.$this->enableFields.$checkPid,
 			'',
 			'sorting'
 		);
-
-
+		$count = 0;
+		$renderBlogrollItem = '';
 		while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-			$link  = "\t".'<li><a href="';
-			$link .= substr($row['url'], 0, 7) == 'http://'?$row['url']:'http://'.$row['url'];
-			$link .= '"'.$this->buildRelAttr($row);
-			$link .= !empty($row['description'])?' title="'.$row['description'].'"':'';
-
-			if($row['target'] == 1) {
-				$link .= ' target="_blank"';
-			} elseif($row['target'] == 2) {
-				$link .= ' target="_top"';
-			}
-
-			$link .= '>'.$row['name'].'</a></li>'."\n";
-
-			$blogroll .= $link;
+			$renderBlogrollItem .= $this->renderBlogrollItem($row);
+			$count++;
 		}
-	
-		if (!empty($blogroll)) {
-			$blogroll = '<ul' . $listClass . '>' ."\n". $blogroll ."\n". '</ul>';	
-		}
-	
-		$content .= $this->cObj->stdWrap($blogroll, $this->conf['header_stdWrap.']);
-
-		if($this->conf['dontWrapInDiv'] != 1) {
-			$content = $this->pi_wrapInBaseClass($content);
-		}
-
+		
+		$this->temp_cObj = t3lib_div::makeInstance('tslib_cObj');
+		$this->temp_cObj->data = array();
+		$this->temp_cObj->data['renderBlogrollItem'] = $renderBlogrollItem;
+		$this->temp_cObj->data['count'] = $count;
+		$content = $this->temp_cObj->cObjGetSingle($confWidget['renderBlogrollList'], $confWidget['renderBlogrollList.']);
 		return $content;
 	}
+	
 
 	/**
 	 * initializes the configuration for this plugin
@@ -125,28 +290,14 @@ class tx_timtab_pi1 extends tslib_pibase {
 		$this->pi_setPiVarDefaults();
 		$this->pi_loadLL();
 		$this->enableFields = $this->cObj->enableFields('tx_timtab_blogroll');
+		$this->temp_cObj  = t3lib_div::makeInstance('tslib_cObj');
 
-		// pidList is the pid/list of pids from where to fetch the faq items.
-		/*
-		Lina Wolf: This Code prevents Blogroll to be taken from storage Page.
-		$cePidList = $this->cObj->data['pages']; //ce = Content Element
-		$pidList   = $cePidList ?
-			$cePidList :
-			trim($this->cObj->stdWrap(
-				$this->conf['pid_list'], $this->conf['pid_list.']
-			));
-
-		$this->conf['pidList'] = $pidList ?
-			implode(t3lib_div::intExplode(',', $pidList), ',') :
-			$GLOBALS['TSFE']->id;
-
-		unset($this->conf['pid_list']);
-		*/
 	}
 
 	/**
 	 * builds the rel attribute for the anchor
 	 *
+	 * @author Ingo Renner
 	 * @param	array		data row of the current link
 	 * @return	string		the rel attribute
 	 */

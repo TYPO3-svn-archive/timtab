@@ -1,5 +1,5 @@
 
-includeLibs.tx_timtabCatMenuUserFunc = EXT:timtab/class.tx_timtabCatMenuUserFunc.php
+includeLibs.tx_timtabCatMenuUserFunc = EXT:timtab/lib/class.tx_timtabCatMenuUserFunc.php
 
 #
 #	TIMTAB configuration
@@ -88,10 +88,110 @@ plugin.tx_timtab {
   }
 }
 
+lib.timtab {
+	
+	
+	renderLatestCommentsList = TEMPLATE
+	renderLatestCommentsList {
+		template = FILE
+		template.file = {$plugin.tx_timtab.widgets.template}
+		workOnSubpart = RENDER_LATEST_COMMENTS_LIST
+		subparts {
+			RENDER_LATEST_COMMENTS_ITEM = TEXT
+			RENDER_LATEST_COMMENTS_ITEM.field = renderLatestCommentsItem
+		}
+		required = 1
+	}
+	
+	
+	renderLatestCommentsItem = TEMPLATE
+	renderLatestCommentsItem {
+		template = FILE
+		template.file = {$plugin.tx_timtab.widgets.template}
+		workOnSubpart = RENDER_LATEST_COMMENTS_ITEM
+		substMarksSeparately = 1
+		wraps {
+			LINK_COMMENT = TEXT
+			LINK_COMMENT.field = renderedLink
+		}
+		marks {
+			NAME = TEXT
+			NAME.field = firstname
+			SHORT = TEXT
+			SHORT {
+				field = content
+				stripHtml = 1
+				crop = 100|..|1
+			}
+		}
+	}
+	
+	renderBlogrollList = TEMPLATE
+	renderBlogrollList {
+		template = FILE
+		template.file = {$plugin.tx_timtab.widgets.template}
+		workOnSubpart = RENDER_BLOGROLL_LIST
+		subparts {
+			RENDER_BLOGROLL_ITEM = TEXT
+			RENDER_BLOGROLL_ITEM.field = renderBlogrollItem
+		}
+	}
+	
+	
+	renderBlogrollItem = TEMPLATE
+	renderBlogrollItem {
+		template = FILE
+		template.file = {$plugin.tx_timtab.widgets.template}
+		workOnSubpart = RENDER_BLOGROLL_ITEM
+		substMarksSeparately = 1
+		wraps {
+			LINK_ROLL =< lib.timtab.blogrollLink
+		}
+		marks {
+			TITLE = TEXT
+			TITLE.field = name
+			URL = TEXT
+			URL.field = url
+			DESCRIPTION = TEXT
+			DESCRIPTION.field = description
+			FOAF = TEXT
+			FOAF {
+				field = foaf
+				wrap = rel="|"
+				required = 1
+			}
+			TARGET = TEXT
+			TARGET.field = target
+		}
+	}
+	
+	blogrollLink = TEMPLATE 
+	blogrollLink {
+		template = FILE
+		template.file = {$plugin.tx_timtab.widgets.template}
+		workOnSubpart = BLOGROLL_LINK
+	}
+}
+
 /**
 * Blogroll Default Konfiguration
 * @author Lina Wolf
 */
 plugin.tx_timtab_pi1 {
-		pidList = this
+	widgetType = latestComments
+	widgets {
+		latestComments {
+			max = 5
+			showTrackbacks = 0
+			linkAnchor = tx-comments-comments-|
+			pidList = {$plugin.tx_timtab.pidStoreComments}
+			renderLatestCommentsList =< lib.timtab.renderLatestCommentsList
+			renderLatestCommentsItem  =< lib.timtab.renderLatestCommentsItem
+		}
+		blogroll {
+			pidList = {$plugin.tx_timtab.pidStoreBlogroll}
+			renderBlogrollList =< lib.timtab.renderBlogrollList
+			renderBlogrollItem =< lib.timtab.renderBlogrollItem
+		}
+	}
 }

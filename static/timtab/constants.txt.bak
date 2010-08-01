@@ -28,20 +28,11 @@ plugin.tx_timtab {
 	# cat=plugin.tx_timtab/webservices/15; type=int+; label= pid to store the comments in: The page or sysfolder where your comments and trackbacks will be saved
   pidStoreComments = 0
   
-	# cat=plugin.tx_timtab/webservices/16; type=int+; label= pid to store the blogroll links in
-  pidStoreBlogroll = 0
-  
 	# cat=plugin.tx_timtab/webservices/20; type=int+; label= XML-RPC timeout: This sets the timeout for XML-RPC Server connections in seconds
   connectionTimeout = 30
   
 	# cat=plugin.tx_timtab/webservice/30; type=string; label= Blogger Title: The subject/title for posts created via blogger API
   bloggerTitle = Blog post
-  
-  	# cat=plugin.tx_timtab/webservice/40; type=boolean; label= Enable Automatic notification of Site update Services 
-  enableUpdateServices = 0
-  
-  	# cat=plugin.tx_timtab/webservice/50; type=string; label= Site update Services Url's, separate multiple url's by Space	
-  UpdateServicesUrl = http://rpc.pingomatic.com/
   
 	# cat=plugin.tx_timtab/enable/30; type=boolean; label= Blogger API: Enable Weblogging with external tools which are capable of using the Blogger API
   enableBlogger = 0
@@ -53,24 +44,8 @@ plugin.tx_timtab {
   #enableMovableType = 0
   
 	# cat=plugin.tx_timtab/enable/60; type=boolean; label= Uploads: Enable file uploads from external tools
-  enableUploads = 0
+  #enableUploads = 0
   
-	# cat=plugin.tx_timtab/enable/70; type=boolean; label= Strict API: Force the XML-RPC Server to be API compliant instead of behaving the more common way
+	# cat=plugin.tx_timtab/enable/60; type=boolean; label= Strict API: Force the XML-RPC Server to be API compliant instead of behaving the more common way
   strictAPI = 0
-  
-  
-    # forceSSL = {$plugin.tx_timtab.forceSSL} wtweb geplant
-  	# cat=plugin.tx_timtab/enable/80; type=boolean; label= Force the XML-RPC Remote blog functions to use https SSL only
-  forceSSL = 0
-  
-    	# cat=plugin.tx_timtab/webservice/60; type=string; label= Remote blog Storege Dir 	
-  UploadFolder = 
-  
-  #wegen response newMedia Absoluter oder Relativer Pfad
-  # UploadRelativeUrl = UploadFolder = {$plugin.tx_timtab.UploadRelativeUrl} 
-	# cat=plugin.tx_timtab/enable/70; type=boolean; label= Use abolsute (default), or relative URL's, be cearefull with https uploads
-  UploadRelativeUrl = 0
-  
-  # cat=plugin.tx_timtab/widgets/100; type=string; label= Template for timtab widgets
-  widgets.template = EXT:timtab/res/templates/timtabWidgets.html
-}  
+}

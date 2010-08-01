@@ -69,11 +69,15 @@ class tx_timtab_hook_comments extends tslib_pibase {
 		$conf = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_comments_pi1.'];
 
 		$markers = $params['markers'];
+		$row = $params['row'];
+		
+		#needed for direct jump urls
+		$markers['###UID###'] = $row['uid'];
+		
 		$markers['###GRAVATAR###'] = '';
 
 		if ($conf['timtab.']['gravatar.']['enable'] ) {
 
-			$row = $params['row'];
 	
 			$email = $row['email'];
 	

@@ -184,10 +184,37 @@ temp.archives {
 }
 
 # categories
-temp.categories < plugin.tt_news 
+temp.categories  = HMENU
 temp.categories {
-  code >
-  code = CATMENU
+	special = userfunction
+	special {
+			userFunc = tx_timtabCatMenuUserFunc->makeMenuArray
+			catPid = {$plugin.tx_timtab.catPid}
+			sourcePid = {$plugin.tx_timtab.pidStorePosts}
+		  sortBy = tt_news_cat.sorting ASC
+		  showEmpty = 0
+		  recursive = 1
+			startUid = {$plugin.loskin.startCategory}
+	}
+	wrap = <li class="categories"><h2>Categories</h2>|</li>
+	
+	1 = TMENU 
+	1 {
+		wrap = <ul>|</ul>
+		NO {
+			allWrap.dataWrap = <li class="cat-item cat-item-{field:uid}">|
+			wrapItemAndSub = |</li>
+			htmlSpecialChars = 1
+		}
+		ACT = 1
+		ACT < .NO
+		ACT {
+			allWrap.dataWrap = <li class="cat-item cat-item-act cat-item-{field:uid}">|
+		}
+	}
+	2 < .1
+	3 < .1
+
 }
 
 # pagenav, default: 2 levels
