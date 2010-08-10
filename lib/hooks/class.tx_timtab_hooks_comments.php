@@ -5,7 +5,7 @@
 *  (c) 	2010 Lina Wolf (2010@lotypo3.de)
 *  All rights reserved
 *
-*  This script is part of the Typo3 project. The Typo3 project is
+*  This script is part of the TYPO3 project. The TYPO3 project is
 *  free software; you can redistribute it and/or modify
 *  it under the terms of the GNU General Public License as published by
 *  the Free Software Foundation; either version 2 of the License, or
@@ -25,82 +25,89 @@
 /**
  * class.tx_timtab_hook_comments.php
  *
+ * @package TYPO3
+ * @subpackage tx_timtab
+ * @author Lina Wolf <2010@lotypo3.de>
+ * @author Timo Webler <timo.webler@dkd.de>
+ * @version $Id:$
+ */
+
+/**
  * Implements hooks for tt_news to create additional markers
  *
+ * @package TYPO3
+ * @subpackage tx_timtab
  * @author Lina Wolf <2010@lotypo3.de>
+ * @author Timo Webler <timo.webler@dkd.de>
  */
- 
-$PATH_timtab = t3lib_extMgm::extPath('timtab');
-require_once(PATH_tslib.'class.tslib_pibase.php');
-require_once(PATH_t3lib.'class.t3lib_tcemain.php');
+class tx_timtab_hooks_Comments {
 
-class tx_timtab_hook_comments extends tslib_pibase {
-	
-	var $cObj = null;
-	
-	
 	/**
 	* Implementation of "closeCommentsAfter"-Hook of Extension "comments"
-	* @return 1 ( = 1.1.1970 0:001) if comments are closed, false otherwise
+	*
+	* @param array $params parameter from t3lib_div::callUserFunc
+	* @param tx_comments_pi1 $pObj calling object
+	* @return mixed 1 ( = 1.1.1970 0:001) if comments are closed, FALSE otherwise
 	*/
-	function closeComments($params, $pObj) {
-		if($params['table'] == 'tt_news' && $params['uid'] > 0) {
-			$where = 'uid=' . intval($params['uid']). $pObj->cObj->enableFields($params['table']);
-			$rowArray = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows('tx_timtab_comments_allowed', $params['table'], $where); 
-			if($rowArray) {
+	public function closeComments($params, tx_comments_pi1 $pObj) {
+		if ($params['table'] == 'tt_news' && $params['uid'] > 0) {
+			$where = 'uid=' . intval($params['uid']) . $pObj->cObj->enableFields($params['table']);
+			$rowArray = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows('tx_timtab_comments_allowed', $params['table'], $where);
+			if ($rowArray) {
 				$row = $rowArray[0];
 				if(!$row['tx_timtab_comments_allowed'])
 					return 1;
 			}
 		}
-		return false;
+		return FALSE;
 	}
-	
+
 	/**
 	 * Hook called for each comment item
 	 * You can set additional markers here
-	 *
 	 * borrowed from from comments_gravator, Michael Cannon
-	 * @param	array		an array of markers coming from tt_news
-	 * @param	array		the configuration coming from tt_news
-	 * @return	array		modified marker array
+	 *
+	 * @param	array	$params	an array of markers coming from tt_news
+	 * @param	tx_comments_pi1	$pObj	calling object
+	 * @return	array	modified marker array
 	 */
-	function comments_getComments($params, $pObj) {
+	public function getComments($params, tx_comments_pi1 $pObj) {
 		$conf = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_comments_pi1.'];
 
 		$markers = $params['markers'];
 		$row = $params['row'];
-		
-		#needed for direct jump urls
+
+		// needed for direct jump urls
 		$markers['###UID###'] = $row['uid'];
-		
+
 		$markers['###GRAVATAR###'] = '';
 
 		if ($conf['timtab.']['gravatar.']['enable'] ) {
 
-	
+
 			$email = $row['email'];
-	
+
 			$name = array();
 			$name[] = $row['firstname'];
 			$name[] = $row['lastname'];
 			$name = trim(implode(' ', $name));
-	
+
 			// generate gravatar
 			$gravatarImage = $email;
-	
+
 			// borrowed from t3blog/pi1/widgets/blogList/class.blogList.php
 			// Default needed if user don't have a gravatar and don't have a local pic, but email is stated
 			$default 	=  $conf['gravatar.']['defaultIcon'];
-	
+
 			$size 		= $conf['timtab.']['gravatar.']['iconSize'] ? $conf['timtab.']['gravatar.']['iconSize'] : 48;
-			$class 		= $conf['timtab.']['gravatar.']['class'] ? 'class="'.$conf['timtab.']['gravatar.']['class'].'" ' : '';
-	
-			$grav_url 	= 'http://www.gravatar.com/avatar/'. md5($email).	'?d='. urlencode($default).'&amp;s='.intval($size).'&amp;r='.$conf['timtab.']['gravatar.']['rating'];
-			$gravatar 	= '<img src="'. $grav_url . '" alt="Gravatar: '. $name . '"
-			title="Gravatar: '. $name . '. Visit gravatar.com for your own icon" height="' . $size . '" height="' . $size
-			. '" />';
-	
+			$class 		= $conf['timtab.']['gravatar.']['class'] ? 'class="' . $conf['timtab.']['gravatar.']['class'] . '" ' : '';
+
+			$gravatarUrl = 'http://www.gravatar.com/avatar/' . md5($email) .
+				'?d=' . urlencode($default) . '&amp;s=' . intval($size) . '&amp;r=' . $conf['timtab.']['gravatar.']['rating'];
+			$gravatar = '<img src="' . $gravatarUrl . '" alt="Gravatar: ' . $name . '"
+				title="Gravatar: ' . $name . '. Visit gravatar.com for your own icon" height="' . $size . '" height="' . $size
+				. '" />';
+
 			$markers['###GRAVATAR###'] = $gravatar;
 		}
 		if ($conf['timtab.']['allowSafeTags'] ) {
@@ -210,8 +217,8 @@ class tx_timtab_hook_comments extends tslib_pibase {
 				, '<h3>'
 				, '</h3>'
 			);
-			$comment	= str_replace($search, $replace, $comment);
-			$markers['###COMMENT_CONTENT###']	= $comment;
+			$comment = str_replace($search, $replace, $comment);
+			$markers['###COMMENT_CONTENT###'] = $comment;
 		}
 
 		return $markers;
@@ -221,6 +228,4 @@ class tx_timtab_hook_comments extends tslib_pibase {
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/timtab/lib/class.tx_timtab_hook_comments.php']) {
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/timtab/lib/class.tx_timtab_hook_comments.php']);
 }
-
-
 ?>

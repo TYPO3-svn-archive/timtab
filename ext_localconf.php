@@ -7,7 +7,6 @@ $PATH_timtab = t3lib_extMgm::extPath('timtab');
 
 if (TYPO3_MODE == 'FE')	{
 	require_once($PATH_timtab.'lib/class.tx_timtab_hook_ttnews.php');
-	require_once($PATH_timtab.'lib/class.tx_timtab_hook_comments.php');
 	require_once($PATH_timtab.'widgets/blogroll/class.tx_timtab_blogroll.php');
 	require_once($PATH_timtab.'widgets/latestcomments/class.tx_timtab_latestcomments.php');
 	require_once($PATH_timtab.'widgets/calendar/class.tx_timtab_calendar.php');
@@ -109,9 +108,9 @@ $TYPO3_CONF_VARS['EXTCONF']['tt_news']['extraItemMarkerHook'][]  = 'tx_timtab_ho
 $TYPO3_CONF_VARS['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = 'tx_timtab_Be';
 
 #Hook for closing comments
-$TYPO3_CONF_VARS['EXTCONF']['comments']['closeCommentsAfter'][] = 'EXT:timtab/lib/class.tx_timtab_hook_comments.php:tx_timtab_hook_comments->closeComments';
+$TYPO3_CONF_VARS['EXTCONF']['comments']['closeCommentsAfter']['timtab'] = 'EXT:timtab/lib/hooks/class.tx_timtab_hooks_comments.php:&tx_timtab_hooks_Comments->closeComments';
 # Hook for addittional markers
-$TYPO3_CONF_VARS['EXTCONF']['comments']['comments_getComments']['timtab'] = 'EXT:timtab/lib/class.tx_timtab_hook_comments.php:&tx_timtab_hook_comments->comments_getComments';
+$TYPO3_CONF_VARS['EXTCONF']['comments']['comments_getComments']['timtab'] = 'EXT:timtab/lib/hooks/class.tx_timtab_hooks_comments.php:&tx_timtab_hooks_Comments->getComments';
 
 # Registering build-in widgets
 $TYPO3_CONF_VARS['EXTCONF']['timtab']['renderWidgets'][] = 'EXT:timtab/widgets/blogroll/class.tx_timtab_blogroll.php:&tx_timtab_blogroll->render';
