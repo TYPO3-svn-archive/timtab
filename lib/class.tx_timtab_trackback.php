@@ -236,9 +236,9 @@ class tx_timtab_trackback {
 	/**
 	 * Produces the XML response for trackbackers with success/error message.
 	 *
-	 * @param	boolean		$success
-	 * @param	string		$err_response
-	 * @return	boolean
+	 * @param	$success boolean success or failiure?
+	 * @param	$err_response string error message or empty	
+	 * @return	string XML Error message
 	 */
 	function sendResponse($success = false, $err_response = '')
 	{
@@ -382,7 +382,7 @@ class tx_timtab_trackback {
 			'tx_ttnews[tt_news]' => $this->post['uid']
 		);
 
- 		$link = $this->cObj->getTypoLink_URL($this->conf['blogPid'], $urlParameters);
+ 		$link = $this->cObj->getTypoLink_URL($this->conf['singlePid'], $urlParameters);
 		return t3lib_div::getIndpEnv('TYPO3_SITE_URL').$link;
 	}
 
@@ -399,7 +399,7 @@ class tx_timtab_trackback {
 			'tx_timtab_pi2[trackback]' => 1
 		);
 
-		$link = $this->cObj->getTypoLink_URL($this->conf['blogPid'], $urlParameters);
+		$link = $this->cObj->getTypoLink_URL($this->conf['singlePid'], $urlParameters);
 		return t3lib_div::getIndpEnv('TYPO3_SITE_URL').$link;
 	}
 
@@ -416,7 +416,7 @@ class tx_timtab_trackback {
 			'tx_timtab_pi2[trackback]' => 1
 		);
 
-		$link = $this->cObj->getTypoLink('trackback', $this->conf['blogPid'], $urlParameters);
+		$link = $this->cObj->getTypoLink('trackback', $this->conf['singlePid'], $urlParameters);
 		return $link;
 	}
 

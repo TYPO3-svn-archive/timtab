@@ -1,8 +1,13 @@
-2010-08-01
-* moved files to folder lib. 
-* Hooks of tt_news now called by lib/class.tx_timtab_hook_ttnews.php
-* hooks of comments by lib/class.tx_timtab_hook_comments.php therefore clas.tx_timtab_fe.php not needed anymore. 
-* catmenu replaced by HMENU
+
+2010-08-10 	Lina Wolf 	<2010@lotypo3.de>
+	* pi3 was removed. An improved Ajax based calendar is now available as widget.
+
+2010-08-08 	Lina Wolf 	<2010@lotypo3.de>
+	* Create a widget concept for additional features
+	* Added Latest Comments
+	* Reworked Blogroll to be TypoScript and Template bades
+	* HMENU- based Catmenu as widget
+	* Started to redesign calendar feature (Ajax planned)
 
 2010-07-21
 	* ToDo fertig : ADD TS options UploadFolder + UploadRelativeUrl

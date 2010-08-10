@@ -1,59 +1,10 @@
 
 
-plugin.tt_news {
-  displayXML {
-    rss091_tmplFile = {$plugin.tt_news.displayXML.rss091_tmplFile}
-    rss2_tmplFile = {$plugin.tt_news.displayXML.rss2_tmplFile}
-    rdf_tmplFile = {$plugin.tt_news.displayXML.rdf_tmplFile}
-    atom03_tmplFile = {$plugin.tt_news.displayXML.atom03_tmplFile}
-    atom1_tmplFile = {$plugin.tt_news.displayXML.atom1_tmplFile}
-
-    # possibile values: rss091 / rss2 / rdf / atom03
-    xmlFormat = {$plugin.tt_news.displayXML.xmlFormat}
-
-    xmlTitle = {$plugin.tx_timtab.title}
-    xmlLink = {$plugin.tx_timtab.homepage}
-    xmlDesc = {$plugin.tx_timtab.tagline}
-    xmlLang = {$plugin.tt_news.displayXML.xmlLang}
-    xmlIcon = {$plugin.tt_news.displayXML.xmlIcon}
-    xmlLimit = {$plugin.tt_news.displayXML.xmlLimit}
-    xmlCaching = {$plugin.tt_news.displayXML.xmlCaching}
-
-  #  title_stdWrap.wrap = <![CDATA[|]]>
-  #  subheader_stdWrap.wrap = <![CDATA[|]]>
-  }
-}
-
-#
-#	$Id$
-#
-xmlnews = PAGE
-xmlnews {
-  typeNum = 100
-
-  10 < plugin.tt_news
-  10.pid_list >
-  10.pid_list = {$plugin.tx_timtab.pidStorePosts}
-  10.singlePid = {$plugin.tx_timtab.blogPid}
-  10.defaultCode = XML
-  10.catTextMode = 1
-  10.catImageMode = 0
-
-
-  config {
-    disableAllHeaderCode = 1
-    additionalHeaders = Content-type:application/xml
-    xhtml_cleaning = 0
-    admPanel = 0
-  }
-}
-
-
 # tt_news
 plugin.tt_news {
   templateFile = {$page.file.template_tt_news}
   
-  singlePid = {$plugin.tx_timtab.blogPid}
+  singlePid = {$plugin.tx_timtab.singlePid}
   pid_list = {$plugin.tx_timtab.pidStorePosts}
   
   displayList.date_stdWrap.strftime = %B %d, %Y
@@ -76,7 +27,7 @@ plugin.tt_news {
   * @description add year and month to path, no backpid
   * @author Ingo Renner
   */
-  useHRDates = 1
+  useHRDates = 0
   useHRDatesSingle = 1
   useSubCategories = 1
   dontUseBackPid = 1
@@ -117,6 +68,29 @@ plugin.tt_news {
     archiveHeader = Archives
   }
   
+  
+  displayXML {
+    rss091_tmplFile = {$plugin.tt_news.displayXML.rss091_tmplFile}
+    rss2_tmplFile = {$plugin.tt_news.displayXML.rss2_tmplFile}
+    rdf_tmplFile = {$plugin.tt_news.displayXML.rdf_tmplFile}
+    atom03_tmplFile = {$plugin.tt_news.displayXML.atom03_tmplFile}
+    atom1_tmplFile = {$plugin.tt_news.displayXML.atom1_tmplFile}
+
+    # possibile values: rss091 / rss2 / rdf / atom03
+    xmlFormat = {$plugin.tt_news.displayXML.xmlFormat}
+
+    xmlTitle = {$plugin.tx_timtab.title}
+    xmlLink = {$plugin.tx_timtab.homepage}
+    xmlDesc = {$plugin.tx_timtab.tagline}
+    xmlLang = {$plugin.tt_news.displayXML.xmlLang}
+    xmlIcon = {$plugin.tt_news.displayXML.xmlIcon}
+    xmlLimit = {$plugin.tt_news.displayXML.xmlLimit}
+    xmlCaching = {$plugin.tt_news.displayXML.xmlCaching}
+
+  #  title_stdWrap.wrap = <![CDATA[|]]>
+  #  subheader_stdWrap.wrap = <![CDATA[|]]>
+  }
+  
   /*
   timtab {
   	catsOfPostList = TEXT
@@ -132,6 +106,30 @@ plugin.tt_news {
   */
 }
 
+/*
+* Creating RSS Feed for articles
+*/
+xmlnews = PAGE
+xmlnews {
+  typeNum = 100
+
+  10 < plugin.tt_news
+  10 {
+  	defaultCode = XML
+  	catTextMode = 1
+  	catImageMode = 0
+  }
+
+
+  config {
+    disableAllHeaderCode = 1
+    additionalHeaders = Content-type:application/xml
+    xhtml_cleaning = 0
+    admPanel = 0
+  }
+}
+
+
 #list all posts of the current month when in archive
 [globalVar = GP:tx_ttnews|year > 0]
 plugin.tt_news.limit = 100
@@ -141,15 +139,9 @@ plugin.tt_news.limit = 100
 [global]
 [globalVar = GP:tx_ttnews|cat > 0]
 plugin.tt_news.categoryMode = 1
-#plugin.tt_news.categorySelection = 
 [global]
 
-# posts list
-temp.list < plugin.tt_news 
-temp.list {
-  code >
-  code = LIST
-}
+
 
 plugin.tx_comments_pi1 {
 	storagePid = {$plugin.tx_timtab.pidStoreComments}
@@ -160,112 +152,51 @@ plugin.tx_comments_pi1 {
 	}
 }
 
-#post single view
-temp.single = COA
-temp.single {
-	10 < plugin.tt_news 
-	10 {
-	  code >
-	  code = SINGLE
-	}
-	20 < plugin.tx_comments_pi1
-	20 {
-		templateFile = {$page.file.template_comments}
-	}
-}
-
-# archives
-temp.archives < plugin.tt_news 
-temp.archives {
-  code >
-  code = AMENU
-  # Fix for Bug #14715, Bugtracker
-  categoryMode = 0
-}
-
-# categories
-temp.categories  = HMENU
-temp.categories {
-	special = userfunction
-	special {
-			userFunc = tx_timtabCatMenuUserFunc->makeMenuArray
-			catPid = {$plugin.tx_timtab.catPid}
-			sourcePid = {$plugin.tx_timtab.pidStorePosts}
-		  sortBy = tt_news_cat.sorting ASC
-		  showEmpty = 0
-		  recursive = 1
-			startUid = {$plugin.loskin.startCategory}
-	}
-	wrap = <li class="categories"><h2>Categories</h2>|</li>
-	
-	1 = TMENU 
+# pagenav, default: 2 levels
+lib.pagenav = HMENU
+lib.pagenav {
+	wrap = <li id="pagenav"><h2>Pages</h2>|</li>
+	1 = TMENU
 	1 {
-		wrap = <ul>|</ul>
-		NO {
-			allWrap.dataWrap = <li class="cat-item cat-item-{field:uid}">|
-			wrapItemAndSub = |</li>
-			htmlSpecialChars = 1
-		}
-		ACT = 1
-		ACT < .NO
-		ACT {
-			allWrap.dataWrap = <li class="cat-item cat-item-act cat-item-{field:uid}">|
-		}
+	  wrap = <ul>|</ul>
+	  expAll = 1
+	  noBlur = 1
+	
+	  NO {
+	    wrapItemAndSub = <li class="page_item">|</li>
+	    ATagTitle.field = abstract // description // title
+	  }
 	}
 	2 < .1
 	3 < .1
-
+	4 < .1
 }
 
-# pagenav, default: 2 levels
-temp.pagenav = HMENU
-temp.pagenav.wrap = <li id="pagenav"><h2>Pages</h2>|</li>
-temp.pagenav.1 = TMENU
-temp.pagenav.1 {
-  wrap = <ul>|</ul>
-  expAll = 1
-  noBlur = 1
-
-  NO {
-    wrapItemAndSub = <li class="page_item">|</li>
-    ATagTitle.field = abstract // description // title
-  }
-}
-temp.pagenav.2 = TMENU
-temp.pagenav.2 {
-  wrap = <ul> | </ul>
-  noBlur = 1
-  
-  NO {
-    allWrap = <li class="page_item">|</li>
-    ATagTitle.field = abstract // description // title
-  }
-}
 
 # filling markers
-temp.blogTitle = TEXT
-temp.blogTitle.value = {$plugin.tx_timtab.title}
-temp.blogTagline = TEXT
-temp.blogTagline.value = {$plugin.tx_timtab.tagline}
-temp.blogHomepage = TEXT
-temp.blogHomepage.value = {$plugin.tx_timtab.homepage}
+lib.blogTitle = TEXT
+lib.blogTitle.value = {$plugin.tx_timtab.title}
+
+lib.blogTagline = TEXT
+lib.blogTagline.value = {$plugin.tx_timtab.tagline}
+
+lib.blogHomepage = TEXT
+lib.blogHomepage.value = {$plugin.tx_timtab.homepage}
 
 
 
-temp.blogRoll = COA
-temp.blogRoll {
-	10 =< plugin.tx_timtab_pi1
+lib.blogRoll = COA
+lib.blogRoll {
+	10 < plugin.tx_timtab_pi1
 	10 {
-		pidList = {$plugin.tx_timtab.pidStorePosts}
-	  header_stdWrap.wrap = |
-	  dontWrapInDiv = 1
+			widgetType = blogroll
 	}
 	stdWrap.wrap = <li><h2>Blogroll</h2>|</li>
 	stdWrap.required = 1
 }
 
-temp.footer = COA
-temp.footer {
+lib.footer = COA
+lib.footer {
 	wrap = <p>|</p>
 	10 = TEXT
 	10 {
@@ -280,19 +211,19 @@ temp.footer {
 	20 = TEXT
 	20 {
 		value = Entries (RSS)
-		typolink.parameter = {$plugin.tx_timtab.blogPid},100
+		typolink.parameter = {$plugin.tx_timtab.singlePid},100
 	  wrap = <br />|
 	}
 	#TODO Add comments RSS
 	x30 = TEXT
 	x30 {
 		value = Comments (RSS)
-		typolink.parameter = {$plugin.tx_timtab.blogPid},300
+		typolink.parameter = {$plugin.tx_timtab.singlePid},300
 		wrap = and&#32;|.
 	}
 }
 
-# Timtab does not allow H1 Tags beside the main heading
+# Timtab Design does not allow H1 Tags beside the main heading
 lib.stdheader.10.1.fontTag = <h2{register:headerStyle}{register:headerClass}>|</h2>
 lib.stdheader.10.2.fontTag = <h3{register:headerStyle}{register:headerClass}>|</h3>
 lib.stdheader.10.3.fontTag = <h4{register:headerStyle}{register:headerClass}>|</h4>
@@ -312,26 +243,27 @@ page {
     10 = TEXT
     10 {
     	wrap = <link rel="pingback" href="{$plugin.tx_timtab.homepage}/|" />
-    	typolink.parameter = {$plugin.tx_timtab.blogPid},200
+    	typolink.parameter = {$plugin.tx_timtab.singlePid},200
     	typolink.returnLast = url
     }
     
     20 = TEXT
     20 {
     	wrap = <link rel="alternate" type="application/rss+xml" title="{$plugin.tx_timtab.title} &raquo; Feed" href="{$plugin.tx_timtab.homepage}/|" />
-    	typolink.parameter = {$plugin.tx_timtab.blogPid},100
+    	typolink.parameter = {$plugin.tx_timtab.singlePid},100
     	typolink.returnLast = url
     }
 		#TODO Add comments RSS
-		
-    x30 = TEXT
-    x30 {
+		/*
+    30 = TEXT
+    30 {
     	wrap = <link rel="alternate" type="application/rss+xml" title="{$plugin.tx_timtab.title} &raquo; Comments Feed" href="{$plugin.tx_timtab.homepage}/|" />
-    	typolink.parameter = {$plugin.tx_timtab.blogPid},300
+    	typolink.parameter = {$plugin.tx_timtab.singlePid},300
     	typolink.returnLast = url
     }
     
     #40 will be used for the feed of comments in single view
+    */
   }
 
   # <body>
@@ -344,29 +276,29 @@ page {
     workOnSubpart = DOCUMENT_BODY
   
     marks {
-      PAGENAV < temp.pagenav
-      ARCHIVES < temp.archives
-      CATEGORIES < temp.categories
-      BLOG_TITLE < temp.blogTitle
-      BLOG_TAGLINE < temp.blogTagline
-      BLOG_HOME < temp.blogHomepage
-      POSTS_LIST < temp.list
-      POST_SINGLE < temp.single
-      BLOG_CONTENT_NORMAL < styles.content.get
-      BLOG_CONTENT_RIGHT < styles.content.getRight
-      BLOG_BLOGROLL < temp.blogRoll
-      FOOTER < temp.footer
-    } # end marks
-  } # end page.10 (TEMPLATE)
+      PAGENAV =< lib.pagenav
+      ARCHIVES =< lib.archives
+      CATEGORIES =< lib.categories 
+      BLOG_TITLE =< lib.blogTitle
+      BLOG_TAGLINE =< lib.blogTagline
+      BLOG_HOME =< lib.blogHomepage
+      POSTS_LIST =< lib.list
+      POST_SINGLE =< lib.single
+      BLOG_CONTENT_NORMAL =< lib.mainContent
+      BLOG_CONTENT_RIGHT =< lib.rightContent
+      BLOG_BLOGROLL =< lib.blogRoll
+      FOOTER =< lib.footer
+    } 
+  } 
   
   # add some 'dynamic' css
   includeCSS.file001 = {$page.file.css}
   CSS_inlineStyle (
-    body { background: url(/{$page.file.kubrickbgcolor}); }
-    #page { background: url(/{$page.file.kubrickbgwide}) repeat-y top; border: none; }
-    #header { background: url(/{$page.file.kubrickheader}) no-repeat bottom center; margin: 0 !important; margin: 0 0 0 1px; padding: 1px; height: 198px; width: 758px; }
+    body { background: url(../{$page.file.kubrickbgcolor}); }
+    #page { background: url(../{$page.file.kubrickbgwide}) repeat-y top; border: none; }
+    #header { background: url(../{$page.file.kubrickheader}) no-repeat bottom center; margin: 0 !important; margin: 0 0 0 1px; padding: 1px; height: 198px; width: 758px; }
     #headerimg { margin: 7px 9px 0; height: 192px; width: 740px; }
-    #footer { background: url(/{$page.file.kubrickfooter}) no-repeat bottom; border: none;}
+    #footer { background: url(../{$page.file.kubrickfooter}) no-repeat bottom; border: none;}
   )
   
   config {
@@ -380,9 +312,11 @@ page {
     spamProtectEmailAddresses = -3
     spamProtectEmailAddresses_atSubst = <span>&#064;</span>
   
+  /*
     # targets
     intTarget = {$PAGE_TARGET}
     extTarget = _blank
+  */
   
     # externalize js and css
     removeDefaultJS = external
@@ -406,20 +340,36 @@ content.space = 0|0
 
 # homepage
 [globalVar = TSFE:id = {$plugin.tx_timtab.homePid}]
-page.10.template.file = {$page.file.template_main}
+	page.10.template.file = {$page.file.template_main}
 [global]
 
 # single view
-[globalVar = TSFE:id = {$plugin.tx_timtab.blogPid}]
+[globalVar = TSFE:id = {$plugin.tx_timtab.singlePid}]
 
-page.10.template.file = {$page.file.template_single}
+	page.10.template.file = {$page.file.template_single}
+	
+	page.headerData {
+	/*
+		40 = TEXT
+	  40 {
+	  	wrap = <link rel="alternate" type="application/rss+xml" title="{$plugin.tx_timtab.title} &raquo; Comments Feed" href="{$plugin.tx_timtab.homepage}/|" />
+	  	typolink.parameter = {$plugin.tx_timtab.singlePid},400
+	  	typolink.returnLast = url
+	  }
+	  */
+	}
+[global]
+<INCLUDE_TYPOSCRIPT:  source="FILE: typo3conf/ext/timtab/static/kubrick/output.ts">
 
-page.headerData {
-	x40 = TEXT
-  x40 {
-  	wrap = <link rel="alternate" type="application/rss+xml" title="{$plugin.tx_timtab.title} &raquo; Comments Feed" href="{$plugin.tx_timtab.homepage}/|" />
-  	typolink.parameter = {$plugin.tx_timtab.blogPid},400
-  	typolink.returnLast = url
-  }
-}
+
+[globalVar = LIT:http://www.example.com = {$plugin.tx_timtab.homepage}]
+	page.config.baseURL = 
+	page.10 >
+	page.10 = TEXT
+	page.10.value (
+		<h2 style="color: red">Please Update Constants</h2>
+		<p>Please specify the root URL, the singlePid, the pidStorePosts and other important constants.</p>
+	)
+	page.20 = IMAGE
+	page.20.file = typo3conf/ext/timtab/res/images/fillConstants.png
 [global]

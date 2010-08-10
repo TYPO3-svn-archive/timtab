@@ -185,17 +185,37 @@ class tx_timtab_be {
 	function processDatamap_postProcessFieldArray($status, $table, $id, &$fieldArray, $pObj) {
 		$this->hookUsed = 'postProcessFieldArray';
 		$this->init($status, $table, $id, $fieldArray, $pObj);
-		
-		if($this->isBlogPost()) {
-			$this->getFullPost();
-			
-			//find trackbacks
-			$tb = t3lib_div::makeInstance('tx_timtab_trackback');
-			$fieldArray['tx_timtab_trackbacks'] = $tb->getNewTrackbackField(
-				$this->status, 
-				$this->post['tx_timtab_trackbacks'],
-				$this->post['bodytext']
-			);		
+		/*
+		if($table=='tt_content') {
+			if($fieldArray['tx_timtab_widget_type']!='') {
+				if($this->status == 'update') {
+					$currentPost = $this->post;
+					
+					$post = tx_timtab_lib::getPost($this->post['uid']);
+					$post = t3lib_div::array_merge_recursive_overrule(
+						$post, 
+						$currentPost
+					);
+					$this->post = $post;			
+					
+					
+				} else {
+					$fieldArray['list_type'] = $fieldArray['tx_timtab_widget_type'];
+				}
+			}
+		} else*/
+		if ($table=='tt_news') {
+			if($this->isBlogPost()) {
+				$this->getFullPost();
+				
+				//find trackbacks
+				$tb = t3lib_div::makeInstance('tx_timtab_trackback');
+				$fieldArray['tx_timtab_trackbacks'] = $tb->getNewTrackbackField(
+					$this->status, 
+					$this->post['tx_timtab_trackbacks'],
+					$this->post['bodytext']
+				);		
+			}
 		}
 	}
 

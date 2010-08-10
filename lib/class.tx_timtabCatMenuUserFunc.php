@@ -33,9 +33,9 @@ class tx_timtabCatMenuUserFunc  extends tslib_pibase {
   		$this->cObj = t3lib_div::makeInstance('tslib_cObj');
 		$this->newsEnableFields = $this->cObj->enableFields('tt_news');
 		$this->catEnableFields  = $this->cObj->enableFields('tt_news_cat');
-		if(!$startUid && $conf['$startUid'])
-			$startUid = $conf['$startUid'];
-		$currentCatId = t3lib_div::_GP('tt_news');
+		if(!$startUid && $conf['startUid'])
+			$startUid = $conf['startUid'];
+		$currentCatId = t3lib_div::_GP('tx_ttnews');
 		$currentCatId = intval($currentCatId['cat']);
   	if($startUid==0)
   		$startUid=intval($conf['startUid']);
@@ -65,8 +65,9 @@ class tx_timtabCatMenuUserFunc  extends tslib_pibase {
 					$state = 'ACT';
 				$countRec += $value['news_count'];
 			}
-			if($currentCatId == $row['uid'])
-				$state = 'CUR';
+			if($currentCatId == $row['uid']) {
+				$state = 'ACT';
+			}
 			$linkConf = array(
 				'parameter' => $conf['catPid'],
 				'additionalParams' => '&tx_ttnews[cat]='.$row['uid'],

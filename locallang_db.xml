@@ -64,8 +64,8 @@
 			        <label index="tx_timtab_blogroll.target.I.0">none (Note that the target attribute is illegal in XHTML 1.1 and 1.0 Strict.)</label>
 			        <label index="tx_timtab_blogroll.target.I.1">_blank</label>
 			        <label index="tx_timtab_blogroll.target.I.2">_top</label>
-			        <label index="tt_content.list_type_pi1">Blogroll</label>
-
+			        
+			        <label index="tt_content.CType_pi1">Blogroll</label>
 			        <label index="tt_content.list_type_pi3">Calendar</label>
 			        <label index="tx_comments_comments.tx_timtab_type">Type (Comment or trackback)</label>
 		        </languageKey>
@@ -124,7 +124,7 @@
 			        <label index="tx_timtab_blogroll.target.I.1">_blank</label>
 
 			        <label index="tx_timtab_blogroll.target.I.2">_top</label>
-			        <label index="tt_content.list_type_pi1">Blogroll</label>
+			        <label index="tt_content.CType_pi1">Timtab Widgets</label>
 			        <label index="tt_content.list_type_pi3">Kalender</label>
 			        <label index="tx_comments_comments.tx_timtab_type">Typ (Kommentar oder Trackback)</label>
 		        </languageKey>
@@ -181,7 +181,7 @@
 			        <label index="tx_timtab_blogroll.target.I.1">_blank</label>
 
 			        <label index="tx_timtab_blogroll.target.I.2">_top</label>
-			        <label index="tt_content.list_type_pi1">blogliste</label>
+			        <label index="tt_content.CType_pi1">Timtab Widgets</label>
 			        <label index="tt_content.list_type_pi3">Kalender</label>
 		        </languageKey>
           <languageKey index="it" type="array">
@@ -212,7 +212,8 @@
 			        <label index="tx_timtab_blogroll.target">link target</label>
 			        <label index="tx_timtab_blogroll.target.I.1">_blank</label>
 			        <label index="tx_timtab_blogroll.target.I.2">_top</label>
-			        <label index="tt_content.list_type_pi1">Blogroll</label>
+			        
+			        <label index="tt_content.CType_pi1">Timtab Widgets</label>
 		        </languageKey>
           <languageKey index="fr" type="array">
 	        </languageKey>
@@ -271,7 +272,7 @@
 			        <label index="tx_timtab_blogroll.target.I.0">geen (Hou er rekening mee dat het target attribuut niet meer geldig is in XHTML 1.1 and 1.0 Strict.)</label>
 			        <label index="tx_timtab_blogroll.target.I.1">_blank</label>
 			        <label index="tx_timtab_blogroll.target.I.2">_top</label>
-			        <label index="tt_content.list_type_pi1">Blogroll</label>
+			        <label index="tt_content.CType_pi1">Timtab Widgets</label>
 			        <label index="tt_content.list_type_pi3">Kalender</label>
 
 		        </languageKey>
@@ -343,7 +344,7 @@
 			        <label index="tx_timtab_blogroll.target.I.1">_blank</label>
 
 			        <label index="tx_timtab_blogroll.target.I.2">_top</label>
-			        <label index="tt_content.list_type_pi1">Обзор блога</label>
+			        <label index="tt_content.CType_pi1">Timtab Widgets</label>
 			        <label index="tt_content.list_type_pi3">Календарь</label>
 		        </languageKey>
           <languageKey index="ro" type="array">

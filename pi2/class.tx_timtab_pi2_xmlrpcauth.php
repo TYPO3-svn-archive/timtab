@@ -78,7 +78,9 @@ class tx_timtab_pi2_xmlrpcAuth extends t3lib_beuserauth {
 	 * get a BE user, will return false on failure
 	 *
 	 * @return	user		object on success, false otherwise
-	 */
+	 * wird verwendet von class.tx_timtab_pi2_xmlrpcserver.php on line 1032
+	*/
+	 
 	function getUser() {
 
 		if(is_object($serviceObj = t3lib_div::makeInstanceService('auth', 'getUserBE'))) {
@@ -113,7 +115,12 @@ class tx_timtab_pi2_xmlrpcAuth extends t3lib_beuserauth {
 		return $OK;
 	}
 
-	//maybe we'll do it like this later, for now it's ok what we have
+	
+	/**
+	 * maybe we'll do it like this later, for now it's ok what we have
+	 * code not in use right now
+	 */
+	 /*
 	function authLikeInInit() {
 		global $TYPO3_CONF_VARS;
 
@@ -128,6 +135,7 @@ class tx_timtab_pi2_xmlrpcAuth extends t3lib_beuserauth {
 		$XMLRPC_USER->start();			// Object is initialized
 		$XMLRPC_USER->backendCheckLogin();	// Checking if there's a user logged in
 	}
+	*/
 }
 
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/timtab/pi2/class.tx_timtab_pi2_xmlrpcauth.php'])    {

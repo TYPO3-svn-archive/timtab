@@ -29,6 +29,9 @@
  *
  * @author    Ingo Renner <typo3@ingo-renner.com>
  * @author    Ingo Schommer <me@chillu.com>
+ * @author    Werner Trunk
+ * 
+ * 
  */
 
 $PATH_timtab = t3lib_extMgm::extPath('timtab');

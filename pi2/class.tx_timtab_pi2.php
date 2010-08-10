@@ -63,16 +63,16 @@ class tx_timtab_pi2 extends tslib_pibase {
     var $extKey          = 'timtab';						// The extension key.
     var $pi_USER_INT_obj = 1;								// Configuring so caching is not expected. This value means that no cHash params are ever set. We do this, because it's a USER_INT object!
 
-	var $conf;
+		var $conf;
     var $tt_news;
     var $fullPost;
 
-    /**
-	 * main function of pi2 decides whether to process a XML-RPC request or Trackback
+   /**
+	 * main function of pi2 decides weather to process a XML-RPC request or Trackback
 	 *
-	 * @param	string		content
-	 * @param	array		configuration array
-	 * @return	string
+	 * @param	content string ignored
+	 * @param	conf array with configuration for the webservice
+	 * @return	string error / sucess code for trackbacks, empty string otherwise
 	 */
     function main($content, $conf)    {
     	$this->init($conf);
@@ -80,17 +80,16 @@ class tx_timtab_pi2 extends tslib_pibase {
     	if($this->piVars['trackback'] == '1') {
     		$content = $this->processTrackback();
     	} else {
-    		$className = t3lib_div::makeInstanceClassName('tx_timtab_pi2_xmlrpcServer');
-    		$xmlrpcServer = new $className($this);
+    		$className = t3lib_div::makeInstanceClassName('tx_timtab_pi2_xmlrpcServer');//wtweb , nach aendern auf t3lib_div::makeInstance wegen depreceted geht einiges nicht mehr,zB edit exisiting per word 
+    		$xmlrpcServer = new $className($this); //wtweb wozu die konstruktion ? 
     	}
-
     	return $content;
     }
 
-    /**
+   /**
 	 * initializes the configuration for the extension
 	 *
-	 * @param	array		configuration array
+	 * @param	conf array		configuration array
 	 * @return	void
 	 */
     function init($conf) {
@@ -104,12 +103,12 @@ class tx_timtab_pi2 extends tslib_pibase {
     }
   
 
-    /**
+   /**
 	 * processing of tracbacks, checks for a tt_news uid, whether pings are enabled
 	 * for this post, the URL of the backtracker and whether we already have a
 	 * ping from that URL
 	 *
-	 * @return	string
+	 * @return	string XML Code with error or success message
 	 */
     function processTrackback() {
     	$tb = t3lib_div::makeInstance('tx_timtab_trackback');
@@ -120,34 +119,33 @@ class tx_timtab_pi2 extends tslib_pibase {
 
     	//process trackback
     	$tbURL    = (string) t3lib_div::_POST('url');
-		$title    = t3lib_div::_POST('title');
-		$excerpt  = t3lib_div::_POST('excerpt');
-		$blogName = t3lib_div::_POST('blog_name');
-		$charset  = t3lib_div::_POST('charset');
+			$title    = t3lib_div::_POST('title');
+			$excerpt  = t3lib_div::_POST('excerpt');
+			$blogName = t3lib_div::_POST('blog_name');
+			$charset  = t3lib_div::_POST('charset');
+	
+			if ($charset) {
+				$charset = strtoupper( trim($charset) );
+			} else {
+				$charset = 'ASCII, UTF-8, ISO-8859-1, JIS, EUC-JP, SJIS';
+			}
 
-		if ($charset) {
-			$charset = strtoupper( trim($charset) );
-		} else {
-			$charset = 'ASCII, UTF-8, ISO-8859-1, JIS, EUC-JP, SJIS';
-		}
-
-		if (!empty($tbURL)) {
-			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-				'*',
-				'tt_news',
-				'uid = '.$this->tt_news
+			if (!empty($tbURL)) {
+				$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+					'*',
+					'tt_news',
+					'uid = '.intval($this->tt_news)
 			);
 			$tt_news = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
 			$tb->post = $tt_news;
-			//ping disabled
+			// if trackbacks disabled send errormessage
 			if(!$tt_news['tx_timtab_ping_allowed']) {
 				return $tb->sendResponse(false, 'Sorry, trackbacks are closed for this item.');
 			}
-			
-				//check for existing link to us - SPAM check
+			//check for existing link to us - SPAM check
 			$permalink = $tb->getPermalink();
 			$tbType = TYPE_TRACKBACK;
-			if($this->conf['trackback.']['validate'] && $this->isTbSpam($tbURL, $permalink)) {
+			if($this->conf['trackback.']['validate'] && $this->isTrackbackSpam($tbURL, $permalink)) {
 				$tbType = TYPE_TRACKBACK_SPAM;
 			}
 
@@ -161,12 +159,12 @@ class tx_timtab_pi2 extends tslib_pibase {
 
 			$blogName = $GLOBALS['TSFE']->csConv($blogName, $charset);
 
-				//do we have a ping, already?
+			//do we have a ping, already?
 			unset($res);
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 				'uid',
 				'tx_comments_comments',
-				'external_ref = "tt_news_'.$tt_news['uid'].'" AND homepage = \''.$tbURL.'\''
+				'external_ref = "tt_news_'.intval($tt_news['uid']).'" AND homepage = \''.addslashes ($tbURL).'\''
 			);
 			
 			$tbEntry = $GLOBALS['TYPO3_DB']->sql_num_rows($res);
@@ -175,6 +173,7 @@ class tx_timtab_pi2 extends tslib_pibase {
 			} else {
 				unset($res);
 				$time = time();
+				// field get escaped by exec_INSERTquery
 				$insertFields = array(
 					'pid' => $this->conf['pidStoreComments'],
 					'external_ref' => 'tt_news_'.$tt_news['uid'],
@@ -229,25 +228,16 @@ class tx_timtab_pi2 extends tslib_pibase {
 		} else {
 			return $tb->sendResponse(false, 'At least the URL to your entry is required.');
 		}
-    }
-    
-  /**
-  * This Method was missing TODO: implement
-  * @author Lina Wolf
-  * @return boolean always returns fasle
-  */
-  function isTbSpam() {
-  	return false;
-  }
+   }
 
     
 	/**
 	 * checks whether the trackback link has a link to us, if not the trackback
 	 * is considered SPAM
 	 * 
-	 * @param
-	 * @param
-	 * @return
+	 * @param $remoteUrl string URL of the trackback caler
+	 * @param $permalink string URL of our post 
+	 * @return boolean true if HTML file at $remoteUrl contains a link to $permalink
 	 * @author Thomas Hempel?
 	 */
     function isTrackbackSpam($remoteUrl, $permalink) {

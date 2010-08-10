@@ -16,6 +16,7 @@ page.file {
   
   template_tt_news = EXT:timtab/res/kubrick/kubrick_tt_news.tmpl
   template_comments = EXT:timtab/res/kubrick/kubrick_comments.tmpl
+  
 
   kubrickbgcolor = EXT:timtab/res/kubrick/images/kubrickbgcolor.jpg
   kubrickbgwide = EXT:timtab/res/kubrick/images/kubrickbgwide.jpg

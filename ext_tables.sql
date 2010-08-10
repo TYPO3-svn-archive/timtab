@@ -11,6 +11,14 @@ CREATE TABLE tt_news (
 	tx_timtab_ping_allowed tinyint(4) unsigned DEFAULT '1' NOT NULL,
 );
 
+
+#
+# Table structure for table 'tt_content'
+#
+CREATE TABLE tt_content (
+	tx_timtab_widget_type varchar(255) DEFAULT '' NOT NULL,
+);
+
 #
 # Table structure for table 'tt_news_cat'
 #

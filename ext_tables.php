@@ -80,13 +80,7 @@ $tempColumns = array (
 	),
 );
 
-t3lib_div::loadTCA('tt_content');
-$TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY.'_pi1']='layout,select_key';
-$TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY.'_pi2']='layout,select_key';
-$TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY.'_pi3']='layout,select_key';
 
-t3lib_extMgm::addPlugin(Array('LLL:EXT:timtab/locallang_db.xml:tt_content.list_type_pi1', $_EXTKEY.'_pi1'),'list_type');
-t3lib_extMgm::addPlugin(Array('LLL:EXT:timtab/locallang_db.xml:tt_content.list_type_pi3', $_EXTKEY.'_pi3'),'list_type');
 
 if(version_compare($tt_news_version, '3.0.0', '>=')) {
 	t3lib_div::loadTCA('tt_news');
@@ -129,8 +123,63 @@ t3lib_extMgm::addStaticFile($_EXTKEY,'static/timtab/','Timtab Template');
 t3lib_extMgm::addStaticFile($_EXTKEY,'static/webservice/','Blog Webservices');
 t3lib_extMgm::addStaticFile($_EXTKEY,'static/kubrick/','Kubrick (default weblog template)');
 
-if (TYPO3_MODE=='BE') {
-	$TBE_MODULES_EXT['xMOD_db_new_content_el']['addElClasses']['tx_timtab_pi1_wizicon'] = t3lib_extMgm::extPath($_EXTKEY).'pi1/class.tx_timtab_pi1_wizicon.php';
-	$TBE_MODULES_EXT['xMOD_db_new_content_el']['addElClasses']['tx_timtab_pi3_wizicon'] = t3lib_extMgm::extPath($_EXTKEY).'pi3/class.tx_timtab_pi3_wizicon.php';
-}
+
+t3lib_div::loadTCA('tt_content');
+//$TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY.'_pi1']='layout,select_key';
+$TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY.'_pi2']='layout,select_key';
+$TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY.'_pi3']='layout,select_key';
+//t3lib_extMgm::addPlugin(Array('LLL:EXT:timtab/locallang_db.xml:tt_content.list_type_pi1', $_EXTKEY.'_pi1'),'list_type');
+t3lib_extMgm::addPlugin(Array('LLL:EXT:timtab/locallang_db.xml:tt_content.list_type_pi3', $_EXTKEY.'_pi3'),'list_type');
+
+$tempColumns = Array (
+	'tx_timtab_widget_type' => array (		
+		'exclude' => 1,		
+		'label' => 'LLL:EXT:timtab/locallang_db.xml:tx_comments_comments.tx_timtab_type',		
+		'config' => array (
+				'type' => 'select',
+				'size' => 1,
+				'maxitems' => 1,
+				'items' => array (
+					array('', ''),
+					array('Build-in Widgets', '--div--'),
+					array('Menu of Categories', 'catMenu'),
+					array('Blogroll', 'blogroll'),
+					array('Latest comments', 'latestComments'),
+					array('Simple Calendar', 'calendar'),
+					array('Widgets From Extensions', '--div--'),
+				),
+				'authMode' => 'explicitDeny'
+		),
+	),	
+);
+
+
+t3lib_extMgm::addTCAcolumns('tt_content',$tempColumns,1);
+
+t3lib_extMgm::addPlugin(
+	array(
+		'LLL:EXT:timtab/locallang_db.xml:tt_content.CType_pi1', 
+		$_EXTKEY . '_pi1', 
+		t3lib_extMgm::extRelPath($_EXTKEY) . 'ext_icon.gif'
+	),
+	'CType'
+);
+
+$TCA['tt_content']['ctrl']['requestUpdate'] .= ',tx_timtab_widget_type';
+
+$TCA['tt_content']['types'][$_EXTKEY . '_pi1']['subtype_value_field'] = 'tx_timtab_widget_type';
+$TCA['tt_content']['types'][$_EXTKEY . '_pi1']['showitem'] = 
+	'CType;;4;button;1-1-1, hidden,1-1-1, header;;3;;3-3-3, linkToTop;;;;3-3-3,
+	tx_timtab_widget_type,pages,
+	--div--;LLL:EXT:cms/locallang_tca.xml:pages.tabs.access,starttime, endtime';
+	
+// in order for this to work we must ensure that field 'list_type' gets filled with information from 'tx_timtab_widget_type'
+// dirty hack because it is not possible to use more then one field in this place.
+//$TCA['tt_content']['columns']['pi_flexform']['config']['ds']['latestcomments,'.$_EXTKEY .'_pi1'] = 'FILE:EXT:timtab/widgets/latestcomments/flexform_ds.xml';
+
+$TCA['tt_content']['types'][$_EXTKEY . '_pi1']['subtypes_addlist']['blogroll']='';
+$TCA['tt_content']['types'][$_EXTKEY . '_pi1']['subtypes_addlist']['latestcomments']= ''; //'pi_flexform';
+$TCA['tt_content']['types'][$_EXTKEY . '_pi1']['subtypes_addlist']['catmenu']= ''; 
+	
+
 ?>

@@ -58,6 +58,98 @@ class tx_timtab_lib {
 		}
 		$tce->admin = 0;
 	}
+	
+		
+	/**
+	* borrowed from tt_news
+	*/
+	function getSingleViewLink($cObj, $uid, $section='', $urlOnly = false) {
+		$conf = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tt_news.'];
+		$where = 'uid="'.intval($uid).'" '.$this->cObj->enableFields('tt_news').' ';
+		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+			'uid,datetime',
+			'tt_news',
+			$where
+		);
+		if ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+			$token = '|';
+			$singlePid = $conf['singlePid'];
+			$allowCaching = 1;
+			$piVars = array();
+			$piVars['year'] = date('Y', $row['datetime']);
+			$piVars['month'] = date('m', $row['datetime']);
+			
+			
+			$piVarsArray = array('backPid' => ($conf['dontUseBackPid'] ? null : $config['backPid']),
+					'year' => ($conf['dontUseBackPid'] ? null : ($piVars['year'] ? $piVars['year'] : null)),
+					'month' => ($conf['dontUseBackPid'] ? null : ($piVars['month'] ? $piVars['month'] : null)));
+			
+			if (! $conf['useHRDatesSingleWithoutDay']) {
+				$piVars['day'] = date('d', $row['datetime']);
+			}
+			
+			if ($conf['useHRDates']) {
+				$piVarsArray['pS'] = null;
+				$piVarsArray['pL'] = null;
+				$piVarsArray['arc'] = null;
+				if ($conf['useHRDatesSingle']) {
+					$tmpY = $piVars['year'];
+					$tmpM = $piVars['month'];
+					$tmpD = $piVars['day'];
+	
+					$piVarsArray['year'] = $piVars['year'];
+					$piVarsArray['month'] = $piVars['month'];
+					$piVarsArray['day'] = ($piVars['day'] ? $piVars['day'] : null);
+				}
+			} else {
+				$piVarsArray['year'] = null;
+				$piVarsArray['month'] = null;
+			}
+	
+			$piVarsArray['tt_news'] = $row['uid'];
+
+			$additionalParams = '';
+			foreach($piVarsArray AS $key => $value) {
+				if (!is_null($value)){
+					$additionalParams .= '&tx_ttnews['.$key.']='.$value;
+				}
+			}
+			$params = array(
+				'additionalParams' => $additionalParams,
+				'no_cache' => $GLOBALS['TSFE']->no_cache,
+				'parameter' => $singlePid,
+				'useCacheHash' => !$GLOBALS['TSFE']->no_cache,
+				'section' => $section
+			);
+			
+			$linkWrap = $cObj->typolink($token, $params);
+			$url = $cObj->lastTypoLinkUrl;
+	
+			// hook for processing of links
+			/*
+			if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['tt_news']['getSingleViewLinkHook'])) {
+				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['tt_news']['getSingleViewLinkHook'] as $_classRef) {
+					$_procObj = & t3lib_div::getUserObj($_classRef);
+					$params = array('singlePid' => &$singlePid, 'row' => &$row, 'piVarsArray' => $piVarsArray);
+					$_procObj->processSingleViewLink($linkWrap, $url, $params, $this);
+				}
+			}
+			*/
+	
+			if ($conf['useHRDates'] && $conf['useHRDatesSingle']) {
+				$piVars['year'] = $tmpY;
+				$piVars['month'] = $tmpM;
+				$piVars['day'] = $tmpD;
+			}
+	
+			if ($urlOnly) {
+				return $url;
+			} else {
+				return $linkWrap;
+			}
+		}
+		return '';
+	}
 
 	/**
 	* gets the tt_news record with the given ID

@@ -32,7 +32,7 @@ plugin.tx_timtab {
   title = {$plugin.tx_timtab.title}
   tagline = {$plugin.tx_timtab.tagline}
   homepage = {$plugin.tx_timtab.homepage}
-  blogPid = {$plugin.tx_timtab.blogPid}
+  singlePid = {$plugin.tx_timtab.singlePid}
   homePid = {$plugin.tx_timtab.homePid}
   
   
@@ -100,8 +100,9 @@ lib.timtab {
 			RENDER_LATEST_COMMENTS_ITEM = TEXT
 			RENDER_LATEST_COMMENTS_ITEM.field = renderLatestCommentsItem
 		}
-		required = 1
+		stdWrap.required = 1
 	}
+	
 	
 	
 	renderLatestCommentsItem = TEMPLATE
@@ -171,27 +172,65 @@ lib.timtab {
 		template.file = {$plugin.tx_timtab.widgets.template}
 		workOnSubpart = BLOGROLL_LINK
 	}
+	
+	catMenu = HMENU
+	catMenu {
+		special = userfunction
+		special {
+				userFunc = tx_timtabCatMenuUserFunc->makeMenuArray
+				catPid = {$plugin.tx_timtab.catPid}
+				sourcePid = {$plugin.tx_timtab.pidStorePosts}
+			  sortBy = tt_news_cat.sorting ASC
+			  showEmpty = 0
+			  recursive = 1
+				startUid = {$plugin.loskin.startCategory}
+		}
+		wrap = |
+		
+		1 = TMENU 
+		1 {
+			wrap = <ul>|</ul>
+			NO {
+				allWrap.dataWrap = <li class="cat-item cat-item-{field:uid}">|
+				wrapItemAndSub = |</li>
+				htmlSpecialChars = 1
+			}
+			ACT < .NO
+			ACT {
+				allWrap.dataWrap = <li class="cat-item cat-item-act cat-item-{field:uid}">|
+				wrapItemAndSub = |</li>
+			}
+			ACT = 1
+		}
+		2 < .1
+		3 < .1
+	}
 }
 
 /**
-* Blogroll Default Konfiguration
+* Widget Default Konfiguration
 * @author Lina Wolf
 */
 plugin.tx_timtab_pi1 {
-	widgetType = latestComments
+	pidList = {$plugin.tx_timtab.pidStoreComments}
+	widgetType = 
 	widgets {
 		latestComments {
 			max = 5
 			showTrackbacks = 0
 			linkAnchor = tx-comments-comments-|
-			pidList = {$plugin.tx_timtab.pidStoreComments}
 			renderLatestCommentsList =< lib.timtab.renderLatestCommentsList
-			renderLatestCommentsItem  =< lib.timtab.renderLatestCommentsItem
+			renderLatestCommentsItem =< lib.timtab.renderLatestCommentsItem
 		}
 		blogroll {
-			pidList = {$plugin.tx_timtab.pidStoreBlogroll}
 			renderBlogrollList =< lib.timtab.renderBlogrollList
 			renderBlogrollItem =< lib.timtab.renderBlogrollItem
 		}
+		catMenu {
+			renderCObject =< lib.timtab.catMenu
+		}
 	}
 }
+
+
+<INCLUDE_TYPOSCRIPT:  source="FILE: typo3conf/ext/timtab/widgets/calendar/setup.ts">

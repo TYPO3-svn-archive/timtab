@@ -15,18 +15,6 @@
 <!-- ###BLOGROLL_LINK### begin-->
 	<a href="###URL###" title="###DESCRIPTION###" ###FOAF### target="###TARGET###">|</a>
 <!-- ###BLOGROLL_LINK### end-->
-
-
-<div id="c831" class="csc-default"><div class="csc-header csc-header-n4"><h3 style="text-align:left;">Kommentare</h3></div>
-	<div class="tx-timtablatestcomments-pi1">
-		<div class="latestComments">
-			<div class="latestCommentEntry">
-				<p class="author"><a href="blog+M5d1052d592b.html">Jorgo </a></p>
-				<p class="entry">Ja, im Spiel gegen Deutschland gefiel mir Spanien auch besser oder anders gesagt, es war das EINZIGE...</p>
-			</div>
-			<div class="latestCommentEntry"><p class="author"><a href="blog+M5d1052d592b.html">regenrot </a></p><p class="entry">Das Spiel gestern war in der Tat sehr gewaltgeprägt, beim Spiel gegen Deutschland muss ich aber sag...</p></div><div class="latestCommentEntry"><p class="author"><a href="blog+M5999ff15e6c.html">Spanien </a></p><p class="entry">Meiner Erfahrung nach ist das Google Translation Tool momentan das beste Online-Tool für maschinell...</p></div><div class="latestCommentEntry"><p class="author"><a href="blog+M59f2e830ff9.html">Juergen </a></p><p class="entry">das finde ich interessant. habe nie darüber nachgedacht.</p></div><div class="latestCommentEntry"><p class="author"><a href="blog+M5f551091ee9.html">Juergen </a></p><p class="entry">mir scheint diese panikmache total übertrieben. google hat gar kein interesse meine email oder mein...</p></div></div>
-
-	</div>
 	
 	
 <!-- ###RENDER_LATEST_COMMENTS_LIST### begin-->
@@ -39,3 +27,48 @@
 	<!-- ###RENDER_LATEST_COMMENTS_ITEM### end-->
 	</div>
 <!-- ###RENDER_LATEST_COMMENTS_LIST### end-->
+
+
+<!-- ###RENDER_CALENDAR### begin-->
+<div id="timtab-calendar-ajax">
+	<table id="timtab-calendar">
+  	<caption id="timtab-calendar-caption">###CURRENT_MONTH### ###CURENT_YEAR###</caption>
+  	<thead>
+  	<tr>
+<!-- ###RENDER_DAYS_OF_WEEK### begin-->
+		<th abbr="###DAY_OF_WEEK_LANG###" scope="col" title="###DAY_OF_WEEK_LANG###">###DAY_OF_WEEK_SHORT###</th>
+<!-- ###RENDER_DAYS_OF_WEEK### end-->
+		</tr>
+			</thead>
+			<tfoot>
+				<tr>   		
+					<td abbr="" colspan="3" id="prev">###LINK_TO_PREV_MONTH###</td>
+   		<td id="showit"><a href="http://wordpress.als-webseite.de/2010/08/" onclick="return calendar (2010,8,1,'')">&laquo;-&raquo;</a></td>
+		<td colspan="3" id="next" class="pad">###LINK_TO_NEXT_MONTH###</td>
+  	</tr>
+
+  	</tfoot>
+
+<!-- ###RENDER_MONTH### begin-->
+  	<tbody>
+<!-- ###RENDER_WEEK### begin-->
+	<tr>
+		
+<!-- ###RENDER_SPACE_BEFORE_DAYS### begin-->
+		<td colspan="###SIZE###" class="pad">&nbsp;</td>
+<!-- ###RENDER_SPACE_BEFORE_DAYS### end-->
+
+<!-- ###RENDER_CALENDAR_DAY### begin-->
+		<td ###TODAY###>###DAY###</td>
+<!-- ###RENDER_CALENDAR_DAY### end-->
+
+<!-- ###RENDER_SPACE_AFTER_DAYS### begin-->
+		<td class="pad" colspan="###SIZE###">&nbsp;</td>
+<!-- ###RENDER_SPACE_AFTER_DAYS### end-->
+
+	</tr>
+<!-- ###RENDER_WEEK### end-->
+	</tbody>
+<!-- ###RENDER_MONTH### end-->
+	</table></div>
+<!-- ###RENDER_CALENDAR### end-->
