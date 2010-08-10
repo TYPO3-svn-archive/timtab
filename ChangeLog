@@ -1,6 +1,7 @@
 2010-08-10  Timo Webler <timo.webler@dkd.de>
 	* Merging branches/v_1_0 to trunk; timtab. Merge rev 2593:36562
 	* remove windows line delimiter
+	* removed one of duplicate class tx_timtabCatMenuUserFunc
 
 2010-08-10 	Lina Wolf 	<2010@lotypo3.de>
 	* pi3 was removed. An improved Ajax based calendar is now available as widget.
