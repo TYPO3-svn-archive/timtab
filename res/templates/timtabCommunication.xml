@@ -1,0 +1,17 @@
+<template>
+	<!-- ###RENDER_TRACKBACK_RESPONSE_ERROR### begin-->
+		<?xml version="1.0" encoding="###ENCODING###"?>
+			<response>
+				<error>1</error>
+				<message>###ERROR_MESSAGE###</message>
+			</response>
+	<!-- ###RENDER_TRACKBACK_RESPONSE_ERROR### end-->
+	
+	<!-- ###RENDER_TRACKBACK_RESPONSE_SUCCESS### begin-->
+		<?xml version="1.0" encoding="###ENCODING###"?>
+			<response>
+				<error>0</error>
+			</response>
+	<!-- ###RENDER_TRACKBACK_RESPONSE_SUCCESS### end-->
+	
+</template>

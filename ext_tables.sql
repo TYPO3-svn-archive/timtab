@@ -11,12 +11,23 @@ CREATE TABLE tt_news (
 	tx_timtab_ping_allowed tinyint(4) unsigned DEFAULT '1' NOT NULL,
 );
 
+
 #
-# Table structure for table 'tx_veguestbook_entries'
+# Table structure for table 'tt_content'
 #
-CREATE TABLE tx_veguestbook_entries (
-	tx_timtab_type tinyint(4) unsigned DEFAULT '0' NOT NULL,
-	homepage text NOT NULL,
+CREATE TABLE tt_content (
+	tx_timtab_widget_type varchar(255) DEFAULT '' NOT NULL,
+);
+
+#
+# Table structure for table 'tt_news_cat'
+#
+CREATE TABLE tt_news_cat (
+	sorting int(10) DEFAULT '0' NOT NULL,
+);
+
+CREATE TABLE tx_comments_comments (
+	tx_timtab_type varchar(255) DEFAULT '' NOT NULL,
 );
 
 #

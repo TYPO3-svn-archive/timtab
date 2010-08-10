@@ -1,7 +1,7 @@
 <!-- 
 	This is the template for tt_news in the kubrick template
 
-	$Id$ 
+	$Id: kubrick_tt_news.tmpl 2569 2005-10-24 23:02:07Z flyguide $ 
 
 -->
 
@@ -9,11 +9,11 @@
 	This subpart is used to display single posts
 -->
 <div class="navigation">
-	<div class="alignleft">###BLOG_PREV_POST###</div>
-	<div class="alignright">###BLOG_NEXT_POST###</div>
+	###PREV_ARTICLE###
+	###NEXT_ARTICLE###
 </div>
 <div class="post">
-	<h2>###BLOG_POST_TITLE###</h2>
+	<h2>###NEWS_TITLE###</h2>
 	<div class="entrytext">
 	###NEWS_CONTENT###
 
@@ -30,6 +30,7 @@
 		###BLOG_TRACKBACK_RDF###
 	</div>
 </div>
+<h3 id="comments">Responses to &#8220;###NEWS_TITLE###&#8221;</h3>
 <!-- ###TEMPLATE_SINGLE### end -->
 
 	
@@ -50,11 +51,12 @@
 			###NEWS_SUBHEADER###
 			</div>
 			
-			<p class="postmetadata">Posted in ###NEWS_CATEGORY### <strong>|</strong> <!--###LINK_ITEM###-->###BLOG_COMMENTS_COUNT### ###BLOG_TEXT_COMMENTS###<!--###LINK_ITEM###--></p>
+			<p class="postmetadata">Posted in ###NEWS_CATEGORY### <strong>|</strong> ###TX_COMMENTS_COUNT###</p>
 
 		</div>
 		<!-- ###NEWS### end-->
 	<!-- ###CONTENT###  end -->
+###BROWSE_LINKS###
 <!-- ###TEMPLATE_LIST### end -->			
 
 

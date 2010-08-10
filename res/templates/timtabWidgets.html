@@ -1,0 +1,74 @@
+
+<!-- ###RENDER_BLOGROLL_LIST### begin-->
+
+	<ul class='xoxo blogroll'>
+	<!-- ###RENDER_BLOGROLL_ITEM### begin-->
+
+		<li><!-- ###LINK_ROLL### -->###TITLE###<!-- ###LINK_ROLL### --></li>
+
+	
+	<!-- ###RENDER_BLOGROLL_ITEM### end-->
+	</ul>
+
+<!-- ###RENDER_BLOGROLL_LIST### end-->
+
+<!-- ###BLOGROLL_LINK### begin-->
+	<a href="###URL###" title="###DESCRIPTION###" ###FOAF### target="###TARGET###">|</a>
+<!-- ###BLOGROLL_LINK### end-->
+	
+	
+<!-- ###RENDER_LATEST_COMMENTS_LIST### begin-->
+	<div class="tx-timtab-latestComments">
+	<!-- ###RENDER_LATEST_COMMENTS_ITEM### begin-->
+		<div class="latestCommentEntry">
+			<p class="author"><!-- ###LINK_COMMENT### --> ###NAME### <!-- ###LINK_COMMENT### --></p>
+			<p class="entry">###SHORT###</p>
+		</div>
+	<!-- ###RENDER_LATEST_COMMENTS_ITEM### end-->
+	</div>
+<!-- ###RENDER_LATEST_COMMENTS_LIST### end-->
+
+
+<!-- ###RENDER_CALENDAR### begin-->
+<div id="timtab-calendar-ajax">
+	<table id="timtab-calendar">
+  	<caption id="timtab-calendar-caption">###CURRENT_MONTH### ###CURENT_YEAR###</caption>
+  	<thead>
+  	<tr>
+<!-- ###RENDER_DAYS_OF_WEEK### begin-->
+		<th abbr="###DAY_OF_WEEK_LANG###" scope="col" title="###DAY_OF_WEEK_LANG###">###DAY_OF_WEEK_SHORT###</th>
+<!-- ###RENDER_DAYS_OF_WEEK### end-->
+		</tr>
+			</thead>
+			<tfoot>
+				<tr>   		
+					<td abbr="" colspan="3" id="prev">###LINK_TO_PREV_MONTH###</td>
+   		<td id="showit"><a href="http://wordpress.als-webseite.de/2010/08/" onclick="return calendar (2010,8,1,'')">&laquo;-&raquo;</a></td>
+		<td colspan="3" id="next" class="pad">###LINK_TO_NEXT_MONTH###</td>
+  	</tr>
+
+  	</tfoot>
+
+<!-- ###RENDER_MONTH### begin-->
+  	<tbody>
+<!-- ###RENDER_WEEK### begin-->
+	<tr>
+		
+<!-- ###RENDER_SPACE_BEFORE_DAYS### begin-->
+		<td colspan="###SIZE###" class="pad">&nbsp;</td>
+<!-- ###RENDER_SPACE_BEFORE_DAYS### end-->
+
+<!-- ###RENDER_CALENDAR_DAY### begin-->
+		<td ###TODAY###>###DAY###</td>
+<!-- ###RENDER_CALENDAR_DAY### end-->
+
+<!-- ###RENDER_SPACE_AFTER_DAYS### begin-->
+		<td class="pad" colspan="###SIZE###">&nbsp;</td>
+<!-- ###RENDER_SPACE_AFTER_DAYS### end-->
+
+	</tr>
+<!-- ###RENDER_WEEK### end-->
+	</tbody>
+<!-- ###RENDER_MONTH### end-->
+	</table></div>
+<!-- ###RENDER_CALENDAR### end-->

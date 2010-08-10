@@ -1,11 +1,28 @@
-#
-#	$Id: ext_typoscript_setup.txt 2589 2005-10-31 14:36:49 -0600 (Mo, 31 Okt 2005) ingorenner $
-#
 
+includeLibs.tx_timtabCatMenuUserFunc = EXT:timtab/lib/class.tx_timtabCatMenuUserFunc.php
 
 #
 #	TIMTAB configuration
 #
+
+plugin.tx_comments_pi1 {
+	timtab {
+		gravatar {
+			enable = 1
+	    # values for rating are: [ G | PG | R | X | 0 = none]
+	    # G is suitable for display on all sites
+	    # PG may contain disputably offensive imagery
+	    # R things as harsh profanity, intense violence, explicit sexual content, and drug use 
+	    # X may contain hardcore sexual imagery or extremely disturbing violence
+	    # see http://www.gravatar.com/rating.php
+			rating = 0
+			iconSize = 32
+			class = avatar avatar-32 photo
+			defaultIcon = 
+	  }
+	  allowSafeTags = 1
+	}
+}
 
 plugin.tx_timtab {
   
@@ -15,28 +32,11 @@ plugin.tx_timtab {
   title = {$plugin.tx_timtab.title}
   tagline = {$plugin.tx_timtab.tagline}
   homepage = {$plugin.tx_timtab.homepage}
-  blogPid = {$plugin.tx_timtab.blogPid}
+  singlePid = {$plugin.tx_timtab.singlePid}
   homePid = {$plugin.tx_timtab.homePid}
   
-  gravatar {
-    # values for rating are: [ G | PG | R | X | 0 = none]
-    # G is suitable for display on all sites
-    # PG may contain disputably offensive imagery
-    # R things as harsh profanity, intense violence, explicit sexual content, and drug use 
-    # X may contain hardcore sexual imagery or extremely disturbing violence
-    # see http://www.gravatar.com/rating.php
-    rating = 0    
-    
-    #default image if no gravatar for the email was found
-    defaultImg = http://www.example.com/clear.gif
-    
-    #border drwas a 1px border around the gravatar, define as HEX color: FF0000
-    border = 0
-    
-    class = gravatar
-    size = 60
-  }
   
+  displayCatMenu.targetPid = {$plugin.tx_timtab.catPid}
   categoryMenu {
     #everything else is set in timtab/class.tx_timtab_catmenu.php
     targetPid = 0
@@ -45,6 +45,7 @@ plugin.tx_timtab {
   trackback {
     validate = 1
     spam.mark = 1
+    autoapprove = 1
   }
   
   blogRoll {
@@ -73,9 +74,163 @@ plugin.tx_timtab {
     bloggerTitle = {$plugin.tx_timtab_pi2.bloggerTitle}
   
     enableBlogger = {$plugin.tx_timtab_pi2.enableBlogger}
+    //wtweb uncommentiert wegen xmlrpc post
     enableMetaWeblog = {$plugin.tx_timtab_pi2.enableMetaWeblog}
-#   enableMovableType = {$plugin.tx_timtab_pi2.enableMovableType}
-#   enableUploads = {$plugin.tx_timtab_pi2.enableUploads}
+   enableMovableType = {$plugin.tx_timtab_pi2.enableMovableType}
+   enableUploads = {$plugin.tx_timtab_pi2.enableUploads}
+   //wtweb end
     strictAPI = {$plugin.tx_timtab_pi2.strictAPI}
+    
+    //wtweb
+  	enableUpdateServices = {$plugin.tx_timtab.enableUpdateServices}
+  	UpdateServicesUrl = {$plugin.tx_timtab.UpdateServicesUrl}
+  	//wtweb end
   }
 }
+
+lib.timtab {
+	
+	
+	renderLatestCommentsList = TEMPLATE
+	renderLatestCommentsList {
+		template = FILE
+		template.file = {$plugin.tx_timtab.widgets.template}
+		workOnSubpart = RENDER_LATEST_COMMENTS_LIST
+		subparts {
+			RENDER_LATEST_COMMENTS_ITEM = TEXT
+			RENDER_LATEST_COMMENTS_ITEM.field = renderLatestCommentsItem
+		}
+		stdWrap.required = 1
+	}
+	
+	
+	
+	renderLatestCommentsItem = TEMPLATE
+	renderLatestCommentsItem {
+		template = FILE
+		template.file = {$plugin.tx_timtab.widgets.template}
+		workOnSubpart = RENDER_LATEST_COMMENTS_ITEM
+		substMarksSeparately = 1
+		wraps {
+			LINK_COMMENT = TEXT
+			LINK_COMMENT.field = renderedLink
+		}
+		marks {
+			NAME = TEXT
+			NAME.field = firstname
+			SHORT = TEXT
+			SHORT {
+				field = content
+				stripHtml = 1
+				crop = 100|..|1
+			}
+		}
+	}
+	
+	renderBlogrollList = TEMPLATE
+	renderBlogrollList {
+		template = FILE
+		template.file = {$plugin.tx_timtab.widgets.template}
+		workOnSubpart = RENDER_BLOGROLL_LIST
+		subparts {
+			RENDER_BLOGROLL_ITEM = TEXT
+			RENDER_BLOGROLL_ITEM.field = renderBlogrollItem
+		}
+	}
+	
+	
+	renderBlogrollItem = TEMPLATE
+	renderBlogrollItem {
+		template = FILE
+		template.file = {$plugin.tx_timtab.widgets.template}
+		workOnSubpart = RENDER_BLOGROLL_ITEM
+		substMarksSeparately = 1
+		wraps {
+			LINK_ROLL =< lib.timtab.blogrollLink
+		}
+		marks {
+			TITLE = TEXT
+			TITLE.field = name
+			URL = TEXT
+			URL.field = url
+			DESCRIPTION = TEXT
+			DESCRIPTION.field = description
+			FOAF = TEXT
+			FOAF {
+				field = foaf
+				wrap = rel="|"
+				required = 1
+			}
+			TARGET = TEXT
+			TARGET.field = target
+		}
+	}
+	
+	blogrollLink = TEMPLATE 
+	blogrollLink {
+		template = FILE
+		template.file = {$plugin.tx_timtab.widgets.template}
+		workOnSubpart = BLOGROLL_LINK
+	}
+	
+	catMenu = HMENU
+	catMenu {
+		special = userfunction
+		special {
+				userFunc = tx_timtabCatMenuUserFunc->makeMenuArray
+				catPid = {$plugin.tx_timtab.catPid}
+				sourcePid = {$plugin.tx_timtab.pidStorePosts}
+			  sortBy = tt_news_cat.sorting ASC
+			  showEmpty = 0
+			  recursive = 1
+				startUid = {$plugin.loskin.startCategory}
+		}
+		wrap = |
+		
+		1 = TMENU 
+		1 {
+			wrap = <ul>|</ul>
+			NO {
+				allWrap.dataWrap = <li class="cat-item cat-item-{field:uid}">|
+				wrapItemAndSub = |</li>
+				htmlSpecialChars = 1
+			}
+			ACT < .NO
+			ACT {
+				allWrap.dataWrap = <li class="cat-item cat-item-act cat-item-{field:uid}">|
+				wrapItemAndSub = |</li>
+			}
+			ACT = 1
+		}
+		2 < .1
+		3 < .1
+	}
+}
+
+/**
+* Widget Default Konfiguration
+* @author Lina Wolf
+*/
+plugin.tx_timtab_pi1 {
+	pidList = {$plugin.tx_timtab.pidStoreComments}
+	widgetType = 
+	widgets {
+		latestComments {
+			max = 5
+			showTrackbacks = 0
+			linkAnchor = tx-comments-comments-|
+			renderLatestCommentsList =< lib.timtab.renderLatestCommentsList
+			renderLatestCommentsItem =< lib.timtab.renderLatestCommentsItem
+		}
+		blogroll {
+			renderBlogrollList =< lib.timtab.renderBlogrollList
+			renderBlogrollItem =< lib.timtab.renderBlogrollItem
+		}
+		catMenu {
+			renderCObject =< lib.timtab.catMenu
+		}
+	}
+}
+
+
+<INCLUDE_TYPOSCRIPT:  source="FILE: typo3conf/ext/timtab/widgets/calendar/setup.ts">

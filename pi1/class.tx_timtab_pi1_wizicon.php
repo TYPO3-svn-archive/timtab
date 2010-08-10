@@ -24,7 +24,7 @@
 /**
  * Class that adds the wizard icon.
  * 
- * $Id$
+ * $Id: class.tx_timtab_pi1_wizicon.php 2572 2005-10-29 22:06:30Z flyguide $
  *
  * @author	Ingo Renner <typo3@ingo-renner.com>
  */
@@ -48,8 +48,7 @@ class tx_timtab_pi1_wizicon {
 	}
 	function includeLocalLang()	{
 		global $LOCAL_LANG;
-		
-		include(t3lib_extMgm::extPath('timtab').'locallang.php');
+		$LOCAL_LANG = $GLOBALS['LANG']->includeLLFile(t3lib_extMgm::extPath('timtab').'locallang.xml',FALSE);
 		return $LOCAL_LANG;
 	}
 }

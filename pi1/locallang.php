@@ -2,7 +2,7 @@
 /**
  * Language labels for plugin "tx_timtab_pi1"
  * 
- * $Id$
+ * $Id: locallang.php 2590 2005-11-16 10:42:31Z flyguide $
  *
  * This file is detected by the translation tool.
  */

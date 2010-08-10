@@ -23,7 +23,7 @@
 
 */
 define('XMLRPC_DEBUG', true);
-define('DEBUG_FILENAME', 'D:/Projects/ingo-renner.com/www_v2/log/xmlrpc.log');
+define('DEBUG_FILENAME', 'E:/xampp2/htdocs/fileadmin/xmlrpc.log');
 
 class IXR_Value {
     var $data;
@@ -146,8 +146,13 @@ class IXR_Message {
     function IXR_Message ($message) {
         $this->message = $message;
     }
+
+    
     function parse() {
-        // first remove the XML declaration
+    	    //wtweb wegen decode fehler bei bild, $this->debug knallt in dieser klasse, wegen callback ?
+    //$this->debug("message:------------------------------------\r\n" . $message . "\r\n------END------------------------------"); 
+
+    // first remove the XML declaration
         $this->message = preg_replace('/<\?xml(.*)?\?'.'>/', '', $this->message);
         if (trim($this->message) == '') {
             return false;
@@ -160,9 +165,9 @@ class IXR_Message {
         xml_set_element_handler($this->_parser, 'tag_open', 'tag_close');
         xml_set_character_data_handler($this->_parser, 'cdata');
         if (!xml_parse($this->_parser, $this->message)) {
-            /* die(sprintf('XML error: %s at line %d',
+             die(sprintf('XML error: %s at line %d',
                 xml_error_string(xml_get_error_code($this->_parser)),
-                xml_get_current_line_number($this->_parser))); */
+                xml_get_current_line_number($this->_parser))); 
             return false;
         }
         xml_parser_free($this->_parser);
@@ -291,7 +296,7 @@ class IXR_Server { //TODO maybe extend this class to log with TYPO3 features
             $data = $HTTP_RAW_POST_DATA;
         }
 
-        $this->debug($data);
+        //$this->debug($data);
 
         $this->message = new IXR_Message($data);
         if (!$this->message->parse()) {
@@ -378,7 +383,7 @@ EOD;
         header('Date: '.date('r'));
         echo $xml;
 
-        $this->debug($xml);
+        //$this->debug($xml);
 
         exit;
     }
@@ -484,7 +489,7 @@ class IXR_Client {
     var $useragent;
     var $response;
     var $message = false;
-    var $debug = false;
+    var $debug = false; // wtweb wie kann ne funktion auf false gesetzt werden ?
 	var $timeout;
     // Storage place for an error message
     var $error = false;
