@@ -36,7 +36,7 @@ t3lib_extMgm::addPageTSConfig('
 					}
 				}
 			}
-      show := addToList(timtab_pi3)
+	show := addToList(timtab_pi3)
 		}
 		timtab {
 			header = LLL:EXT:timtab/locallang.xml:pi1_title
@@ -99,15 +99,15 @@ t3lib_extMgm::addPItoST43($_EXTKEY,'pi2/class.tx_timtab_pi2.php','_pi2','list_ty
 t3lib_extMgm::addPItoST43($_EXTKEY,'pi3/class.tx_timtab_pi3.php','_pi3','list_type',1);
 
 # RealURL Autokonfiguration
-$TYPO3_CONF_VARS['SC_OPTIONS']['ext/realurl/class.tx_realurl_autoconfgen.php']['extensionConfiguration']['timtab'] 
+$TYPO3_CONF_VARS['SC_OPTIONS']['ext/realurl/class.tx_realurl_autoconfgen.php']['extensionConfiguration']['timtab']
 	= 'EXT:timtab/res/class.tx_timtab_realurlautoconf.php:tx_timtab_realurlautoconf->generateUrlWithDate';
 
 # Hook for creating additional tt_news markers
 $TYPO3_CONF_VARS['EXTCONF']['tt_news']['extraItemMarkerHook'][]  = 'tx_timtab_hook_ttnews';
 
 # Hook for postprocessing record after saving in be
-$TYPO3_CONF_VARS['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = 'tx_timtab_be'; 
-	
+$TYPO3_CONF_VARS['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = 'tx_timtab_Be';
+
 #Hook for closing comments
 $TYPO3_CONF_VARS['EXTCONF']['comments']['closeCommentsAfter'][] = 'EXT:timtab/lib/class.tx_timtab_hook_comments.php:tx_timtab_hook_comments->closeComments';
 # Hook for addittional markers
