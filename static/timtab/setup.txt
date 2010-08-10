@@ -9,88 +9,88 @@ plugin.tx_comments_pi1 {
 	timtab {
 		gravatar {
 			enable = 1
-	    # values for rating are: [ G | PG | R | X | 0 = none]
-	    # G is suitable for display on all sites
-	    # PG may contain disputably offensive imagery
-	    # R things as harsh profanity, intense violence, explicit sexual content, and drug use 
-	    # X may contain hardcore sexual imagery or extremely disturbing violence
-	    # see http://www.gravatar.com/rating.php
+		# values for rating are: [ G | PG | R | X | 0 = none]
+		# G is suitable for display on all sites
+		# PG may contain disputably offensive imagery
+		# R things as harsh profanity, intense violence, explicit sexual content, and drug use
+		# X may contain hardcore sexual imagery or extremely disturbing violence
+		# see http://www.gravatar.com/rating.php
 			rating = 0
 			iconSize = 32
 			class = avatar avatar-32 photo
-			defaultIcon = 
-	  }
-	  allowSafeTags = 1
+			defaultIcon =
+		}
+		allowSafeTags = 1
 	}
 }
 
 plugin.tx_timtab {
-  
+
 #   here update means new comments or when a post was edited with an external tool
-  clearPageCacheOnUpdate = 0
-    
-  title = {$plugin.tx_timtab.title}
-  tagline = {$plugin.tx_timtab.tagline}
-  homepage = {$plugin.tx_timtab.homepage}
-  singlePid = {$plugin.tx_timtab.singlePid}
-  homePid = {$plugin.tx_timtab.homePid}
-  
-  
-  displayCatMenu.targetPid = {$plugin.tx_timtab.catPid}
-  categoryMenu {
-    #everything else is set in timtab/class.tx_timtab_catmenu.php
-    targetPid = 0
-  }
-  
-  trackback {
-    validate = 1
-    spam.mark = 1
-    autoapprove = 1
-  }
-  
-  blogRoll {
-    header_stdWrap.wrap = 
-    dontWrapInDiv = 0  
-    pid_list = 0
-    listClass = 
-  }
-  
-  calendar {
-    header_stdWrap.wrap = 
-    dontWrapInDiv = 0  
-    pid_list = 0
-    targetPid = 0
+clearPageCacheOnUpdate = 0
+
+title = {$plugin.tx_timtab.title}
+tagline = {$plugin.tx_timtab.tagline}
+homepage = {$plugin.tx_timtab.homepage}
+singlePid = {$plugin.tx_timtab.singlePid}
+homePid = {$plugin.tx_timtab.homePid}
+
+
+displayCatMenu.targetPid = {$plugin.tx_timtab.catPid}
+categoryMenu {
+	#everything else is set in timtab/class.tx_timtab_catmenu.php
+	targetPid = 0
+}
+
+trackback {
+	validate = 1
+	spam.mark = 1
+	autoapprove = 1
+}
+
+blogRoll {
+	header_stdWrap.wrap =
+	dontWrapInDiv = 0
+	pid_list = 0
+	listClass =
+}
+
+calendar {
+	header_stdWrap.wrap =
+	dontWrapInDiv = 0
+	pid_list = 0
+	targetPid = 0
 
 #     0 = sunday, 1 = monday
-    week_begins = 1
-    gmt_offset = 0
-    weekdayNameLength = 1
-  }
-  
-  xmlrpc {
-    pidStorePosts = {$plugin.tx_timtab_pi2.pidStorePosts}
-    pidStoreComments = {$plugin.tx_timtab_pi2.pidStoreComments}
-    connectionTimeout = {$plugin.tx_timtab_pi2.connectionTimeout}
-    bloggerTitle = {$plugin.tx_timtab_pi2.bloggerTitle}
-  
-    enableBlogger = {$plugin.tx_timtab_pi2.enableBlogger}
-    //wtweb uncommentiert wegen xmlrpc post
-    enableMetaWeblog = {$plugin.tx_timtab_pi2.enableMetaWeblog}
-   enableMovableType = {$plugin.tx_timtab_pi2.enableMovableType}
-   enableUploads = {$plugin.tx_timtab_pi2.enableUploads}
-   //wtweb end
-    strictAPI = {$plugin.tx_timtab_pi2.strictAPI}
-    
-    //wtweb
-  	enableUpdateServices = {$plugin.tx_timtab.enableUpdateServices}
-  	UpdateServicesUrl = {$plugin.tx_timtab.UpdateServicesUrl}
-  	//wtweb end
-  }
+	week_begins = 1
+	gmt_offset = 0
+	weekdayNameLength = 1
+}
+
+xmlrpc {
+	pidStorePosts = {$plugin.tx_timtab_pi2.pidStorePosts}
+	pidStoreComments = {$plugin.tx_timtab_pi2.pidStoreComments}
+	connectionTimeout = {$plugin.tx_timtab_pi2.connectionTimeout}
+	bloggerTitle = {$plugin.tx_timtab_pi2.bloggerTitle}
+
+	enableBlogger = {$plugin.tx_timtab_pi2.enableBlogger}
+	//wtweb uncommentiert wegen xmlrpc post
+	enableMetaWeblog = {$plugin.tx_timtab_pi2.enableMetaWeblog}
+	enableMovableType = {$plugin.tx_timtab_pi2.enableMovableType}
+	enableUploads = {$plugin.tx_timtab_pi2.enableUploads}
+	//wtweb end
+	strictAPI = {$plugin.tx_timtab_pi2.strictAPI}
+
+	//wtweb
+	enableUpdateServices = {$plugin.tx_timtab.enableUpdateServices}
+	UpdateServicesUrl = {$plugin.tx_timtab.UpdateServicesUrl}
+	//wtweb end
+}
 }
 
 lib.timtab {
-	
-	
+
+
 	renderLatestCommentsList = TEMPLATE
 	renderLatestCommentsList {
 		template = FILE
@@ -102,9 +102,9 @@ lib.timtab {
 		}
 		stdWrap.required = 1
 	}
-	
-	
-	
+
+
+
 	renderLatestCommentsItem = TEMPLATE
 	renderLatestCommentsItem {
 		template = FILE
@@ -126,7 +126,7 @@ lib.timtab {
 			}
 		}
 	}
-	
+
 	renderBlogrollList = TEMPLATE
 	renderBlogrollList {
 		template = FILE
@@ -137,8 +137,8 @@ lib.timtab {
 			RENDER_BLOGROLL_ITEM.field = renderBlogrollItem
 		}
 	}
-	
-	
+
+
 	renderBlogrollItem = TEMPLATE
 	renderBlogrollItem {
 		template = FILE
@@ -165,29 +165,29 @@ lib.timtab {
 			TARGET.field = target
 		}
 	}
-	
-	blogrollLink = TEMPLATE 
+
+	blogrollLink = TEMPLATE
 	blogrollLink {
 		template = FILE
 		template.file = {$plugin.tx_timtab.widgets.template}
 		workOnSubpart = BLOGROLL_LINK
 	}
-	
+
 	catMenu = HMENU
 	catMenu {
 		special = userfunction
 		special {
-				userFunc = tx_timtabCatMenuUserFunc->makeMenuArray
-				catPid = {$plugin.tx_timtab.catPid}
-				sourcePid = {$plugin.tx_timtab.pidStorePosts}
-			  sortBy = tt_news_cat.sorting ASC
-			  showEmpty = 0
-			  recursive = 1
-				startUid = {$plugin.loskin.startCategory}
+			userFunc = tx_timtabCatMenuUserFunc->makeMenuArray
+			catPid = {$plugin.tx_timtab.catPid}
+			sourcePid = {$plugin.tx_timtab.pidStorePosts}
+			sortBy = tt_news_cat.sorting ASC
+			showEmpty = 0
+			recursive = 1
+			startUid = {$plugin.loskin.startCategory}
 		}
 		wrap = |
-		
-		1 = TMENU 
+
+		1 = TMENU
 		1 {
 			wrap = <ul>|</ul>
 			NO {
@@ -213,7 +213,7 @@ lib.timtab {
 */
 plugin.tx_timtab_pi1 {
 	pidList = {$plugin.tx_timtab.pidStoreComments}
-	widgetType = 
+	widgetType =
 	widgets {
 		latestComments {
 			max = 5
@@ -233,4 +233,4 @@ plugin.tx_timtab_pi1 {
 }
 
 
-<INCLUDE_TYPOSCRIPT:  source="FILE: typo3conf/ext/timtab/widgets/calendar/setup.ts">
+<INCLUDE_TYPOSCRIPT:  source="FILE: EXT:timtab/widgets/calendar/setup.ts">

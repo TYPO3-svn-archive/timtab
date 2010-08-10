@@ -180,22 +180,35 @@ lib.timtab {
 	renderCalenderPosts{
 		field = title
 		noTrimWrap = ||, |
+	}	
+	renderCalenderHeader = COA
+	renderCalenderHeader {
+		wrap = <!-- timtab calendar --> |
+		10 = TEXT
+		10 {
+			data = path:EXT:timtab/widgets/calendar/calendar.css
+			wrap = <link rel="stylesheet" href="|" type="text/css" media="screen" title="no title" charset="utf-8"/>
+		}
+		20 = TEXT
+		20 {
+			data = path:EXT:timtab/widgets/calendar/microajax.js
+			wrap = <script type="text/javascript" src="|"></script>
+		}
+		30 = TEXT
+		30 {
+			value (
+				<script type="text/javascript" charset="utf-8">
+				/*<![CDATA[ */
+					function timtab_calendar_ajax (unixdate)
+					{
+						microAjax ('index.php?eID=timtab_calendar&startdate=' + unixdate, function(response) { document.getElementById ('timtab-calendar-ajax').innerHTML = response});
+						return false;
+					}
+				/*]]>*/
+				</script>
+			)
+		}
 	}
-	renderCalenderHeader = TEXT
-	renderCalenderHeader.value (
-		<!-- timtab calendar -->
-		<link rel="stylesheet" href="typo3conf/ext/timtab/widgets/calendar/calendar.css" type="text/css" media="screen" title="no title" charset="utf-8"/>
-		<script type="text/javascript" src="typo3conf/ext/timtab/widgets/calendar/microajax.js"></script>
-		<script type="text/javascript" charset="utf-8">
-		/*<![CDATA[ */
-			function timtab_calendar_ajax (unixdate)
-			{
-				microAjax ('index.php?eID=timtab_calendar&startdate=' + unixdate, function(response) { document.getElementById ('timtab-calendar-ajax').innerHTML = response});
-				return false;
-			}
-		/*]]>*/
-		</script>
-	)
 }
 
 plugin.tx_timtab_pi1 {
