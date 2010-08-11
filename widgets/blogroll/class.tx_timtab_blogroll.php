@@ -22,41 +22,84 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+/**
+ * Widget 'blogroll' for the 'TIMTAB' extension.
+ * based on code from Ingo Renner
+ *
+ * @package TYPO3
+ * @subpackage tx_timtab
+ * @author	Lina Wolf <2010@lotypo3.de>
+ * @author	Timo Webler <timo.webler@dkd.de>
+ * @version $Id:$
+ */
 
-require_once(PATH_tslib.'class.tslib_pibase.php');
-
-class tx_timtab_blogroll extends tslib_pibase {
+require_once(PATH_tslib . 'class.tslib_pibase.php');
 
 /**
  * Widget 'blogroll' for the 'TIMTAB' extension.
- *
- * @author	Lina Wolf <2010@lotypo3.de>
  * based on code from Ingo Renner
+ *
+ * @package TYPO3
+ * @subpackage tx_timtab
+ * @author	Lina Wolf <2010@lotypo3.de>
+ * @author	Timo Webler <timo.webler@dkd.de>
  */
- 	var $temp_cObj = null;
-	var $cObj = null;
-	var $widgetType = 'blogroll';
-	
-	function init() {
-		$this->temp_cObj = t3lib_div::makeInstance('tslib_cObj');
+class tx_timtab_Blogroll extends tslib_pibase {
+
+	/**
+	 * content object
+	 *
+	 * @var tslib_cObj
+	 */
+	protected $tempCObj = NULL;
+
+	/**
+	 * content object
+	 *
+	 * @var tslib_cObj
+	 */
+	public$cObj = NULL;
+
+	/**
+	 * widget type
+	 *
+	 * @var string
+	 */
+	protected $widgetType = 'blogroll';
+
+	/**
+	 * initializes the widget
+	 *
+	 * @return void
+	 */
+	protected function init() {
+		$this->tempCObj = t3lib_div::makeInstance('tslib_cObj');
 	}
-	
-	function render($params, $pObj) {
-		if($params['widgetType'] != $this->widgetType)
+
+	/**
+	 * render the widhet
+	 *
+	 * @param array $params parameter from callUserFunc
+	 * @param tx_timtab_pi1 $pObj plugin object
+	 * @return string
+	 */
+	public function render($params, $pObj) {
+		if ($params['widgetType'] != $this->widgetType) {
 			return $params['content'];
+		}
 		$this->init();
-		$this->cObj =  $params['pObj']->cObj;
+		$this->cObj = $params['pObj']->cObj;
 		$conf = $params['conf'];
 		$checkPid = ' ';
-		if($params['pidList']) {
-			$checkPid = ' AND pid IN ('.$params['pidList'].') ';
+		if ($params['pidList']) {
+			$checkPid = ' AND pid IN (' . $params['pidList'] . ') ';
 		}
-		
-		
+
+
 		$confWidget = $conf['widgets.']['blogroll.'];
 		$content = '';
-		
-		$where = '1=1'.$this->cObj->enableFields('tx_timtab_blogroll').$checkPid;
+
+		$where = '1=1' . $this->cObj->enableFields('tx_timtab_blogroll') . $checkPid;
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'*',
 			'tx_timtab_blogroll',
@@ -64,46 +107,53 @@ class tx_timtab_blogroll extends tslib_pibase {
 			'',
 			'sorting'
 		);
-		
+
 		$count = 0;
 		$renderBlogrollItem = '';
-		while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-			$renderBlogrollItem .= $this->renderBlogrollItem($row,$confWidget);
+		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+			$renderBlogrollItem .= $this->renderBlogrollItem($row, $confWidget);
 			$count++;
 		}
-		
-		$this->temp_cObj->data = array();
-		$this->temp_cObj->data['renderBlogrollItem'] = $renderBlogrollItem;
-		$this->temp_cObj->data['count'] = $count;
-		$content = $this->temp_cObj->cObjGetSingle($confWidget['renderBlogrollList'], $confWidget['renderBlogrollList.']);
+
+		$this->tempCObj->data = array();
+		$this->tempCObj->data['renderBlogrollItem'] = $renderBlogrollItem;
+		$this->tempCObj->data['count'] = $count;
+		$content = $this->tempCObj->cObjGetSingle($confWidget['renderBlogrollList'], $confWidget['renderBlogrollList.']);
 		return $content;
 	}
-	
-	
- 	function renderBlogrollItem($row,$confWidget) {
+
+
+	/**
+	 * render a blogroll item
+	 *
+	 * @param array $row blogroll data
+	 * @param array $confWidget widget configuration
+	 * @return string
+	 */
+	protected function renderBlogrollItem($row, $confWidget) {
 		$content = '';
-		$this->temp_cObj->data = $row;
-		$this->temp_cObj->data['foaf'] = $this->buildRelAttr($row);
-		$content = $this->temp_cObj->cObjGetSingle($confWidget['renderBlogrollItem'], $confWidget['renderBlogrollItem.']);
+		$this->tempCObj->data = $row;
+		$this->tempCObj->data['foaf'] = $this->buildRelAttr($row);
+		$content = $this->tempCObj->cObjGetSingle($confWidget['renderBlogrollItem'], $confWidget['renderBlogrollItem.']);
 		return $content;
 	}
-	
-	
+
+
 	/**
 	 * builds the rel attribute for the anchor
 	 *
+	 * @param	array	$row	data row of the current link
+	 * @return	string			the rel attribute
 	 * @author Ingo Renner
-	 * @param	array		data row of the current link
-	 * @return	string		the rel attribute
 	 */
-	function buildRelAttr($row) {
+	protected function buildRelAttr($row) {
 		$rel = array();
 
-		if($row['rel_identity'] == 1) {
+		if ($row['rel_identity'] == 1) {
 			return ' rel="me"';
 		}
 
-		switch($row['rel_friendship']) {
+		switch ($row['rel_friendship']) {
 			case 1:
 				$rel[] = 'acquaintance';
 				break;
@@ -115,19 +165,20 @@ class tx_timtab_blogroll extends tslib_pibase {
 				break;
 		}
 
-		if($row['rel_physical'] == 1) {
+		if ($row['rel_physical'] == 1) {
 			$rel[] = 'met';
 		}
 
 		//bitmask!
-		switch($row['rel_professional']) {
+		switch ($row['rel_professional']) {
 			case 1:
 				$rel[] = 'co-worker';
 				break;
 			case 2:
 				$rel[] = 'colleague';
 				break;
-			case 3: //1 + 2 = 3
+			//1 + 2 = 3
+			case 3:
 				$rel[] = 'co-worker colleague';
 				break;
 		}
@@ -162,19 +213,20 @@ class tx_timtab_blogroll extends tslib_pibase {
 		//until here we can have a maximum of 6 relationship attributes
 		//romantic is a bitmask: 1 2 4 8
 		$bitmask = $row['rel_romantic'];
-		if(($bitmask - 8) >= 0 ) {
-			$rel[9] = 'sweetheart'; //9 is the maximum key of relationship attributes
+		if (($bitmask - 8) >= 0 ) {
+			//9 is the maximum key of relationship attributes
+			$rel[9] = 'sweetheart';
 			$bitmask -= 8;
 		}
-		if(($bitmask - 4) >= 0 ) {
+		if (($bitmask - 4) >= 0 ) {
 			$rel[8] = 'date';
 			$bitmask -= 4;
 		}
-		if(($bitmask - 2) >= 0 ) {
+		if (($bitmask - 2) >= 0 ) {
 			$rel[7] = 'crush';
 			$bitmask -= 2;
 		}
-		if(($bitmask - 1) >= 0 ) {
+		if (($bitmask - 1) >= 0 ) {
 			$rel[6] = 'muse';
 			$bitmask -= 1;
 		}
@@ -182,20 +234,19 @@ class tx_timtab_blogroll extends tslib_pibase {
 		ksort($rel);
 
 		//put everything together
-		if(is_array($rel) && count($rel) > 0) {
-			$relAttr = ' rel="'.implode(' ', $rel).'"';
+		if (is_array($rel) && count($rel) > 0) {
+			$relAttr = ' rel="' . implode(' ', $rel) . '"';
 		} else {
 			$relAttr = '';
 		}
 
 		return $relAttr;
 	}
-	
+
 }
 
 
-
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/timtab/widgets/blogroll/class.tx_timtab_blogroll.php'])	{
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/timtab/widgets/blogroll/class.tx_timtab_blogroll.php']) {
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/timtab/widgets/blogroll/class.tx_timtab_blogroll.php']);
 }
 ?>

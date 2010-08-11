@@ -112,7 +112,7 @@ $TYPO3_CONF_VARS['EXTCONF']['comments']['closeCommentsAfter']['timtab'] = 'EXT:t
 $TYPO3_CONF_VARS['EXTCONF']['comments']['comments_getComments']['timtab'] = 'EXT:timtab/lib/hooks/class.tx_timtab_hooks_comments.php:&tx_timtab_hooks_Comments->getComments';
 
 # Registering build-in widgets
-$TYPO3_CONF_VARS['EXTCONF']['timtab']['renderWidgets'][] = 'EXT:timtab/widgets/blogroll/class.tx_timtab_blogroll.php:&tx_timtab_blogroll->render';
+$TYPO3_CONF_VARS['EXTCONF']['timtab']['renderWidgets'][] = 'EXT:timtab/widgets/blogroll/class.tx_timtab_blogroll.php:&tx_timtab_Blogroll->render';
 $TYPO3_CONF_VARS['EXTCONF']['timtab']['renderWidgets'][] = 'EXT:timtab/widgets/latestcomments/class.tx_timtab_latestcomments.php:&tx_timtab_latestcomments->render';
 $TYPO3_CONF_VARS['EXTCONF']['timtab']['renderWidgets'][] = 'EXT:timtab/widgets/calendar/class.tx_timtab_calendar.php:&tx_timtab_calendar->render';
 
