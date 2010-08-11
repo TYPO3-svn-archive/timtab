@@ -270,7 +270,7 @@ class tx_timtab_Be {
 				$tb->sendPings($this->post['tx_timtab_trackbacks']);
 
 
-				$pb = t3lib_div::makeInstance('tx_timtab_pingback');
+				$pb = t3lib_div::makeInstance('tx_timtab_Pingback');
 				$pb->initSend($config, $this->post);
 				$pb->sendPings($this->post['tx_timtab_pingback']);
 
