@@ -10,6 +10,7 @@
 	* refactoring typoscript
 	* refactoring file widgets/blogroll/class.tx_timtab_blogroll.php
 	* refactoring calender widget
+	* refactoring last comments widget
 
 2010-08-10  Timo Webler <timo.webler@dkd.de>
 	* Merging branches/v_1_0 to trunk; timtab. Merge rev 2593:36562
