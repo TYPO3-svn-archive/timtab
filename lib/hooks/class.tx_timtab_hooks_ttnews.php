@@ -25,47 +25,52 @@
 /**
  * class.tx_timtab_hook_ttnews.php
  *
+ * @package TYPO3
+ * @subpackage tx_timtab
+ * @author Lina Wolf <2010@lotypo3.de>
+ * @author Timo Webler <timo.webler@dkd.de>
+ * @version $Id:$
+ */
+
+$pathTimtab = t3lib_extMgm::extPath('timtab');
+require_once($pathTimtab . 'lib/class.tx_timtab_trackback.php');
+
+/**
  * Implements hooks for tt_news to create additional markers
  *
+ * @package TYPO3
+ * @subpackage tx_timtab
  * @author Lina Wolf <2010@lotypo3.de>
+ * @author Timo Webler <timo.webler@dkd.de>
  */
- 
-$PATH_timtab = t3lib_extMgm::extPath('timtab');
-require_once(PATH_tslib.'class.tslib_pibase.php');
-require_once(PATH_t3lib.'class.t3lib_tcemain.php');
-require_once($PATH_timtab.'lib/class.tx_timtab_trackback.php');
+class tx_timtab_hooks_Ttnews {
 
-class tx_timtab_hook_ttnews extends tslib_pibase {
-	
-	var $cObj = null;
-	
 	/**
 	 * hooks into tt_news and created additional markers
 	 *
-	 * @param	$markerArray array	an array of markers coming from tt_news
-	 * @param	$row array					the current tt_news record
-	 * @param	$lConf array				the configuration coming from tt_news
-	 * @param	$pObj object				the parent object calling this method
-	 * @return	array		processed marker array
+	 * @param	array		$markerArray	an array of markers coming from tt_news
+	 * @param	array		$row			the current tt_news record
+	 * @param	array		$lConf			the configuration coming from tt_news
+	 * @param	tx_ttnews	$pObj			the parent object calling this method
+	 * @return	array	processed marker array
 	 */
-	function extraItemMarkerProcessor($markerArray, $row, $lConf, &$pObj) {
-		$this->conf         = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_timtab.'];
-		$this->conf['data'] = $row;
-		$this->pObj         = &$pObj;
-		$this->calledBy     = $pObj->extKey; //who is calling?
+	public function extraItemMarkerProcessor($markerArray, $row, $lConf, tx_ttnews $pObj) {
+		$conf         = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_timtab.'];
+		$conf['data'] = $row;
 
 		//trackback Link Generation
 		$tb = t3lib_div::makeInstance('tx_timtab_trackback');
-		$tb->initFe($this->conf, $this->conf['data']);
+		$tb->initFe($conf, $conf['data']);
+
 		$plink  = $tb->getPermalink();
 		$tbURL  = $tb->getTrackbackURL();
 		$rdf    = $tb->getEmbeddedRdf($plink, $tbURL);
 		$tbLink = $tb->getTrackbackLink();
-		
+
 		$markerArray['###BLOG_TRACKBACK_RDF###']  = $rdf;
 		$markerArray['###BLOG_TRACKBACK_LINK###'] = $tbLink;
 		$markerArray['###BLOG_TRACKBACK_URL###']  = $tbURL;
-			
+
 		return $markerArray;
 	}
 
@@ -74,6 +79,4 @@ class tx_timtab_hook_ttnews extends tslib_pibase {
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/timtab/lib/class.tx_timtab_hook_ttnews.php']) {
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/timtab/lib/class.tx_timtab_hook_ttnews.php']);
 }
-
-
 ?>

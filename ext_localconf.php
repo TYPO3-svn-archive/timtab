@@ -6,7 +6,6 @@ if (!defined ('TYPO3_MODE')) 	die ('Access denied.');
 $PATH_timtab = t3lib_extMgm::extPath('timtab');
 
 if (TYPO3_MODE == 'FE')	{
-	require_once($PATH_timtab.'lib/class.tx_timtab_hook_ttnews.php');
 	require_once($PATH_timtab.'widgets/blogroll/class.tx_timtab_blogroll.php');
 	require_once($PATH_timtab.'widgets/latestcomments/class.tx_timtab_latestcomments.php');
 	require_once($PATH_timtab.'widgets/calendar/class.tx_timtab_calendar.php');
@@ -102,7 +101,7 @@ $TYPO3_CONF_VARS['SC_OPTIONS']['ext/realurl/class.tx_realurl_autoconfgen.php']['
 	= 'EXT:timtab/res/class.tx_timtab_realurlautoconf.php:tx_timtab_realurlautoconf->generateUrlWithDate';
 
 # Hook for creating additional tt_news markers
-$TYPO3_CONF_VARS['EXTCONF']['tt_news']['extraItemMarkerHook'][]  = 'tx_timtab_hook_ttnews';
+$TYPO3_CONF_VARS['EXTCONF']['tt_news']['extraItemMarkerHook'][]  = 'EXT:timtab/lib/hooks/class.tx_timtab_hooks_ttnews.php:&tx_timtab_hooks_Ttnews';
 
 # Hook for postprocessing record after saving in be
 $TYPO3_CONF_VARS['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = 'tx_timtab_Be';
