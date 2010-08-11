@@ -95,7 +95,7 @@ class tx_timtab_latestcomments extends tslib_pibase {
 		$this->temp_cObj->data['tt_news_uid'] = intval($row['external_ref']);
 		$ttnews_uid = explode('_',$row['external_ref']);
 		$ttnews_uid = $ttnews_uid[count($ttnews_uid)-1];
-		$this->temp_cObj->data['renderedLink'] = tx_timtab_lib::getSingleViewLink($this->cObj, $ttnews_uid, $commentLinkAnchor );
+		$this->temp_cObj->data['renderedLink'] = tx_timtab_Lib::getSingleViewLink($this->cObj, $ttnews_uid, $commentLinkAnchor );
 		
 		$content = $this->temp_cObj->cObjGetSingle($confWidget['renderLatestCommentsItem'], $confWidget['renderLatestCommentsItem.']);
 		return $content;

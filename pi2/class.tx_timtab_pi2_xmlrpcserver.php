@@ -237,7 +237,7 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 
 		//TODO handle pingbacks
 
-		tx_timtab_lib::clearPageCache($this->conf['clearPageCacheOnUpdate']);
+		tx_timtab_Lib::clearPageCache($this->conf['clearPageCacheOnUpdate']);
 
 		return strval($insertId);
 	}
@@ -300,7 +300,7 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 
 		//TODO handle pingbacks
 
-		tx_timtab_lib::clearPageCache($this->conf['clearPageCacheOnUpdate']);
+		tx_timtab_Lib::clearPageCache($this->conf['clearPageCacheOnUpdate']);
 
 		return true;
 	}
@@ -513,7 +513,7 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 
 		//TODO handle pingbacks
 
-		tx_timtab_lib::clearPageCache($this->conf['clearPageCacheOnUpdate']);
+		tx_timtab_Lib::clearPageCache($this->conf['clearPageCacheOnUpdate']);
 
 		return strval($insertId);
 	}
@@ -571,7 +571,7 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 
 		//TODO handle pingbacks
 
-		tx_timtab_lib::clearPageCache($this->conf['clearPageCacheOnUpdate']);
+		tx_timtab_Lib::clearPageCache($this->conf['clearPageCacheOnUpdate']);
 
 		return true;
 	}

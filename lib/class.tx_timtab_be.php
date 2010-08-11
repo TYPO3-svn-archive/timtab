@@ -142,7 +142,7 @@ class tx_timtab_Be {
 		if ($this->status == 'update') {
 			$currentPost = $this->post;
 
-			$post = tx_timtab_lib::getPost($this->post['uid']);
+			$post = tx_timtab_Lib::getPost($this->post['uid']);
 			$post = t3lib_div::array_merge_recursive_overrule(
 				$post,
 				$currentPost
@@ -165,7 +165,7 @@ class tx_timtab_Be {
 		if (isset($this->post['type']) && $this->post['type'] == 3) {
 			$check = TRUE;
 		} elseif (!isset($this->post['type']) && $this->status == 'update') {
-			$post = tx_timtab_lib::getPost($this->post['uid']);
+			$post = tx_timtab_Lib::getPost($this->post['uid']);
 			$post['type'] == 3 ? $check = TRUE : $check = FALSE;
 		}
 
@@ -274,7 +274,7 @@ class tx_timtab_Be {
 				$pb->initSend($config, $this->post);
 				$pb->sendPings($this->post['tx_timtab_pingback']);
 
-				tx_timtab_lib::clearPageCache($config['clearPageCacheOnUpdate']);
+				tx_timtab_Lib::clearPageCache($config['clearPageCacheOnUpdate']);
 			}
 		}
 	}
