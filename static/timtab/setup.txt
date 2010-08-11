@@ -1,5 +1,5 @@
 
-includeLibs.tx_timtabCatMenuUserFunc = EXT:timtab/lib/class.tx_timtabCatMenuUserFunc.php
+includeLibs.tx_timtab_CatMenuUserFunc = EXT:timtab/lib/class.tx_timtab_catmenuuserfunc.php
 
 #
 #	TIMTAB configuration
@@ -177,7 +177,7 @@ lib.timtab {
 	catMenu {
 		special = userfunction
 		special {
-			userFunc = tx_timtabCatMenuUserFunc->makeMenuArray
+			userFunc = tx_timtab_CatMenuUserFunc->makeMenuArray
 			catPid = {$plugin.tx_timtab.catPid}
 			sourcePid = {$plugin.tx_timtab.pidStorePosts}
 			sortBy = tt_news_cat.sorting ASC
