@@ -58,7 +58,7 @@ class tx_timtab_Blogroll extends tslib_pibase {
 	 *
 	 * @var tslib_cObj
 	 */
-	public$cObj = NULL;
+	public $cObj = NULL;
 
 	/**
 	 * widget type
