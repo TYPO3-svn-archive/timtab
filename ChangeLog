@@ -7,6 +7,7 @@
 	* refactoring pi1
 	* refactoring pi2
 	* refactoring file res/class.tx_timtab_realurlautoconf.php
+	* refactoring typoscript
 
 2010-08-10  Timo Webler <timo.webler@dkd.de>
 	* Merging branches/v_1_0 to trunk; timtab. Merge rev 2593:36562
