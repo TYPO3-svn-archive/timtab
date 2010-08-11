@@ -59,7 +59,7 @@ class tx_timtab_hooks_Ttnews {
 		$conf['data'] = $row;
 
 		//trackback Link Generation
-		$tb = t3lib_div::makeInstance('tx_timtab_trackback');
+		$tb = t3lib_div::makeInstance('tx_timtab_Trackback');
 		$tb->initFe($conf, $conf['data']);
 
 		$plink  = $tb->getPermalink();

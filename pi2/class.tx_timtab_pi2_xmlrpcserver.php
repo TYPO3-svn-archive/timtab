@@ -215,7 +215,7 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 		);
 
 		//processing of trackbacks
-		$tb = t3lib_div::makeInstance('tx_timtab_trackback');
+		$tb = t3lib_div::makeInstance('tx_timtab_Trackback');
 		$insertFields['tx_timtab_trackbacks'] = $tb->getNewTrackbackField(
 			$this->status, 
 			'',
@@ -275,7 +275,7 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 		);
 
 		//processing of trackbacks
-		$tb = t3lib_div::makeInstance('tx_timtab_trackback');
+		$tb = t3lib_div::makeInstance('tx_timtab_Trackback');
 		$updateFields['tx_timtab_trackbacks'] = $tb->getNewTrackbackField(
 			$this->status, 
 			$this->getOldTrackbackField($postId),
@@ -491,7 +491,7 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 		);
 
 		//processing of trackbacks
-		$tb = t3lib_div::makeInstance('tx_timtab_trackback');
+		$tb = t3lib_div::makeInstance('tx_timtab_Trackback');
 		$insertFields['tx_timtab_trackbacks'] = $tb->getNewTrackbackField(
 			$this->status, 
 			'',
@@ -546,7 +546,7 @@ class tx_timtab_pi2_xmlrpcServer extends IXR_Server {
 		);
 
 		//processing of trackbacks
-		$tb = t3lib_div::makeInstance('tx_timtab_trackback');
+		$tb = t3lib_div::makeInstance('tx_timtab_Trackback');
 		$updateFields['tx_timtab_trackbacks'] = $tb->getNewTrackbackField(
 			$this->status, 
 			$this->getOldTrackbackField($postId),

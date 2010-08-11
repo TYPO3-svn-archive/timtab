@@ -235,7 +235,7 @@ class tx_timtab_Be {
 				$this->getFullPost();
 
 				//find trackbacks
-				$tb = t3lib_div::makeInstance('tx_timtab_trackback');
+				$tb = t3lib_div::makeInstance('tx_timtab_Trackback');
 				$fieldArray['tx_timtab_trackbacks'] = $tb->getNewTrackbackField(
 					$this->status,
 					$this->post['tx_timtab_trackbacks'],
@@ -265,7 +265,7 @@ class tx_timtab_Be {
 				//send pings
 				$config = $this->getTsfeConfig();
 
-				$tb = t3lib_div::makeInstance('tx_timtab_trackback');
+				$tb = t3lib_div::makeInstance('tx_timtab_Trackback');
 				$tb->initSend($config, $this->post);
 				$tb->sendPings($this->post['tx_timtab_trackbacks']);
 

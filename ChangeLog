@@ -2,6 +2,7 @@
 	* refactoring file lib/class.tx_timtab_hook_ttnews.php, move to lib/hooks/class.tx_timtab_hooks_ttnews.php
 	* refactoring file lib/class.tx_timtab_lib.php
 	* refactoring file lib/class.tx_timtab_pingpack.php
+	* refactoring file lib/class.tx_timtab_trackpack.php
 
 2010-08-10  Timo Webler <timo.webler@dkd.de>
 	* Merging branches/v_1_0 to trunk; timtab. Merge rev 2593:36562

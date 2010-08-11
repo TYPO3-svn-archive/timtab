@@ -111,7 +111,7 @@ class tx_timtab_pi2 extends tslib_pibase {
 	 * @return	string XML Code with error or success message
 	 */
     function processTrackback() {
-    	$tb = t3lib_div::makeInstance('tx_timtab_trackback');
+    	$tb = t3lib_div::makeInstance('tx_timtab_Trackback');
     	$tb->initSend($this->conf, array('uid', $this->tt_news));
     	if(!$this->tt_news || !is_int($this->tt_news)) {
     		return $tb->sendResponse(false, 'I really need an ID for this to work.');
