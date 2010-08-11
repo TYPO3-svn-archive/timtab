@@ -3,7 +3,9 @@
 //	$Id$
 //
 
-if (!defined ('TYPO3_MODE')) 	die ('Access denied.');
+if (!defined ('TYPO3_MODE')) {
+	die ('Access denied.');
+}
 
 $TCA['tx_timtab_blogroll'] = Array (
 	'ctrl' => $TCA['tx_timtab_blogroll']['ctrl'],
@@ -11,7 +13,7 @@ $TCA['tx_timtab_blogroll'] = Array (
 		'showRecordFieldList' => 'hidden,url,name,description,rel_identity,rel_friendship,rel_physical,rel_professional,rel_geographical,rel_family,rel_romantic,img_uri,rss_uri,notes,rating,target'
 	),
 	'columns' => Array (
-		'hidden' => Array (		
+		'hidden' => Array (
 			'exclude' => 1,
 			'label' => 'LLL:EXT:lang/locallang_general.php:LGL.hidden',
 			'config' => Array (
@@ -19,36 +21,36 @@ $TCA['tx_timtab_blogroll'] = Array (
 				'default' => '0'
 			)
 		),
-		'url' => Array (		
-			'exclude' => 1,		
-			'label' => 'LLL:EXT:timtab/locallang_db.xml:tx_timtab_blogroll.url',		
+		'url' => Array (
+			'exclude' => 1,
+			'label' => 'LLL:EXT:timtab/locallang_db.xml:tx_timtab_blogroll.url',
 			'config' => Array (
-				'type' => 'input',	
-				'size' => '30',	
+				'type' => 'input',
+				'size' => '30',
 				'eval' => 'required,trim,nospace',
 			)
 		),
-		'name' => Array (		
-			'exclude' => 1,		
-			'label' => 'LLL:EXT:timtab/locallang_db.xml:tx_timtab_blogroll.name',		
+		'name' => Array (
+			'exclude' => 1,
+			'label' => 'LLL:EXT:timtab/locallang_db.xml:tx_timtab_blogroll.name',
 			'config' => Array (
-				'type' => 'input',	
-				'size' => '30',	
+				'type' => 'input',
+				'size' => '30',
 				'eval' => 'required,trim',
 			)
 		),
-		'description' => Array (		
-			'exclude' => 1,		
-			'label' => 'LLL:EXT:timtab/locallang_db.xml:tx_timtab_blogroll.description',		
+		'description' => Array (
+			'exclude' => 1,
+			'label' => 'LLL:EXT:timtab/locallang_db.xml:tx_timtab_blogroll.description',
 			'config' => Array (
-				'type' => 'input',	
-				'size' => '30',	
+				'type' => 'input',
+				'size' => '30',
 				'eval' => 'trim',
 			)
 		),
-		'rel_identity' => Array (		
-			'exclude' => 1,		
-			'label' => 'LLL:EXT:timtab/locallang_db.xml:tx_timtab_blogroll.rel_identity',		
+		'rel_identity' => Array (
+			'exclude' => 1,
+			'label' => 'LLL:EXT:timtab/locallang_db.xml:tx_timtab_blogroll.rel_identity',
 			'config' => Array (
 				'type' => 'check',
 				'cols' => 1,
@@ -57,9 +59,9 @@ $TCA['tx_timtab_blogroll'] = Array (
 				),
 			)
 		),
-		'rel_friendship' => Array (		
-			'exclude' => 1,		
-			'label' => 'LLL:EXT:timtab/locallang_db.xml:tx_timtab_blogroll.rel_friendship',		
+		'rel_friendship' => Array (
+			'exclude' => 1,
+			'label' => 'LLL:EXT:timtab/locallang_db.xml:tx_timtab_blogroll.rel_friendship',
 			'config' => Array (
 				'type' => 'radio',
 				'items' => Array (
@@ -71,9 +73,9 @@ $TCA['tx_timtab_blogroll'] = Array (
 				'default' => 0,
 			)
 		),
-		'rel_physical' => Array (		
-			'exclude' => 1,		
-			'label' => 'LLL:EXT:timtab/locallang_db.xml:tx_timtab_blogroll.rel_physical',		
+		'rel_physical' => Array (
+			'exclude' => 1,
+			'label' => 'LLL:EXT:timtab/locallang_db.xml:tx_timtab_blogroll.rel_physical',
 			'config' => Array (
 				'type' => 'check',
 				'cols' => 1,
@@ -82,9 +84,9 @@ $TCA['tx_timtab_blogroll'] = Array (
 				),
 			)
 		),
-		'rel_professional' => Array (		
-			'exclude' => 1,		
-			'label' => 'LLL:EXT:timtab/locallang_db.xml:tx_timtab_blogroll.rel_professional',		
+		'rel_professional' => Array (
+			'exclude' => 1,
+			'label' => 'LLL:EXT:timtab/locallang_db.xml:tx_timtab_blogroll.rel_professional',
 			'config' => Array (
 				'type' => 'check',
 				'cols' => 4,
@@ -94,9 +96,9 @@ $TCA['tx_timtab_blogroll'] = Array (
 				),
 			)
 		),
-		'rel_geographical' => Array (		
-			'exclude' => 1,		
-			'label' => 'LLL:EXT:timtab/locallang_db.xml:tx_timtab_blogroll.rel_geographical',		
+		'rel_geographical' => Array (
+			'exclude' => 1,
+			'label' => 'LLL:EXT:timtab/locallang_db.xml:tx_timtab_blogroll.rel_geographical',
 			'config' => Array (
 				'type' => 'radio',
 				'items' => Array (
@@ -107,9 +109,9 @@ $TCA['tx_timtab_blogroll'] = Array (
 				'default' => 0,
 			)
 		),
-		'rel_family' => Array (		
-			'exclude' => 1,		
-			'label' => 'LLL:EXT:timtab/locallang_db.xml:tx_timtab_blogroll.rel_family',		
+		'rel_family' => Array (
+			'exclude' => 1,
+			'label' => 'LLL:EXT:timtab/locallang_db.xml:tx_timtab_blogroll.rel_family',
 			'config' => Array (
 				'type' => 'radio',
 				'items' => Array (
@@ -123,9 +125,9 @@ $TCA['tx_timtab_blogroll'] = Array (
 				'default' => 0,
 			)
 		),
-		'rel_romantic' => Array (		
-			'exclude' => 1,		
-			'label' => 'LLL:EXT:timtab/locallang_db.xml:tx_timtab_blogroll.rel_romantic',		
+		'rel_romantic' => Array (
+			'exclude' => 1,
+			'label' => 'LLL:EXT:timtab/locallang_db.xml:tx_timtab_blogroll.rel_romantic',
 			'config' => Array (
 				'type' => 'check',
 				'cols' => 4,
@@ -137,36 +139,36 @@ $TCA['tx_timtab_blogroll'] = Array (
 				),
 			)
 		),
-		'img_uri' => Array (		
-			'exclude' => 1,		
-			'label' => 'LLL:EXT:timtab/locallang_db.xml:tx_timtab_blogroll.img_uri',		
+		'img_uri' => Array (
+			'exclude' => 1,
+			'label' => 'LLL:EXT:timtab/locallang_db.xml:tx_timtab_blogroll.img_uri',
 			'config' => Array (
-				'type' => 'input',	
-				'size' => '30',	
+				'type' => 'input',
+				'size' => '30',
 				'eval' => 'trim',
 			)
 		),
-		'rss_uri' => Array (		
-			'exclude' => 1,		
-			'label' => 'LLL:EXT:timtab/locallang_db.xml:tx_timtab_blogroll.rss_uri',		
+		'rss_uri' => Array (
+			'exclude' => 1,
+			'label' => 'LLL:EXT:timtab/locallang_db.xml:tx_timtab_blogroll.rss_uri',
 			'config' => Array (
-				'type' => 'input',	
-				'size' => '30',	
+				'type' => 'input',
+				'size' => '30',
 				'eval' => 'trim',
 			)
 		),
-		'notes' => Array (		
-			'exclude' => 1,		
-			'label' => 'LLL:EXT:timtab/locallang_db.xml:tx_timtab_blogroll.notes',		
+		'notes' => Array (
+			'exclude' => 1,
+			'label' => 'LLL:EXT:timtab/locallang_db.xml:tx_timtab_blogroll.notes',
 			'config' => Array (
 				'type' => 'text',
-				'cols' => '30',	
+				'cols' => '30',
 				'rows' => '6',
 			)
 		),
-		'rating' => Array (		
-			'exclude' => 1,		
-			'label' => 'LLL:EXT:timtab/locallang_db.xml:tx_timtab_blogroll.rating',		
+		'rating' => Array (
+			'exclude' => 1,
+			'label' => 'LLL:EXT:timtab/locallang_db.xml:tx_timtab_blogroll.rating',
 			'config' => Array (
 				'type' => 'select',
 				'items' => Array (
@@ -181,13 +183,13 @@ $TCA['tx_timtab_blogroll'] = Array (
 					Array('8', '8'),
 					Array('9', '9'),
 				),
-				'size' => 1,	
+				'size' => 1,
 				'maxitems' => 1,
 			)
 		),
-		'target' => Array (		
-			'exclude' => 1,		
-			'label' => 'LLL:EXT:timtab/locallang_db.xml:tx_timtab_blogroll.target',		
+		'target' => Array (
+			'exclude' => 1,
+			'label' => 'LLL:EXT:timtab/locallang_db.xml:tx_timtab_blogroll.target',
 			'config' => Array (
 				'type' => 'radio',
 				'items' => Array (
