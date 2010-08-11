@@ -98,7 +98,7 @@ t3lib_extMgm::addPItoST43($_EXTKEY,'pi3/class.tx_timtab_pi3.php','_pi3','list_ty
 
 # RealURL Autokonfiguration
 $TYPO3_CONF_VARS['SC_OPTIONS']['ext/realurl/class.tx_realurl_autoconfgen.php']['extensionConfiguration']['timtab']
-	= 'EXT:timtab/res/class.tx_timtab_realurlautoconf.php:tx_timtab_realurlautoconf->generateUrlWithDate';
+	= 'EXT:timtab/res/class.tx_timtab_realurlautoconf.php:tx_timtab_Realurlautoconf->generateUrlWithDate';
 
 # Hook for creating additional tt_news markers
 $TYPO3_CONF_VARS['EXTCONF']['tt_news']['extraItemMarkerHook'][]  = 'EXT:timtab/lib/hooks/class.tx_timtab_hooks_ttnews.php:&tx_timtab_hooks_Ttnews';
