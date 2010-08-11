@@ -21,14 +21,14 @@ lib.timtab {
 			CURENT_YEAR = TEXT
 			CURENT_YEAR.field = currentYear
 			
-   		 # <a href="http://wordpress.als-webseite.de/2010/07/" title="View posts for July 2010" onclick="return calendar(2010,7,0,'')">
-   		 # &laquo; Jul   		  </a>
-   		LINK_TO_PREV_MONTH = TEXT
-   		LINK_TO_PREV_MONTH {
-   			field = unixPrevMonth
-   			date = M
-   			typolink{
-   				parameter = {$plugin.tx_timtab.homePid}
+   		 	# <a href="http://wordpress.als-webseite.de/2010/07/" title="View posts for July 2010" onclick="return calendar(2010,7,0,'')">
+	   		 # &laquo; Jul   		  </a>
+	   		LINK_TO_PREV_MONTH = TEXT
+	   		LINK_TO_PREV_MONTH {
+	   			field = unixPrevMonth
+	   			date = M
+	   			typolink{
+	   				parameter = {$plugin.tx_timtab.homePid}
 					additionalParams.dataWrap = &tx_ttnews[pS]={field:unixPrevMonth}&tx_ttnews[pL]={field:unixPrevMonthEnd}&tx_ttnews[arc]=1
 					useCacheHash = 1
 					title.noTrimWrap = |View posts for ||
@@ -38,13 +38,13 @@ lib.timtab {
 				}
 				fieldRequired = unixPrevMonth
 				innerWrap = &laquo;&#32;|
-   		}		
-   		LINK_TO_NEXT_MONTH = TEXT
-   		LINK_TO_NEXT_MONTH {
-   			field = unixNextMonth
-   			date = M
-   			typolink {
-   				parameter = {$plugin.tx_timtab.homePid}
+	   		}		
+	   		LINK_TO_NEXT_MONTH = TEXT
+	   		LINK_TO_NEXT_MONTH {
+	   			field = unixNextMonth
+	   			date = M
+	   			typolink {
+	   				parameter = {$plugin.tx_timtab.homePid}
 					additionalParams.dataWrap = &tx_ttnews[pS]={field:unixNextMonth}&tx_ttnews[pL]={field:unixNextMonthEnd}&tx_ttnews[arc]=1
 					useCacheHash = 1
 					title.noTrimWrap = |View posts for ||
@@ -54,7 +54,24 @@ lib.timtab {
 				}
 				fieldRequired = unixNextMonth
 				innerWrap = |&#32;&raquo;
-   		}
+	   		}
+			LINK_TO_CURRENT_MONTH = TEXT
+	   		LINK_TO_CURRENT_MONTH {
+				#field = unixCurrentMonth
+				#date = M
+				value = &laquo;-&raquo;
+	   			typolink {
+	   				parameter = {$plugin.tx_timtab.homePid}
+					additionalParams.dataWrap = &tx_ttnews[pS]={field:unixCurrentMonth}&tx_ttnews[pL]={field:cunixCurrentMonthEnd}&tx_ttnews[arc]=1
+					useCacheHash = 1
+					title.noTrimWrap = |View posts for ||
+					title.field = unixCurrentMonth
+					title.date = F Y
+					ATagParams.dataWrap = onclick="return timtab_calendar_ajax({field:unixNextMonth},'')"
+				}
+				fieldRequired = unixCurrentMonth
+				innerWrap = |&#32;&raquo;
+	   		}
 		}
 	}
 	renderCalendarDaysOfWeek = TEMPLATE
