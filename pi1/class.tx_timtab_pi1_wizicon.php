@@ -21,42 +21,62 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
 /**
  * Class that adds the wizard icon.
- * 
- * $Id: class.tx_timtab_pi1_wizicon.php 2572 2005-10-29 22:06:30Z flyguide $
  *
+ * @package TYPO3
+ * @subpackage tx_timtab
  * @author	Ingo Renner <typo3@ingo-renner.com>
+ * @author	Timo Webler <timo.webler@dkd.de>
+ * @version $Id: class.tx_timtab_pi1_wizicon.php 2572 2005-10-29 22:06:30Z flyguide $
  */
 
 
+/**
+ * Class that adds the wizard icon.
+ *
+ * @package TYPO3
+ * @subpackage tx_timtab
+ * @author	Ingo Renner <typo3@ingo-renner.com>
+ * @author	Timo We  $Id: class.tx_timtab_pi1_wizicon.php 2572 2005-10-29 22:06:30Z flyguide $bler <timo.webler@dkd.de>
+ */
+class tx_timtab_pi1_Wizicon {
 
-class tx_timtab_pi1_wizicon {
-	function proc($wizardItems)	{
+	/**
+	 * add wizard items
+	 *
+	 * @param array $wizardItems
+	 * @return array
+	 */
+	public function proc($wizardItems) {
 		global $LANG;
 
-		$LL = $this->includeLocalLang();
+		$ll = $this->includeLocalLang();
 
 		$wizardItems['plugins_tx_timtab_pi1'] = array(
-			'icon'=>t3lib_extMgm::extRelPath('timtab').'pi1/ce_wiz.gif',
-			'title'=>$LANG->getLLL('pi1_title',$LL),
-			'description'=>$LANG->getLLL('pi1_plus_wiz_description',$LL),
+			'icon'=>t3lib_extMgm::extRelPath('timtab') . 'pi1/ce_wiz.gif',
+			'title'=>$LANG->getLLL('pi1_title', $ll),
+			'description'=>$LANG->getLLL('pi1_plus_wiz_description', $ll),
 			'params'=>'&defVals[tt_content][CType]=list&defVals[tt_content][list_type]=timtab_pi1'
 		);
 
 		return $wizardItems;
 	}
-	function includeLocalLang()	{
-		global $LOCAL_LANG;
-		$LOCAL_LANG = $GLOBALS['LANG']->includeLLFile(t3lib_extMgm::extPath('timtab').'locallang.xml',FALSE);
-		return $LOCAL_LANG;
+
+	/**
+	 * include loclalang file
+	 *
+	 * @return array
+	 */
+	protected function includeLocalLang() {
+		return $GLOBALS['LANG']->includeLLFile(t3lib_extMgm::extPath('timtab') . 'locallang.xml', FALSE);
 	}
 }
 
 
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/timtab/pi1/class.tx_timtab_pi1_wizicon.php'])	{
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/timtab/pi1/class.tx_timtab_pi1_wizicon.php']) {
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/timtab/pi1/class.tx_timtab_pi1_wizicon.php']);
 }
-
 ?>
