@@ -6,9 +6,7 @@ if (!defined ('TYPO3_MODE')) 	die ('Access denied.');
 $PATH_timtab = t3lib_extMgm::extPath('timtab');
 
 if (TYPO3_MODE == 'FE')	{
-	require_once($PATH_timtab.'widgets/blogroll/class.tx_timtab_blogroll.php');
 	require_once($PATH_timtab.'widgets/latestcomments/class.tx_timtab_latestcomments.php');
-	require_once($PATH_timtab.'widgets/calendar/class.tx_timtab_calendar.php');
 } else {
 	require_once($PATH_timtab.'lib/class.tx_timtab_be.php');
 }
@@ -114,6 +112,6 @@ $TYPO3_CONF_VARS['EXTCONF']['comments']['comments_getComments']['timtab'] = 'EXT
 # Registering build-in widgets
 $TYPO3_CONF_VARS['EXTCONF']['timtab']['renderWidgets'][] = 'EXT:timtab/widgets/blogroll/class.tx_timtab_blogroll.php:&tx_timtab_Blogroll->render';
 $TYPO3_CONF_VARS['EXTCONF']['timtab']['renderWidgets'][] = 'EXT:timtab/widgets/latestcomments/class.tx_timtab_latestcomments.php:&tx_timtab_latestcomments->render';
-$TYPO3_CONF_VARS['EXTCONF']['timtab']['renderWidgets'][] = 'EXT:timtab/widgets/calendar/class.tx_timtab_calendar.php:&tx_timtab_calendar->render';
+$TYPO3_CONF_VARS['EXTCONF']['timtab']['renderWidgets'][] = 'EXT:timtab/widgets/calendar/class.tx_timtab_calendar.php:&tx_timtab_Calendar->render';
 
 ?>
