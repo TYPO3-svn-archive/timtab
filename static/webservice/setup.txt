@@ -4,32 +4,31 @@
 plugin.tx_timtab_pi2 {
 	pidStoreComments = {$plugin.tx_timtab.pidStoreComments}
 	pidStorePosts = {$plugin.tx_timtab.pidStorePosts}
-  connectionTimeout = {$plugin.tx_timtab.connectionTimeout}
-  
-  enableBlogger = {$plugin.tx_timtab.enableBlogger}
-  enableMetaWeblog = {$plugin.tx_timtab.enableMetaWeblog}
-  enableMovableType = {$plugin.tx_timtab.enableMovableType}
-  enableUploads = {$plugin.tx_timtab.enableUploads}
-  strictAPI = {$plugin.tx_timtab.strictAPI}
-  
-  forceSSL = {$plugin.tx_timtab.forceSSL} wtweb geplant
-  UploadFolder = {$plugin.tx_timtab.UploadFolder} 
-  #wegen response newMedia Absoluter oder Relativer Pfad
-  UploadRelativeUrl = UploadFolder = {$plugin.tx_timtab.UploadRelativeUrl}  
-  
+	connectionTimeout = {$plugin.tx_timtab.connectionTimeout}
+
+	enableBlogger = {$plugin.tx_timtab.enableBlogger}
+	enableMetaWeblog = {$plugin.tx_timtab.enableMetaWeblog}
+	enableMovableType = {$plugin.tx_timtab.enableMovableType}
+	enableUploads = {$plugin.tx_timtab.enableUploads}
+	strictAPI = {$plugin.tx_timtab.strictAPI}
+
+	forceSSL = {$plugin.tx_timtab.forceSSL} wtweb geplant
+	UploadFolder = {$plugin.tx_timtab.UploadFolder}
+	#wegen response newMedia Absoluter oder Relativer Pfad
+	UploadRelativeUrl = UploadFolder = {$plugin.tx_timtab.UploadRelativeUrl}
+
 }
 
 blogWebservice = PAGE
 blogWebservice {
-  typeNum = 200
+	typeNum = 200
 
-  10 < plugin.tx_timtab_pi2
-  
-  config {
-    disableAllHeaderCode = 1
-    additionalHeaders = Content-type: application/xml
-    xhtml_cleaning = 0
-    admPanel = 0
-  }
+	10 < plugin.tx_timtab_pi2
 
+	config {
+		disableAllHeaderCode = 1
+		additionalHeaders = Content-type: application/xml
+		xhtml_cleaning = 0
+		admPanel = 0
+	}
 }

@@ -21,50 +21,90 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
 /**
  * Authentification class for the XML-RPC Server
  *
+ * @package TYPO3
+ * @subpackage tx_timtab
  * @author    Ingo Renner <typo3@ingo-renner.com>
+ * @author Timo Webler <timo.webler@dkd.de>
+ * @version $Id: class.tx_timtab_pi2_xmlrpcserver.php 4157 2006-11-27 01:25:54Z flyguide $
  */
+
+require_once(PATH_t3lib . 'class.t3lib_userauth.php');
+require_once(PATH_t3lib . 'class.t3lib_userauthgroup.php');
+require_once(PATH_t3lib . 'class.t3lib_beuserauth.php');
+
 /**
- * [CLASS/FUNCTION INDEX of SCRIPT]
+ * Authentification class for the XML-RPC Server
  *
- *
- *
- *   49: class tx_timtab_pi2_xmlrpcAuth extends t3lib_beuserauth
- *   67:     function initAuth($username, $password)
- *   82:     function getUser()
- *  102:     function authUser()
- *  117:     function authLikeInInit()
- *
- * TOTAL FUNCTIONS: 4
- * (This index is automatically created/updated by the extension "extdeveval")
- *
+ * @package TYPO3
+ * @subpackage tx_timtab
+ * @author    Ingo Renner <typo3@ingo-renner.com>
+ * @author Timo Webler <timo.webler@dkd.de>
+ * @version $Id: class.tx_timtab_pi2_xmlrpcserver.php 4157 2006-11-27 01:25:54Z flyguide $
  */
+class tx_timtab_pi2_XmlrpcAuth extends t3lib_beuserauth {
 
-require_once(PATH_t3lib.'class.t3lib_userauth.php');
-require_once(PATH_t3lib.'class.t3lib_userauthgroup.php');
-require_once(PATH_t3lib.'class.t3lib_beuserauth.php');
+	/**
+	 * login type
+	 *
+	 * @var string
+	 */
+	public $loginType = 'BE';
 
-class tx_timtab_pi2_xmlrpcAuth extends t3lib_beuserauth {
-	var $loginType       = 'BE';
-	var $security_level  = 'normal';
-	var $writeAttemptLog = true;
-	var $writeDevLog     = true;
+	/**
+	 * login security level
+	 *
+	 * @var string
+	 */
+	public $security_level = 'normal';
 
-	var $xmlrpcLoginData;
-	var $xmlrpcAuthInfo;
-	var $xmlrpcUser;
+	/**
+	 * writing log
+	 *
+	 * @var boolean
+	 */
+	public $writeAttemptLog = TRUE;
+
+	/**
+	 * writing dev log
+	 *
+	 * @var boolean
+	 */
+	public $writeDevLog = TRUE;
+
+	/**
+	 * xml rpc login data
+	 *
+	 * @var array
+	 */
+	protected $xmlrpcLoginData;
+
+	/**
+	 * info array which provides additional information for auth services
+	 *
+	 * @var array
+	 */
+	protected $xmlrpcAuthInfo;
+
+	/**
+	 * xml rpc user object
+	 *
+	 * @var object
+	 */
+	protected $xmlrpcUser;
 
 
 	/**
 	 * initialize login data
 	 *
-	 * @param	string		username the username
-	 * @param	string		password clear text password
+	 * @param	string	$username the username
+	 * @param	string	$password clear text password
 	 * @return	void
 	 */
-	function initAuth($username, $password) {
+	public function initAuth($username, $password) {
 		$this->xmlrpcLoginData = array(
 			'uname'  => $username,
 			'uident' => md5($password),
@@ -75,25 +115,23 @@ class tx_timtab_pi2_xmlrpcAuth extends t3lib_beuserauth {
 	}
 
 	/**
-	 * get a BE user, will return false on failure
-	 *
-	 * @return	user		object on success, false otherwise
+	 * get a BE user, will return FALSE on failure
 	 * wird verwendet von class.tx_timtab_pi2_xmlrpcserver.php on line 1032
+	 *
+	 * @return	user object on success, FALSE otherwise
 	*/
-	 
-	function getUser() {
-
-		if(is_object($serviceObj = t3lib_div::makeInstanceService('auth', 'getUserBE'))) {
+	public function getUser() {
+		if (is_object($serviceObj = t3lib_div::makeInstanceService('auth', 'getUserBE'))) {
 
 			$serviceObj->initAuth('getUserBE', $this->xmlrpcLoginData, $this->xmlrpcAuthInfo, $this);
 
 			//get a login user
-			if($this->xmlrpcUser = $serviceObj->getUser()) {
+			if ($this->xmlrpcUser = $serviceObj->getUser()) {
 				return $this->xmlrpcUser;
 			}
 		}
 
-		return false;
+		return FALSE;
 	}
 
 	/**
@@ -101,26 +139,26 @@ class tx_timtab_pi2_xmlrpcAuth extends t3lib_beuserauth {
 	 *
 	 * @return	boolean
 	 */
-	function authUser() {
-		$OK = false;
+	public function authUser() {
+		$ok = FALSE;
 
-		if(is_object($serviceObj = t3lib_div::makeInstanceService('auth', 'authUserBE'))) {
+		if (is_object($serviceObj = t3lib_div::makeInstanceService('auth', 'authUserBE'))) {
 
 			$serviceObj->initAuth('authUserBE', $this->xmlrpcLoginData, $this->xmlrpcAuthInfo, $this);
 
 			//auth user
-			$OK = $serviceObj->authUser($this->xmlrpcUser);
+			$ok = $serviceObj->authUser($this->xmlrpcUser);
 		}
 
-		return $OK;
+		return $ok;
 	}
 
-	
+
 	/**
 	 * maybe we'll do it like this later, for now it's ok what we have
 	 * code not in use right now
 	 */
-	 /*
+	/*
 	function authLikeInInit() {
 		global $TYPO3_CONF_VARS;
 
@@ -138,7 +176,7 @@ class tx_timtab_pi2_xmlrpcAuth extends t3lib_beuserauth {
 	*/
 }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/timtab/pi2/class.tx_timtab_pi2_xmlrpcauth.php'])    {
-    include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/timtab/pi2/class.tx_timtab_pi2_xmlrpcauth.php']);
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/timtab/pi2/class.tx_timtab_pi2_xmlrpcauth.php']) {
+	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/timtab/pi2/class.tx_timtab_pi2_xmlrpcauth.php']);
 }
 ?>
