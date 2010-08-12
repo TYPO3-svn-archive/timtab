@@ -33,7 +33,7 @@
  */
 
 $pathTimtab = t3lib_extMgm::extPath('timtab');
-require_once(PATH_tslib . 'class.tslib_pibase.php');
+require_once($pathTimtab . 'widgets/interface.tx_timtab_widget_interface.php');
 require_once($pathTimtab . 'lib/class.tx_timtab_lib.php');
 
 /**
@@ -45,7 +45,7 @@ require_once($pathTimtab . 'lib/class.tx_timtab_lib.php');
  * @author	Timo Webler <timo.webler@dkd.de>
  * @version $Id:$
  */
-class tx_timtab_Latestcomments extends tslib_pibase {
+class tx_timtab_widgets_Latestcomments implements tx_timtab_widget_Interface {
 
 	/**
 	 * content object
@@ -62,13 +62,6 @@ class tx_timtab_Latestcomments extends tslib_pibase {
 	public $cObj = NULL;
 
 	/**
-	 * widget type
-	 *
-	 * @var string
-	 */
-	protected $widgetType = 'latestComments';
-
-	/**
 	 * initializes the widget
 	 *
 	 * @return void
@@ -80,22 +73,20 @@ class tx_timtab_Latestcomments extends tslib_pibase {
 	/**
 	 * render the widget
 	 *
-	 * @param array $params parameter from callUserFunc
-	 * @param tx_timtab_pi1 $pObj plugin object
+	 * @param array $configuration plugin configuration
+	 * @param string $pidList pid list
+	 * @param tx_timtab_pi1 $referenz plugin object
 	 * @return string
 	 */
-	public function render($params, $pObj) {
-		if ($params['widgetType'] != $this->widgetType) {
-			return $params['content'];
-		}
+	public function render(array $configuration, $pidList, tx_timtab_pi1 $referenz) {
+
 		$this->init();
-		$this->cObj =  $params['pObj']->cObj;
-		$conf = $params['conf'];
+		$this->cObj =  $referenz->cObj;
 		$checkPid = ' ';
-		if ($params['pidList']) {
-			$checkPid = ' AND pid IN (' . $params['pidList'] . ') ';
+		if ($pidList) {
+			$checkPid = ' AND pid IN (' . $pidList . ') ';
 		}
-		$confWidget = $conf['widgets.']['latestComments.'];
+		$confWidget = $configuration['widgets.']['latestComments.'];
 		$max = $this->cObj->stdWrap($confWidget['max'], $confWidget['max.']);
 		$showTrackbacks = $this->cObj->stdWrap($confWidget['showTrackbacks'], $confWidget['showTrackbacks.']);
 

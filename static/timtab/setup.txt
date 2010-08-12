@@ -213,7 +213,7 @@ lib.timtab {
 */
 plugin.tx_timtab_pi1 {
 	pidList = {$plugin.tx_timtab.pidStoreComments}
-	widgetType =
+	widgetType = empty
 	widgets {
 		latestComments {
 			max = 5
@@ -228,6 +228,12 @@ plugin.tx_timtab_pi1 {
 		}
 		catMenu {
 			renderCObject =< lib.timtab.catMenu
+		}
+		empty {
+			renderCObject = TEXT
+			renderCObject {
+				value = no selected widget found
+			}
 		}
 	}
 }

@@ -36,8 +36,11 @@
  * @version $Id: class.tx_comments_eID.php 15529 2009-01-07 10:04:22Z dmitry $
  */
 
+$pathTimtab = t3lib_extMgm::extPath('timtab');
 require_once(t3lib_extMgm::extPath('lang', 'lang.php'));
 require_once(PATH_site . 't3lib/class.t3lib_tcemain.php');
+require_once($pathTimtab . 'widgets/calendar/class.tx_timtab_widgets_calendar.php');
+require_once($pathTimtab . 'pi1/class.tx_timtab_pi1.php');
 
 /**
  * Ajax for timtab calendar
@@ -121,15 +124,12 @@ class tx_timtab_calendar_eID {
 	 * @return	void
 	 */
 	public function main() {
-		$calendar = t3lib_div::makeInstance('tx_timtab_Calendar');
-		$params = array();
-		$params['pObj'] = 'ajax';
-		$params['conf'] = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_timtab_pi1.'];
-		$params['pidList'] = '5';
-		$params['pObj'] = 'ajax';
-		$params['ajaxStartDate'] = t3lib_div::_GP('startdate');
-		$params['widgetType'] = 'calendar';
-		echo $calendar->render($params, FALSE);
+		$calendar = t3lib_div::makeInstance('tx_timtab_widgets_Calendar');
+		$conf = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_timtab_pi1.'];
+		$conf['ajaxStartDate'] = t3lib_div::_GP('startdate');
+		$plugin = t3lib_div::makeInstance('tx_timtab_pi1');
+		$plugin->cObj = t3lib_div::makeInstance('tslib_cObj');
+		echo $calendar->render($conf, $conf['pidList'], $plugin);
 	}
 }
 

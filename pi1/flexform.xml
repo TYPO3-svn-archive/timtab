@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3DataStructure>
+	<meta>
+		<langDisable>1</langDisable>
+	</meta>
+	<sheets>
+		<sDEF>
+			<ROOT>
+				<TCEforms>
+					<sheetTitle>LLL:EXT:timtab/pi1/locallang.xml:tx_timtab_flexforms_tabs_general</sheetTitle>
+				</TCEforms>
+				<type>array</type>
+				<el>
+					<widget>
+						<TCEforms>
+							<label>LLL:EXT:timtab/pi1/locallang.xml:tx_timtab_flexforms_widgets</label>
+							<config>
+								<type>select</type>
+								<itemsProcFunc>EXT:timtab/lib/class.tx_timtab_flexform.php:tx_timtab_Flexform->getWidgets</itemsProcFunc>
+								<minitems>1</minitems>
+								<maxitems>1</maxitems>
+								<size>1</size>
+							</config>
+						</TCEforms>
+					</widget>
+				</el>
+			</ROOT>
+		</sDEF>
+	</sheets>
+</T3DataStructure>

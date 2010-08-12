@@ -55,7 +55,7 @@ class tx_timtab_pi1_Wizicon {
 		$ll = $this->includeLocalLang();
 
 		$wizardItems['plugins_tx_timtab_pi1'] = array(
-			'icon'=>t3lib_extMgm::extRelPath('timtab') . 'pi1/ce_wiz.gif',
+			'icon'=>t3lib_extMgm::extRelPath('timtab') . 'res/gfx/ce_wiz.gif',
 			'title'=>$LANG->getLLL('pi1_title', $ll),
 			'description'=>$LANG->getLLL('pi1_plus_wiz_description', $ll),
 			'params'=>'&defVals[tt_content][CType]=list&defVals[tt_content][list_type]=timtab_pi1'

@@ -1,281 +1,281 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <T3locallang>
-    <meta type="array">
-        <description>Language labels for Timtab Backend</description>
-        <type>module</type>
-        <csh_table></csh_table>
-        <fileId>EXT:timtab/locallang.xml</fileId>
-        <labelContext type="array">
-        </labelContext>
-    </meta>
-    <data type="array">
-      <languageKey index="default" type="array">
-      	<!-- Localisation for Widgets, Backend -->
-        <label index="pi1_title">Timtab Widgets</label>
-        <label index="blogroll_title">Blogroll</label>
-        <label index="blogroll_description">Add a blogroll to your site.</label>  
-        <label index="calendar_title">Calendar</label>
-        <label index="calendar_description">Add a small calendar which highlights the days where you have made some posts.</label>
-        <label index="latestcomments_title">Latest comments</label>
-        <label index="latestcomments_description">Show the latest comments.</label>
-        <label index="catmenu_title">Timtab kategory menu</label>
-        <label index="catmenu_description">Show a HMENU-based menu of categories with number of posts.</label>
-        
-      	<!-- The rest seem to be text for the frontend TODO: Move -->
-        <label index="no_comments">No Comments</label>
-        <label index="one_comment">Comment</label>
-        <label index="multiple_comments">Comments</label>
-        <label index="one_response">Response</label>
-        <label index="multiple_responses">Responses</label>
+	<meta type="array">
+		<description>Language labels for Timtab Backend</description>
+		<type>module</type>
+		<csh_table></csh_table>
+		<fileId>EXT:timtab/locallang.xml</fileId>
+		<labelContext type="array">
+		</labelContext>
+	</meta>
+	<data type="array">
+		<languageKey index="default" type="array">
+			<!-- Localisation for Widgets, Backend -->
+			<label index="pi1_title">Timtab Widgets</label>
+			<label index="blogroll_title">Blogroll</label>
+			<label index="blogroll_description">Add a blogroll to your site.</label>
+			<label index="calendar_title">Calendar</label>
+			<label index="calendar_description">Add a small calendar which highlights the days where you have made some posts.</label>
+			<label index="latestcomments_title">Latest comments</label>
+			<label index="latestcomments_description">Show the latest comments.</label>
+			<label index="catmenu_title">Timtab kategory menu</label>
+			<label index="catmenu_description">Show a HMENU-based menu of categories with number of posts.</label>
 
-        <label index="formRequired">(required)</label>
-        <label index="leaveReply">Leave a Reply</label>
-        <label index="notPublished">(will not be published)</label>
-        <label index="commentName">Name</label>
-        <label index="commentMail">Mail</label>
-        <label index="commentURL">Website</label>
+			<!-- The rest seem to be text for the frontend TODO: Move -->
+			<label index="no_comments">No Comments</label>
+			<label index="one_comment">Comment</label>
+			<label index="multiple_comments">Comments</label>
+			<label index="one_response">Response</label>
+			<label index="multiple_responses">Responses</label>
 
-        <label index="commentsDeactivated">Sorry, comments are closed for this post.</label>
-        <label index="yes">yes</label>
-        <label index="no">no</label>
-        <label index="rememberInfo">remember my information</label>
-        <label index="view_category_posts">View all posts filed under %s</label>
-        <label index="no_categories">No categories</label>
+			<label index="formRequired">(required)</label>
+			<label index="leaveReply">Leave a Reply</label>
+			<label index="notPublished">(will not be published)</label>
+			<label index="commentName">Name</label>
+			<label index="commentMail">Mail</label>
+			<label index="commentURL">Website</label>
 
-        <label index="gravatar_this_is">This is</label>
-      </languageKey>
-      <languageKey index="dk" type="array">
-      </languageKey>
-      <languageKey index="de" type="array">
-      	
-      	<!-- Localisation for Widgets, Backend -->
-        <label index="pi1_title">Timtab Widgets</label>
-        <label index="blogroll_title">Blogroll</label>
-        <label index="blogroll_description">Einen Blogroll in die Seite einfügen.</label>  
-        <label index="calendar_title">Kalender</label>
-        <label index="calendar_description">Fügt einen Kalender ein, der die Tage hervorhebt an denen Posts erstellt wurden.</label>
-        <label index="latestcomments_title">Aktuelle Kommentare</label>
-        <label index="latestcomments_description">Die letzten Kommentare anzeigen.</label>
-        <label index="catmenu_title">Timtab Kategoriemenü</label>
-        <label index="catmenu_description">Ein HMENU-basiertes Kategoriemenü mit Anzahl der Nachrichten pro Kategorie</label>
-        
-        <label index="pi1_title">Blogroll</label>
-        <label index="pi1_plus_wiz_description">Einen Blogroll in die Seite einfügen.</label>
+			<label index="commentsDeactivated">Sorry, comments are closed for this post.</label>
+			<label index="yes">yes</label>
+			<label index="no">no</label>
+			<label index="rememberInfo">remember my information</label>
+			<label index="view_category_posts">View all posts filed under %s</label>
+			<label index="no_categories">No categories</label>
 
-        <label index="pi3_title">Kalender</label>
-        <label index="pi3_plus_wiz_description">Fügt einen Kalender ein, der die Tage hervorhebt an denen Posts erstellt wurden.</label>
-        <label index="no_comments">Keine Kommentare</label>
-        <label index="one_comment">Kommentar</label>
-        <label index="multiple_comments">Kommentare</label>
-        <label index="one_response">Antwort</label>
+			<label index="gravatar_this_is">This is</label>
+		</languageKey>
+		<languageKey index="dk" type="array">
+		</languageKey>
+		<languageKey index="de" type="array">
 
-        <label index="multiple_responses">Antworten</label>
-        <label index="formRequired">(benötigt)</label>
-        <label index="leaveReply">Hinterlasse eine Nachricht</label>
-        <label index="notPublished">(wird nicht veröffentlicht)</label>
-        <label index="commentName">Name</label>
-        <label index="commentMail">E-Mail</label>
+			<!-- Localisation for Widgets, Backend -->
+			<label index="pi1_title">Timtab Widgets</label>
+			<label index="blogroll_title">Blogroll</label>
+			<label index="blogroll_description">Einen Blogroll in die Seite einfügen.</label>
+			<label index="calendar_title">Kalender</label>
+			<label index="calendar_description">Fügt einen Kalender ein, der die Tage hervorhebt an denen Posts erstellt wurden.</label>
+			<label index="latestcomments_title">Aktuelle Kommentare</label>
+			<label index="latestcomments_description">Die letzten Kommentare anzeigen.</label>
+			<label index="catmenu_title">Timtab Kategoriemenü</label>
+			<label index="catmenu_description">Ein HMENU-basiertes Kategoriemenü mit Anzahl der Nachrichten pro Kategorie</label>
 
-        <label index="commentURL">Website</label>
-        <label index="commentsDeactivated">Kommentare sind für diesen Beitrag geschlossen.</label>
-        <label index="yes">ja</label>
-        <label index="no">nein</label>
-        <label index="rememberInfo">Meine Informationen merken</label>
-        <label index="view_category_posts">Zeige alle Posts in %s</label>
+			<label index="pi1_title">Blogroll</label>
+			<label index="pi1_plus_wiz_description">Einen Blogroll in die Seite einfügen.</label>
 
-        <label index="no_categories">Keine Kategorien</label>
-        <label index="gravatar_this_is">Das ist</label>
-      </languageKey>
-      <languageKey index="no" type="array">
-      	<!-- Localisation for Widgets, Backend -->
-        <label index="pi1_title">Timtab Widgets</label>
-        <label index="blogroll_title">Blogliste</label>
-        <label index="blogroll_description">Legg til en blogliste til ditt websted.</label>  
-        <label index="calendar_title">Kalender</label>
-        <label index="calendar_description">Legger til en liten kalender som merker de dagene der du har laget poster.</label>
-        
-        <label index="no_comments">Ingen kommentar</label>
-        <label index="one_comment">Kommentar</label>
-        <label index="multiple_comments">Kommentarer</label>
-        <label index="one_response">Reaksjon</label>
-        <label index="multiple_responses">Reaksjoner</label>
+			<label index="pi3_title">Kalender</label>
+			<label index="pi3_plus_wiz_description">Fügt einen Kalender ein, der die Tage hervorhebt an denen Posts erstellt wurden.</label>
+			<label index="no_comments">Keine Kommentare</label>
+			<label index="one_comment">Kommentar</label>
+			<label index="multiple_comments">Kommentare</label>
+			<label index="one_response">Antwort</label>
 
-        <label index="formRequired">(obligatorisk)</label>
-        <label index="leaveReply">Legg igjen et innlegg</label>
-        <label index="notPublished">(vil ikke bli publisert)</label>
-        <label index="commentName">Navn</label>
-        <label index="commentMail">Epost</label>
-        <label index="commentURL">Nettsted</label>
+			<label index="multiple_responses">Antworten</label>
+			<label index="formRequired">(benötigt)</label>
+			<label index="leaveReply">Hinterlasse eine Nachricht</label>
+			<label index="notPublished">(wird nicht veröffentlicht)</label>
+			<label index="commentName">Name</label>
+			<label index="commentMail">E-Mail</label>
 
-        <label index="commentsDeactivated">Beklager, kommentarer er stengt</label>
-        <label index="yes">ja</label>
-        <label index="no">nei</label>
-        <label index="rememberInfo">husk min informasjon</label>
-        <label index="view_category_posts">Vis alle poster lagret under %s</label>
-        <label index="no_categories">Ingen kategorier</label>
+			<label index="commentURL">Website</label>
+			<label index="commentsDeactivated">Kommentare sind für diesen Beitrag geschlossen.</label>
+			<label index="yes">ja</label>
+			<label index="no">nein</label>
+			<label index="rememberInfo">Meine Informationen merken</label>
+			<label index="view_category_posts">Zeige alle Posts in %s</label>
 
-      </languageKey>
-      <languageKey index="it" type="array">
-      	<!-- Localisation for Widgets, Backend -->
-        <label index="pi1_title">Timtab Widgets</label>
-        <label index="blogroll_title">Blogliste</label>
-        <label index="blogroll_description">Aggiungi un elenco di blog al tuo sito.</label>  
-        
-        <label index="no_comments">Nessun Commento</label>
-        <label index="one_comment">Commento</label>
-        <label index="multiple_comments">Commenti</label>
+			<label index="no_categories">Keine Kategorien</label>
+			<label index="gravatar_this_is">Das ist</label>
+		</languageKey>
+		<languageKey index="no" type="array">
+			<!-- Localisation for Widgets, Backend -->
+			<label index="pi1_title">Timtab Widgets</label>
+			<label index="blogroll_title">Blogliste</label>
+			<label index="blogroll_description">Legg til en blogliste til ditt websted.</label>
+			<label index="calendar_title">Kalender</label>
+			<label index="calendar_description">Legger til en liten kalender som merker de dagene der du har laget poster.</label>
 
-        <label index="one_response">Risultato</label>
-        <label index="multiple_responses">Risultati</label>
-        <label index="formRequired">(richiesto)</label>
-        <label index="leaveReply">Lascia una Risposta</label>
-        <label index="notPublished">(non sarà visibile)</label>
-        <label index="commentName">Nome</label>
+			<label index="no_comments">Ingen kommentar</label>
+			<label index="one_comment">Kommentar</label>
+			<label index="multiple_comments">Kommentarer</label>
+			<label index="one_response">Reaksjon</label>
+			<label index="multiple_responses">Reaksjoner</label>
 
-        <label index="commentMail">Mail</label>
-        <label index="commentURL">Web</label>
-        <label index="commentsDeactivated">Spiacenti, commenti non abilitati</label>
-        <label index="yes">si</label>
-        <label index="no">no</label>
-        <label index="rememberInfo">ricordati i miei dati</label>
+			<label index="formRequired">(obligatorisk)</label>
+			<label index="leaveReply">Legg igjen et innlegg</label>
+			<label index="notPublished">(vil ikke bli publisert)</label>
+			<label index="commentName">Navn</label>
+			<label index="commentMail">Epost</label>
+			<label index="commentURL">Nettsted</label>
 
-      </languageKey>
-      <languageKey index="fr" type="array">
-      </languageKey>
-      <languageKey index="es" type="array">
-      </languageKey>
-      <languageKey index="nl" type="array">
-        <label index="pi1_title">Timtab Widgets</label>
-        <label index="blogroll_title">Blogroll</label>
-        <label index="blogroll_description">Voeg een blogroll toe aan uw website.</label>  
-        <label index="calendar_title">Kalender</label>
-        <label index="calendar_description">Voeg een kleine kalender toe die de dagen aangeeft waarop je berichten hebt toegevoegd.</label>
-      	
-        <label index="no_comments">Geen reacties</label>
-        <label index="one_comment">Reactie</label>
-        <label index="multiple_comments">Reacties</label>
-        <label index="one_response">Reactie</label>
+			<label index="commentsDeactivated">Beklager, kommentarer er stengt</label>
+			<label index="yes">ja</label>
+			<label index="no">nei</label>
+			<label index="rememberInfo">husk min informasjon</label>
+			<label index="view_category_posts">Vis alle poster lagret under %s</label>
+			<label index="no_categories">Ingen kategorier</label>
 
-        <label index="multiple_responses">Reacties</label>
-        <label index="formRequired">(verplicht)</label>
-        <label index="leaveReply">Reageer</label>
-        <label index="notPublished">(wordt niet gepubliceerd)</label>
-        <label index="commentName">Naam</label>
-        <label index="commentMail">E-mail</label>
+		</languageKey>
+		<languageKey index="it" type="array">
+			<!-- Localisation for Widgets, Backend -->
+			<label index="pi1_title">Timtab Widgets</label>
+			<label index="blogroll_title">Blogliste</label>
+			<label index="blogroll_description">Aggiungi un elenco di blog al tuo sito.</label>
 
-        <label index="commentURL">Website</label>
-        <label index="commentsDeactivated">Sorry, reageren op dit bericht is niet meer mogelijk</label>
-        <label index="yes">ja</label>
-        <label index="no">nee</label>
-        <label index="rememberInfo">herinner mij</label>
-        <label index="view_category_posts">Bekijk alle berichten die opgeslagen zijn onder %s</label>
+			<label index="no_comments">Nessun Commento</label>
+			<label index="one_comment">Commento</label>
+			<label index="multiple_comments">Commenti</label>
 
-        <label index="no_categories">Geen categorien</label>
-      </languageKey>
-      <languageKey index="cz" type="array">
-      </languageKey>
-      <languageKey index="pl" type="array">
-      </languageKey>
-      <languageKey index="si" type="array">
-      </languageKey>
+			<label index="one_response">Risultato</label>
+			<label index="multiple_responses">Risultati</label>
+			<label index="formRequired">(richiesto)</label>
+			<label index="leaveReply">Lascia una Risposta</label>
+			<label index="notPublished">(non sarà visibile)</label>
+			<label index="commentName">Nome</label>
 
-      <languageKey index="fi" type="array">
-      </languageKey>
-      <languageKey index="tr" type="array">
-      </languageKey>
-      <languageKey index="se" type="array">
-      </languageKey>
-      <languageKey index="pt" type="array">
-      </languageKey>
-      <languageKey index="ru" type="array">
+			<label index="commentMail">Mail</label>
+			<label index="commentURL">Web</label>
+			<label index="commentsDeactivated">Spiacenti, commenti non abilitati</label>
+			<label index="yes">si</label>
+			<label index="no">no</label>
+			<label index="rememberInfo">ricordati i miei dati</label>
 
-        <label index="pi1_title">Timtab Widgets</label>
-        <label index="blogroll_title">Обзор блога</label>
-        <label index="blogroll_description">Добавление обозревателя блога на сайт.</label>  
-        <label index="calendar_title">Календарь</label>
-        <label index="calendar_description">Добавление небольшого календаря, с подсвеченными датами, когда оставлялись сообщения в блоге.</label>
-        
-        <label index="no_comments">Нет коментаривев</label>
-        <label index="one_comment">Коментарий</label>
+		</languageKey>
+		<languageKey index="fr" type="array">
+		</languageKey>
+		<languageKey index="es" type="array">
+		</languageKey>
+		<languageKey index="nl" type="array">
+			<label index="pi1_title">Timtab Widgets</label>
+			<label index="blogroll_title">Blogroll</label>
+			<label index="blogroll_description">Voeg een blogroll toe aan uw website.</label>
+			<label index="calendar_title">Kalender</label>
+			<label index="calendar_description">Voeg een kleine kalender toe die de dagen aangeeft waarop je berichten hebt toegevoegd.</label>
 
-        <label index="multiple_comments">Коментарии</label>
-        <label index="one_response">Ответ</label>
-        <label index="multiple_responses">Ответы</label>
-        <label index="formRequired">(обязательно)</label>
-        <label index="leaveReply">Оставить ответ</label>
-        <label index="notPublished">(не будет опубликовано)</label>
+			<label index="no_comments">Geen reacties</label>
+			<label index="one_comment">Reactie</label>
+			<label index="multiple_comments">Reacties</label>
+			<label index="one_response">Reactie</label>
 
-        <label index="commentName">Имя</label>
-        <label index="commentMail">Почта</label>
-        <label index="commentURL">Веб-сайт</label>
-        <label index="commentsDeactivated">Извините, но комментарии к этому сообщению невозможны.</label>
-        <label index="yes">да</label>
-        <label index="no">нет</label>
+			<label index="multiple_responses">Reacties</label>
+			<label index="formRequired">(verplicht)</label>
+			<label index="leaveReply">Reageer</label>
+			<label index="notPublished">(wordt niet gepubliceerd)</label>
+			<label index="commentName">Naam</label>
+			<label index="commentMail">E-mail</label>
 
-        <label index="rememberInfo">запомнить мою информацию</label>
-        <label index="view_category_posts">Просмотреть все посты категории %s</label>
-        <label index="no_categories">Нет категорий</label>
-      </languageKey>
+			<label index="commentURL">Website</label>
+			<label index="commentsDeactivated">Sorry, reageren op dit bericht is niet meer mogelijk</label>
+			<label index="yes">ja</label>
+			<label index="no">nee</label>
+			<label index="rememberInfo">herinner mij</label>
+			<label index="view_category_posts">Bekijk alle berichten die opgeslagen zijn onder %s</label>
 
-      <languageKey index="ro" type="array">
-      </languageKey>
-      <languageKey index="ch" type="array">
+			<label index="no_categories">Geen categorien</label>
+		</languageKey>
+		<languageKey index="cz" type="array">
+		</languageKey>
+		<languageKey index="pl" type="array">
+		</languageKey>
+		<languageKey index="si" type="array">
+		</languageKey>
 
-      </languageKey>
-      <languageKey index="sk" type="array">
-      </languageKey>
-      <languageKey index="lt" type="array">
-      </languageKey>
-      <languageKey index="is" type="array">
-      </languageKey>
-      <languageKey index="hr" type="array">
-      </languageKey>
+		<languageKey index="fi" type="array">
+		</languageKey>
+		<languageKey index="tr" type="array">
+		</languageKey>
+		<languageKey index="se" type="array">
+		</languageKey>
+		<languageKey index="pt" type="array">
+		</languageKey>
+		<languageKey index="ru" type="array">
 
-      <languageKey index="hu" type="array">
-      </languageKey>
-      <languageKey index="gl" type="array">
-      </languageKey>
-      <languageKey index="th" type="array">
-      </languageKey>
-      <languageKey index="gr" type="array">
-      </languageKey>
-      <languageKey index="hk" type="array">
+			<label index="pi1_title">Timtab Widgets</label>
+			<label index="blogroll_title">Обзор блога</label>
+			<label index="blogroll_description">Добавление обозревателя блога на сайт.</label>
+			<label index="calendar_title">Календарь</label>
+			<label index="calendar_description">Добавление небольшого календаря, с подсвеченными датами, когда оставлялись сообщения в блоге.</label>
 
-      </languageKey>
-      <languageKey index="eu" type="array">
-      </languageKey>
-      <languageKey index="bg" type="array">
-      </languageKey>
-      <languageKey index="br" type="array">
-      </languageKey>
-      <languageKey index="et" type="array">
-      </languageKey>
+			<label index="no_comments">Нет коментаривев</label>
+			<label index="one_comment">Коментарий</label>
 
-      <languageKey index="ar" type="array">
-      </languageKey>
-      <languageKey index="he" type="array">
-      </languageKey>
-      <languageKey index="ua" type="array">
-      </languageKey>
-      <languageKey index="lv" type="array">
-      </languageKey>
-      <languageKey index="jp" type="array">
+			<label index="multiple_comments">Коментарии</label>
+			<label index="one_response">Ответ</label>
+			<label index="multiple_responses">Ответы</label>
+			<label index="formRequired">(обязательно)</label>
+			<label index="leaveReply">Оставить ответ</label>
+			<label index="notPublished">(не будет опубликовано)</label>
 
-      </languageKey>
-      <languageKey index="vn" type="array">
-      </languageKey>
-      <languageKey index="ca" type="array">
-      </languageKey>
-      <languageKey index="ba" type="array">
-      </languageKey>
-      <languageKey index="kr" type="array">
-      </languageKey>
+			<label index="commentName">Имя</label>
+			<label index="commentMail">Почта</label>
+			<label index="commentURL">Веб-сайт</label>
+			<label index="commentsDeactivated">Извините, но комментарии к этому сообщению невозможны.</label>
+			<label index="yes">да</label>
+			<label index="no">нет</label>
 
-      <languageKey index="eo" type="array">
-      </languageKey>
-      <languageKey index="my" type="array">
-      </languageKey>
-      <languageKey index="hi" type="array">
-      </languageKey>  
-    </data>
+			<label index="rememberInfo">запомнить мою информацию</label>
+			<label index="view_category_posts">Просмотреть все посты категории %s</label>
+			<label index="no_categories">Нет категорий</label>
+		</languageKey>
+
+		<languageKey index="ro" type="array">
+		</languageKey>
+		<languageKey index="ch" type="array">
+
+		</languageKey>
+		<languageKey index="sk" type="array">
+		</languageKey>
+		<languageKey index="lt" type="array">
+		</languageKey>
+		<languageKey index="is" type="array">
+		</languageKey>
+		<languageKey index="hr" type="array">
+		</languageKey>
+
+		<languageKey index="hu" type="array">
+		</languageKey>
+		<languageKey index="gl" type="array">
+		</languageKey>
+		<languageKey index="th" type="array">
+		</languageKey>
+		<languageKey index="gr" type="array">
+		</languageKey>
+		<languageKey index="hk" type="array">
+
+		</languageKey>
+		<languageKey index="eu" type="array">
+		</languageKey>
+		<languageKey index="bg" type="array">
+		</languageKey>
+		<languageKey index="br" type="array">
+		</languageKey>
+		<languageKey index="et" type="array">
+		</languageKey>
+
+		<languageKey index="ar" type="array">
+		</languageKey>
+		<languageKey index="he" type="array">
+		</languageKey>
+		<languageKey index="ua" type="array">
+		</languageKey>
+		<languageKey index="lv" type="array">
+		</languageKey>
+		<languageKey index="jp" type="array">
+
+		</languageKey>
+		<languageKey index="vn" type="array">
+		</languageKey>
+		<languageKey index="ca" type="array">
+		</languageKey>
+		<languageKey index="ba" type="array">
+		</languageKey>
+		<languageKey index="kr" type="array">
+		</languageKey>
+
+		<languageKey index="eo" type="array">
+		</languageKey>
+		<languageKey index="my" type="array">
+		</languageKey>
+		<languageKey index="hi" type="array">
+		</languageKey>
+	</data>
 </T3locallang>

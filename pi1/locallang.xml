@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+	<meta type="array">
+		<description>Language labels for Timtab Backend</description>
+		<type>module</type>
+		<csh_table></csh_table>
+		<fileId>EXT:timtab/pi1/locallang.xml</fileId>
+		<labelContext type="array">
+			<label index="tt_content.list_type_pi1"></label>
+		</labelContext>
+	</meta>
+	<data type="array">
+		<languageKey index="default" type="array">
+			<label index="tx_timtab_flexforms_tabs_general">Timtab Widgets</label>
+			<label index="tx_timtab_flexforms_widgets">Available widgets</label>
+		</languageKey>
+		<languageKey index="de" type="array">
+			<label index="tx_timtab_flexforms_tabs_general">Timtab Widgets</label>
+			<label index="tx_timtab_flexforms_widgets">Verfügbare Widgets</label>
+		</languageKey>
+	</data>
+</T3locallang>

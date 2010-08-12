@@ -65,13 +65,6 @@ class tx_timtab_pi1 extends tslib_pibase {
 	 */
 	public $extKey = 'timtab';
 
-	/**
-	 * enable fields
-	 *
-	 * @var string
-	 */
-	protected $enableFields;
-
 
 	/**
 	 * plugin configuration
@@ -79,27 +72,6 @@ class tx_timtab_pi1 extends tslib_pibase {
 	 * @var array
 	 */
 	public $conf = array();
-
-	/**
-	 * plugin data
-	 *
-	 * @var array
-	 */
-	protected $pluginData = array();
-
-	/**
-	 * pid list
-	 *
-	 * @var string
-	 */
-	protected $pidList = '';
-
-	/**
-	 * widget type
-	 *
-	 * @var string
-	 */
-	protected $widgetType = '';
 
 	/**
 	 * main function calling widgets
@@ -110,43 +82,44 @@ class tx_timtab_pi1 extends tslib_pibase {
 	 */
 	public function main($content, $conf) {
 		$this->init($conf);
-		if ($this->cObj->data['CType'] == 'timtab_pi1') {
+		$pluginData = array();
+		if ($this->cObj->data['CType'] === 'list' && $this->cObj->data['list_type'] === 'timtab_pi1') {
 			//Only use cObj->data when Code was called by a Plugin
-			$this->pluginData = $this->cObj->data;
+			$pluginData = $this->cObj->data;
 		}
+
 		//Prepare Data
-		$this->widgetType = $this->pluginData['tx_timtab_widget_type'] ? $this->pluginData['tx_timtab_widget_type'] : $conf['widgetType'];
-		$pidList = $this->pluginData['pages'] ? $this->pluginData['pages'] : $conf['pidList'];
-		$recursive = $this->pluginData['recursive'] ? $this->pluginData['recursive'] : $conf['pidListRecursive'];
-		$this->pidList = $this->pi_getPidList($pidList, $recursive);
+		$widgetType = $this->pi_getFFvalue($pluginData['pi_flexform'], 'widget');
+		if (empty($widgetType)) {
+			$widgetType = $conf['widgetType'];
+		}
+		$pidList = $pluginData['pages'] ? $pluginData['pages'] : $conf['pidList'];
+		$recursive = $pluginData['recursive'] ? $pluginData['recursive'] : $conf['pidListRecursive'];
+		$pidList = $this->pi_getPidList($pidList, $recursive);
 		$content = '';
 		// process hooks, intern widgets are also hooks for now
-		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['timtab']['renderWidgets'])) {
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['timtab']['renderWidgets'] as $userFunc) {
-				$params = array(
-					'pObj' => &$this,
-					'conf' => $conf,
-					'pidList' => $this->pidList,
-					'widgetType' => $this->widgetType,
-					'content' => $content,
-					'data' => $this->cObj->data
-				);
-				$content = t3lib_div::callUserFunction($userFunc, $params, $this);
+		$widgetConfiguration = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['timtab']['renderWidgets'][$widgetType];
+		if (is_array($widgetConfiguration)) {
+
+			$widget = t3lib_div::getUserObj($widgetConfiguration['class'], 'user_', TRUE);
+			// check interface
+			if ($widget instanceof tx_timtab_widget_Interface) {
+				$content = $widget->render($conf, $pidList, $this);
+			} else {
+				$widgetType = 'empty';
 			}
 		}
+
 		if ($content == '') {
 			// If there was no PHP function prozess by TS
 			$content = $this->cObj->cObjGetSingle(
-				$conf['widgets.'][$this->widgetType . '.']['renderCObject'],
-				$conf['widgets.'][$this->widgetType . '.']['renderCObject.']
+				$conf['widgets.'][$widgetType . '.']['renderCObject'],
+				$conf['widgets.'][$widgetType . '.']['renderCObject.']
 			);
 		}
 
-		return $this->cObj->stdWrap($content, $conf['stdWrap.']);
+		return $this->pi_wrapInBaseClass($content);
 	}
-
-
-
 
 	/**
 	 * initializes the configuration for this plugin
@@ -158,7 +131,7 @@ class tx_timtab_pi1 extends tslib_pibase {
 		$this->conf = $conf;
 		$this->pi_setPiVarDefaults();
 		$this->pi_loadLL();
-		$this->enableFields = $this->cObj->enableFields('tx_timtab_blogroll');
+		$this->pi_initPIflexForm('pi_flexform');
 	}
 
 }

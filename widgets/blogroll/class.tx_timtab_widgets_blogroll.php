@@ -33,7 +33,7 @@
  * @version $Id:$
  */
 
-require_once(PATH_tslib . 'class.tslib_pibase.php');
+require_once(t3lib_extMgm::extPath('timtab', 'widgets/interface.tx_timtab_widget_interface.php'));
 
 /**
  * Widget 'blogroll' for the 'TIMTAB' extension.
@@ -44,7 +44,7 @@ require_once(PATH_tslib . 'class.tslib_pibase.php');
  * @author	Lina Wolf <2010@lotypo3.de>
  * @author	Timo Webler <timo.webler@dkd.de>
  */
-class tx_timtab_Blogroll extends tslib_pibase {
+class tx_timtab_widgets_Blogroll implements tx_timtab_widget_Interface {
 
 	/**
 	 * content object
@@ -61,13 +61,6 @@ class tx_timtab_Blogroll extends tslib_pibase {
 	public $cObj = NULL;
 
 	/**
-	 * widget type
-	 *
-	 * @var string
-	 */
-	protected $widgetType = 'blogroll';
-
-	/**
 	 * initializes the widget
 	 *
 	 * @return void
@@ -77,26 +70,25 @@ class tx_timtab_Blogroll extends tslib_pibase {
 	}
 
 	/**
-	 * render the widhet
+	 * render the widget
 	 *
-	 * @param array $params parameter from callUserFunc
-	 * @param tx_timtab_pi1 $pObj plugin object
+	 * @param array $configuration plugin configuration
+	 * @param string $pidList pid list
+	 * @param tx_timtab_pi1 $referenz plugin object
 	 * @return string
 	 */
-	public function render($params, $pObj) {
-		if ($params['widgetType'] != $this->widgetType) {
-			return $params['content'];
-		}
+	public function render(array $configuration, $pidList, tx_timtab_pi1 $referenz) {
+
 		$this->init();
-		$this->cObj = $params['pObj']->cObj;
-		$conf = $params['conf'];
+		$this->cObj = $referenz->cObj;
 		$checkPid = ' ';
-		if ($params['pidList']) {
-			$checkPid = ' AND pid IN (' . $params['pidList'] . ') ';
+
+		if ($pidList) {
+			$checkPid = ' AND pid IN (' . $pidList . ') ';
 		}
 
 
-		$confWidget = $conf['widgets.']['blogroll.'];
+		$confWidget = $configuration['widgets.']['blogroll.'];
 		$content = '';
 
 		$where = '1=1' . $this->cObj->enableFields('tx_timtab_blogroll') . $checkPid;
