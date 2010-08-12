@@ -28,7 +28,7 @@
  * @package TYPO3
  * @subpackage tx_timtab
  * @author	Lina Wolf <2010@lotypo3.de>
- * @version $Id: class.tx_timtab_pi1.php 4157 2006-11-27 01:25:54Z flyguide $
+ * @version $Id$
  */
 
 /**
@@ -37,7 +37,7 @@
  * @package TYPO3
  * @subpackage tx_timtab
  * @author	Lina Wolf <2010@lotypo3.de>
- * @version $Id: class.tx_timtab_pi1.php 4157 2006-11-27 01:25:54Z flyguide $
+ * @version $Id$
  */
 class tx_timtab_Realurlautoconf {
 

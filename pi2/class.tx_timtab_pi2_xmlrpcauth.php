@@ -29,7 +29,7 @@
  * @subpackage tx_timtab
  * @author    Ingo Renner <typo3@ingo-renner.com>
  * @author Timo Webler <timo.webler@dkd.de>
- * @version $Id: class.tx_timtab_pi2_xmlrpcserver.php 4157 2006-11-27 01:25:54Z flyguide $
+ * @version $Id$
  */
 
 require_once(PATH_t3lib . 'class.t3lib_userauth.php');
@@ -43,7 +43,7 @@ require_once(PATH_t3lib . 'class.t3lib_beuserauth.php');
  * @subpackage tx_timtab
  * @author    Ingo Renner <typo3@ingo-renner.com>
  * @author Timo Webler <timo.webler@dkd.de>
- * @version $Id: class.tx_timtab_pi2_xmlrpcserver.php 4157 2006-11-27 01:25:54Z flyguide $
+ * @version $Id$
  */
 class tx_timtab_pi2_XmlrpcAuth extends t3lib_beuserauth {
 

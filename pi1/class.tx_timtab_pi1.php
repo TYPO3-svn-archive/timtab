@@ -28,7 +28,7 @@
  * @subpackage tx_timtab
  * @author	Lina Wolf <2010@lotypo3.de>
  * @author	Timo Webler <timo.webler@dkd.de>
- * @version $Id: class.tx_timtab_pi1.php 4157 2006-11-27 01:25:54Z flyguide $
+ * @version $Id$
  */
 
 require_once(PATH_tslib . 'class.tslib_pibase.php');
@@ -40,7 +40,7 @@ require_once(PATH_tslib . 'class.tslib_pibase.php');
  * @subpackage tx_timtab
  * @author	Lina Wolf <2010@lotypo3.de>
  * @author	Timo Webler <timo.webler@dkd.de>
- * @version $Id: class.tx_timtab_pi1.php 4157 2006-11-27 01:25:54Z flyguide $
+ * @version $Id$
  */
 class tx_timtab_pi1 extends tslib_pibase {
 

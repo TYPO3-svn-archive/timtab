@@ -31,7 +31,7 @@
  * @author Ingo Renner <typo3@ingo-renner.com>
  * @author Lina Wolf <2010@lotypo3.de>
  * @author Timo Webler <timo.webler@dkd.de>
- * @version $Id: class.tx_timtab_be.php 5271 2007-04-03 08:36:47Z flyguide $
+ * @version $Id$
  */
 
 $pathTimtab = t3lib_extMgm::extPath('timtab');

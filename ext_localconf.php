@@ -30,7 +30,7 @@
  * @author Ingo Renner <typo3@ingo-renner.com>
  * @author	Lina Wolf <2010@lotypo3.de>
  * @author	Timo Webler <timo.webler@dkd.de>
- * @version $Id: class.tx_timtab_pi1.php 4157 2006-11-27 01:25:54Z flyguide $
+ * @version $Id$
  */
 
 if (!defined('TYPO3_MODE')) {

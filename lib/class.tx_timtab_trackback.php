@@ -31,7 +31,7 @@
  * @subpackage tx_timtab
  * @author	Ingo Renner <typo3@ingo-renner.com>
  * @author Timo Webler <timo.webler@dkd.de>
- * @version $Id: class.tx_timtab_trackback.php 7271 2007-11-22 12:28:38Z flyguide $
+ * @version $Id$
  */
 
 $pathTimtab = t3lib_extMgm::extPath('timtab');

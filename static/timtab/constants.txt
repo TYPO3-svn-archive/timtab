@@ -1,5 +1,5 @@
 #
-#	$Id: ext_typoscript_constants.txt 4157 2006-11-27 01:25:54Z ingorenner $
+#	$Id$
 #
 
 plugin.tx_timtab {

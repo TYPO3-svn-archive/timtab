@@ -29,7 +29,7 @@
  * @subpackage tx_timtab
  * @author	Ingo Renner <typo3@ingo-renner.com>
  * @author	Timo Webler <timo.webler@dkd.de>
- * @version $Id: class.tx_timtab_pi1_wizicon.php 2572 2005-10-29 22:06:30Z flyguide $
+ * @version $Id$
  */
 
 
@@ -39,7 +39,7 @@
  * @package TYPO3
  * @subpackage tx_timtab
  * @author	Ingo Renner <typo3@ingo-renner.com>
- * @author	Timo We  $Id: class.tx_timtab_pi1_wizicon.php 2572 2005-10-29 22:06:30Z flyguide $bler <timo.webler@dkd.de>
+ * @author	Timo We  $Id$bler <timo.webler@dkd.de>
  */
 class tx_timtab_pi1_Wizicon {
 

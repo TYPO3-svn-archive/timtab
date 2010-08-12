@@ -26,7 +26,7 @@
  * 
  * Class for importing from other blogs.
  *
- * $Id: class.ext_update.php 2560 2005-09-21 19:04:11Z flyguide $
+ * $Id$
  *
  * @author  Ingo Renner
  */

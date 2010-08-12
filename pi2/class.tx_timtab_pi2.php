@@ -33,7 +33,7 @@
  * @author	Werner Trunk
  * @author	Lina Wolf <2010@lotypo3.de>
  * @author	Timo Webler <timo.webler@dkd.de>
- * @version $Id: class.tx_timtab_pi2.php 5274 2007-04-03 09:06:18Z flyguide $
+ * @version $Id$
  */
 
 define('TYPE_TRACKBACK', 1);
@@ -55,7 +55,7 @@ require_once($pathTimtab . 'lib/class.tx_timtab_trackback.php');
  * @author	Werner Trunk
  * @author	Lina Wolf <2010@lotypo3.de>
  * @author	Timo Webler <timo.webler@dkd.de>
- * @version $Id: class.tx_timtab_pi2.php 5274 2007-04-03 09:06:18Z flyguide $
+ * @version $Id$
  */
 class tx_timtab_pi2 extends tslib_pibase {
 

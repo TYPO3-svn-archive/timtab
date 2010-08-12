@@ -28,7 +28,7 @@
  * @subpackage tx_timtab
  * @author Ingo Renner <typo3@ingo-renner.com>
  * @author Timo Webler <timo.webler@dkd.de>
- * @version $Id: class.tx_timtab_lib.php 4981 2007-02-19 17:32:28Z flyguide $
+ * @version $Id$
  */
 
 require_once(PATH_t3lib . 'class.t3lib_tcemain.php');
@@ -40,7 +40,7 @@ require_once(PATH_t3lib . 'class.t3lib_tcemain.php');
  * @subpackage tx_timtab
  * @author Ingo Renner <typo3@ingo-renner.com>
  * @author Timo Webler <timo.webler@dkd.de>
- * @version $Id: class.tx_timtab_lib.php 4981 2007-02-19 17:32:28Z flyguide $
+ * @version $Id$
  */
 class tx_timtab_Lib {
 

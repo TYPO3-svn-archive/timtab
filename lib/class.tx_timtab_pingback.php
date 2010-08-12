@@ -29,7 +29,7 @@
  * @subpackage tx_timtab
  * @author Lina Wolf <2010@lotypo3.de>
  * @author Timo Webler <timo.webler@dkd.de>
- * @version $Id: class.tx_timtab_lib.php 4981 2007-02-19 17:32:28Z flyguide $
+ * @version $Id$
  */
 
 /**
@@ -39,7 +39,7 @@
  * @subpackage tx_timtab
  * @author Lina Wolf <2010@lotypo3.de>
  * @author Timo Webler <timo.webler@dkd.de>
- * @version $Id: class.tx_timtab_lib.php 4981 2007-02-19 17:32:28Z flyguide $
+ * @version $Id$
  */
 class tx_timtab_Pingback {
 
