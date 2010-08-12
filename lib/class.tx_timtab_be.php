@@ -180,37 +180,26 @@ class tx_timtab_Be {
 	 */
 	protected function getTsfeConfig() {
 
-		$pid = intval(t3lib_div::_GP('popViewId'));
-
+		$pageUid = intval(t3lib_div::_GP('popViewId'));
 		//we need a nearly whole TSFE to get the plugin setup
 		//and to create correct source URLs
-		if (!is_object($GLOBALS['TSFE'])) {
-			$GLOBALS['TSFE'] = t3lib_div::makeInstance(
-				'tslib_fe',
-				$GLOBALS['TYPO3_CONF_VARS'],
-				$pid,
-				'',
-				0,
-				'',
-				'',
-				'',
-				''
-			);
-			$GLOBALS['TSFE']->forceTemplateParsing = 1;
-			$GLOBALS['TSFE']->showHiddenPage = FALSE;
-			$GLOBALS['TSFE']->initFEuser();
-			$GLOBALS['TSFE']->fetch_the_id();
-			$GLOBALS['TSFE']->initTemplate();
-			$GLOBALS['TSFE']->getConfigArray();
-		}
+		$sysPageObj = t3lib_div::makeInstance('t3lib_pageSelect');
+		$rootLine = $sysPageObj->getRootLine($pageUid);
+		$TSObj = t3lib_div::makeInstance('t3lib_tsparser_ext');
+		$TSObj->tt_track = 0;
+		$TSObj->init();
+		$TSObj->runThroughTemplates($rootLine);
+		$TSObj->generateConfig();
 
 		$config = array_merge(
-			$GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_timtab.'],
-			$GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_timtab_pi2.']
+			$TSObj->setup['plugin.']['tx_timtab.'],
+			$TSObj->setup['plugin.']['tx_timtab_pi2.']
 		);
 
 		//free some memory
-		unset($GLOBALS['TSFE']);
+		unset($TSObj);
+		unset($rootLine);
+		unset($sysPageObj);
 
 		return $config;
 	}
