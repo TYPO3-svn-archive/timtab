@@ -44,8 +44,6 @@ if (TYPO3_MODE == 'BE') {
 	require_once($pathTimtab . 'lib/class.tx_timtab_be.php');
 }
 
-//
-$TYPO3_CONF_VARS['FE']['eID_include']['timtab_calendar'] = 'EXT:timtab/widgets/calendar/class.tx_timtab_calendar_eID.php';
 
 //presetting userTS
 t3lib_extMgm::addUserTSConfig('

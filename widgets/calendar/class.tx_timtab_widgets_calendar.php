@@ -155,9 +155,10 @@ class tx_timtab_widgets_Calendar extends tslib_pibase implements tx_timtab_widge
 	public function render(array $configuration, $pidList, tx_timtab_pi1 $referenz) {
 
 		$this->cObj =  $referenz->cObj;
+		$getParameter = t3lib_div::_GP('tx_timtab_pi1');
 
 		$this->init($configuration, $pidList);
-		$this->prepareMonth($configuration['ajaxStartDate']);
+		$this->prepareMonth($getParameter['startdate']);
 
 		$additionalHeader = $this->renderCalenderHeader();
 		$GLOBALS['TSFE']->additionalHeaderData[] = $additionalHeader;
@@ -166,6 +167,7 @@ class tx_timtab_widgets_Calendar extends tslib_pibase implements tx_timtab_widge
 		$renderCalendarMonth = $this->renderCalendarMonth();
 		// Since we share one cObject all recursive calls need to be made above this point
 		$this->tempCObj->data = array();
+		$this->tempCObj->data['pid'] = $GLOBALS['TSFE']->id;
 		$this->tempCObj->data['currentYear'] = date('Y', $this->unixThisMonth);
 		$this->tempCObj->data['currentMonth'] = date('F', $this->unixThisMonth);
 		$this->tempCObj->data['unixCurrentMonth'] = $this->unixThisMonth;

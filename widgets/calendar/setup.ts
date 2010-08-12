@@ -8,7 +8,7 @@ lib.timtab {
 		template = FILE
 		template.file = {$plugin.tx_timtab.widgets.template}
 		workOnSubpart = RENDER_CALENDAR
-		
+
 		subparts {
 			RENDER_DAYS_OF_WEEK = TEXT
 			RENDER_DAYS_OF_WEEK.field = renderCalendarDaysOfWeek
@@ -20,58 +20,58 @@ lib.timtab {
 			CURRENT_MONTH.field = currentMonth
 			CURENT_YEAR = TEXT
 			CURENT_YEAR.field = currentYear
-			
-   		 	# <a href="http://wordpress.als-webseite.de/2010/07/" title="View posts for July 2010" onclick="return calendar(2010,7,0,'')">
-	   		 # &laquo; Jul   		  </a>
-	   		LINK_TO_PREV_MONTH = TEXT
-	   		LINK_TO_PREV_MONTH {
-	   			field = unixPrevMonth
-	   			date = M
-	   			typolink{
-	   				parameter = {$plugin.tx_timtab.homePid}
+
+			# <a href="http://wordpress.als-webseite.de/2010/07/" title="View posts for July 2010" onclick="return calendar(2010,7,0,'')">
+			# &laquo; Jul   		  </a>
+			LINK_TO_PREV_MONTH = TEXT
+			LINK_TO_PREV_MONTH {
+				field = unixPrevMonth
+				date = M
+				typolink{
+					parameter = {$plugin.tx_timtab.homePid}
 					additionalParams.dataWrap = &tx_ttnews[pS]={field:unixPrevMonth}&tx_ttnews[pL]={field:unixPrevMonthEnd}&tx_ttnews[arc]=1
 					useCacheHash = 1
 					title.noTrimWrap = |View posts for ||
 					title.field = unixPrevMonth
 					title.date = F Y
-					ATagParams.dataWrap = onclick="return timtab_calendar_ajax({field:unixPrevMonth},'')"
+					ATagParams.dataWrap = onclick="return timtab_calendar_ajax({field:unixPrevMonth}, {field:pid})"
 				}
 				fieldRequired = unixPrevMonth
 				innerWrap = &laquo;&#32;|
-	   		}		
-	   		LINK_TO_NEXT_MONTH = TEXT
-	   		LINK_TO_NEXT_MONTH {
-	   			field = unixNextMonth
-	   			date = M
-	   			typolink {
-	   				parameter = {$plugin.tx_timtab.homePid}
+			}
+			LINK_TO_NEXT_MONTH = TEXT
+			LINK_TO_NEXT_MONTH {
+				field = unixNextMonth
+				date = M
+				typolink {
+					parameter = {$plugin.tx_timtab.homePid}
 					additionalParams.dataWrap = &tx_ttnews[pS]={field:unixNextMonth}&tx_ttnews[pL]={field:unixNextMonthEnd}&tx_ttnews[arc]=1
 					useCacheHash = 1
 					title.noTrimWrap = |View posts for ||
 					title.field = unixNextMonth
 					title.date = F Y
-					ATagParams.dataWrap = onclick="return timtab_calendar_ajax({field:unixNextMonth},'')"
+					ATagParams.dataWrap = onclick="return timtab_calendar_ajax({field:unixNextMonth}, {field:pid})"
 				}
 				fieldRequired = unixNextMonth
 				innerWrap = |&#32;&raquo;
-	   		}
+			}
 			LINK_TO_CURRENT_MONTH = TEXT
-	   		LINK_TO_CURRENT_MONTH {
+			LINK_TO_CURRENT_MONTH {
 				#field = unixCurrentMonth
 				#date = M
 				value = &laquo;-&raquo;
-	   			typolink {
-	   				parameter = {$plugin.tx_timtab.homePid}
+				typolink {
+					parameter = {$plugin.tx_timtab.homePid}
 					additionalParams.dataWrap = &tx_ttnews[pS]={field:unixCurrentMonth}&tx_ttnews[pL]={field:cunixCurrentMonthEnd}&tx_ttnews[arc]=1
 					useCacheHash = 1
 					title.noTrimWrap = |View posts for ||
 					title.field = unixCurrentMonth
 					title.date = F Y
-					ATagParams.dataWrap = onclick="return timtab_calendar_ajax({field:unixNextMonth},'')"
+					ATagParams.dataWrap = onclick="return timtab_calendar_ajax(0, {field:pid})"
 				}
 				fieldRequired = unixCurrentMonth
-				innerWrap = |&#32;&raquo;
-	   		}
+				innerWrap = &#32;|&#32;
+			}
 		}
 	}
 	renderCalendarDaysOfWeek = TEMPLATE
@@ -90,7 +90,7 @@ lib.timtab {
 		template = FILE
 		template.file = {$plugin.tx_timtab.widgets.template}
 		workOnSubpart = RENDER_DAYS_OF_WEEK
-		
+
 		marks {
 			DAY_OF_WEEK_LANG = TEXT
 			DAY_OF_WEEK_LANG.field = dayOfWeek
@@ -107,7 +107,7 @@ lib.timtab {
 		template = FILE
 		template.file = {$plugin.tx_timtab.widgets.template}
 		workOnSubpart = RENDER_MONTH
-		
+
 		subparts {
 			RENDER_WEEK = TEXT
 			RENDER_WEEK.field = renderCalendarWeek
@@ -118,7 +118,7 @@ lib.timtab {
 		template = FILE
 		template.file = {$plugin.tx_timtab.widgets.template}
 		workOnSubpart = RENDER_WEEK
-		
+
 		subparts {
 			RENDER_SPACE_BEFORE_DAYS = COA
 			RENDER_SPACE_BEFORE_DAYS {
@@ -163,7 +163,7 @@ lib.timtab {
 				template = FILE
 				template.file = {$plugin.tx_timtab.widgets.template}
 				workOnSubpart = RENDER_CALENDAR_DAY
-				
+
 				marks {
 					DAY = TEXT
 					DAY.field = day
@@ -179,7 +179,7 @@ lib.timtab {
 				template = FILE
 				template.file = {$plugin.tx_timtab.widgets.template}
 				workOnSubpart = RENDER_CALENDAR_DAY
-				
+
 				marks {
 					DAY = TEXT
 					DAY {
@@ -197,7 +197,7 @@ lib.timtab {
 	renderCalenderPosts{
 		field = title
 		noTrimWrap = ||, |
-	}	
+	}
 	renderCalenderHeader = COA
 	renderCalenderHeader {
 		wrap = <!-- timtab calendar --> |
@@ -216,9 +216,9 @@ lib.timtab {
 			value (
 				<script type="text/javascript" charset="utf-8">
 				/*<![CDATA[ */
-					function timtab_calendar_ajax (unixdate)
+					function timtab_calendar_ajax (unixdate, pid)
 					{
-						microAjax ('index.php?eID=timtab_calendar&startdate=' + unixdate, function(response) { document.getElementById ('timtab-calendar-ajax').innerHTML = response});
+						microAjax ('index.php?id=' + pid + '&type=201&tx_timtab_pi1[startdate]=' + unixdate, function(response) { document.getElementById ('timtab-calendar-ajax').innerHTML = response});
 						return false;
 					}
 				/*]]>*/
@@ -243,5 +243,24 @@ plugin.tx_timtab_pi1 {
 			renderCalenderPosts =< lib.timtab.renderCalenderPosts
 			renderCalenderHeader =< lib.timtab.renderCalenderHeader
 		}
+	}
+}
+
+
+timtabCalendarPage = PAGE
+timtabCalendarPage {
+	typeNum = 201
+
+	10 < plugin.tx_timtab_pi1
+	10 {
+		widgetType = calendar
+		pidList = {$plugin.tx_timtab.pidStorePosts}
+	}
+
+	config {
+		disableAllHeaderCode = 1
+		additionalHeaders =
+		xhtml_cleaning = 0
+		admPanel = 0
 	}
 }
