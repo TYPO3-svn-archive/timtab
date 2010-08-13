@@ -59,6 +59,105 @@ $TYPO3_CONF_VARS['EXTCONF']['cms']['db_layout']['addTables']['tx_timtab_blogroll
 	'icon' => TRUE
 );
 
+t3lib_extMgm::addPageTSConfig('
+	mod.wizards.newContentElement.wizardItems {
+		timtab {
+			header = LLL:EXT:timtab/locallang.xml:pi1_title
+			elements {
+				catmenu {
+					icon = ../typo3conf/ext/timtab/res/gfx/ce_wiz_catmenu.gif
+					title = LLL:EXT:timtab/locallang.xml:catmenu_title
+					description = LLL:EXT:timtab/locallang.xml:catmenu_description
+					tt_content_defValues {
+						CType = list
+						list_type = timtab_pi1
+						pi_flexform (
+							<T3FlexForms>
+								<data>
+									<sheet index="sDEF">
+										<language index="lDEF">
+											<field index="widget">
+												<value index="vDEF">catmenu</value>
+											</field>
+										</language>
+									</sheet>
+								</data>
+							</T3FlexForms>
+						)
+					}
+				}
+				latestcomments {
+					icon = ../typo3conf/ext/timtab/res/gfx/ce_wiz_latestcomments.gif
+					title = LLL:EXT:timtab/locallang.xml:latestcomments_title
+					description = LLL:EXT:timtab/locallang.xml:latestcomments_description
+					tt_content_defValues {
+						CType = list
+						list_type = timtab_pi1
+						pi_flexform (
+							<T3FlexForms>
+								<data>
+									<sheet index="sDEF">
+										<language index="lDEF">
+											<field index="widget">
+												<value index="vDEF">latestcomments</value>
+											</field>
+										</language>
+									</sheet>
+								</data>
+							</T3FlexForms>
+						)
+					}
+				}
+				blogroll {
+					icon = ../typo3conf/ext/timtab/res/gfx/ce_wiz_blogroll.gif
+					title = LLL:EXT:timtab/locallang.xml:blogroll_title
+					description = LLL:EXT:timtab/locallang.xml:blogroll_description
+					tt_content_defValues {
+						CType = list
+						list_type = timtab_pi1
+						pi_flexform (
+							<T3FlexForms>
+								<data>
+									<sheet index="sDEF">
+										<language index="lDEF">
+											<field index="widget">
+												<value index="vDEF">blogroll</value>
+											</field>
+										</language>
+									</sheet>
+								</data>
+							</T3FlexForms>
+						)
+					}
+				}
+				calendar {
+					icon = ../typo3conf/ext/timtab/res/gfx/ce_wiz_calendar.gif
+					title = LLL:EXT:timtab/locallang.xml:calendar_title
+					description = LLL:EXT:timtab/locallang.xml:calendar_description
+					tt_content_defValues {
+						CType = list
+						list_type = timtab_pi1
+						pi_flexform (
+							<T3FlexForms>
+								<data>
+									<sheet index="sDEF">
+										<language index="lDEF">
+											<field index="widget">
+												<value index="vDEF">calendar</value>
+											</field>
+										</language>
+									</sheet>
+								</data>
+							</T3FlexForms>
+						)
+					}
+				}
+			}
+			show = catmenu,latestcomments,blogroll,calendar
+		}
+	}
+');
+
 // adding plugins
 t3lib_extMgm::addPItoST43($_EXTKEY, 'pi1/class.tx_timtab_pi1.php', '_pi1', 'list_type', 1);
 t3lib_extMgm::addPItoST43($_EXTKEY, 'pi2/class.tx_timtab_pi2.php', '_pi2', 'list_type', 0);

@@ -50,10 +50,11 @@ class tx_timtab_hooks_BeFunc {
 	 * @param string $fieldName
 	 */
 	public function getFlexFormDS_postProcessDS(&$dataStructArray, $conf, $row, $table, $fieldName) {
+
 		if ($table != 'tt_content'|| $row['list_type'] != 'timtab_pi1' || empty($row['pi_flexform'])) {
 			return;
 		}
-
+		$row['pi_flexform'] = trim($row['pi_flexform']);
 		$flexformValue = t3lib_div::xml2array($row['pi_flexform']);
 		$flexformValue = $flexformValue['data']['sDEF']['lDEF']['widget']['vDEF'];
 
