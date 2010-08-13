@@ -64,7 +64,10 @@ class tx_timtab_hooks_BeFunc {
 				if ($file && @is_file($file)) {
 					$localDataStructArray = t3lib_div::xml2array(t3lib_div::getUrl($file));
 					if (is_array($localDataStructArray['sheets']) && is_array($dataStructArray['sheets'])) {
-						$dataStructArray['sheets'] = array_merge($dataStructArray['sheets'], $localDataStructArray['sheets']);
+						$dataStructArray['sheets'] = t3lib_div::array_merge_recursive_overrule(
+							$dataStructArray['sheets'],
+							$localDataStructArray['sheets']
+						);
 					}
 				}
 			}
