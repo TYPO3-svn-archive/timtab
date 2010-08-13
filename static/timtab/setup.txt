@@ -213,6 +213,7 @@ lib.timtab {
 */
 plugin.tx_timtab_pi1 {
 	pidList = {$plugin.tx_timtab.pidStoreComments}
+	disableBaseWrap = 0
 	widgetType = empty
 	widgets {
 		latestComments {

@@ -118,7 +118,11 @@ class tx_timtab_pi1 extends tslib_pibase {
 			);
 		}
 
-		return $this->pi_wrapInBaseClass($content);
+		$content = $this->cObj->stdWrap($content, $conf['stdWrap.']);
+		if (!$this->conf['disableBaseWrap']) {
+			$content = $this->pi_wrapInBaseClass($content);
+		}
+		return $content;
 	}
 
 	/**
