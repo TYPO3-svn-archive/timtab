@@ -29,7 +29,7 @@
  * @subpackage tx_timtab
  * @author	Lina Wolf <2010@lotypo3.de>
  * @author	Timo Webler <timo.webler@dkd.de>
- * @version $Id:$
+ * @version $Id$
  */
 
 $pathTimtab = t3lib_extMgm::extPath('timtab');
@@ -43,7 +43,7 @@ require_once($pathTimtab . 'lib/class.tx_timtab_lib.php');
  * @subpackage tx_timtab
  * @author	Lina Wolf <2010@lotypo3.de>
  * @author	Timo Webler <timo.webler@dkd.de>
- * @version $Id:$
+ * @version $Id$
  */
 class tx_timtab_widgets_Latestcomments implements tx_timtab_widget_Interface {
 
@@ -87,7 +87,13 @@ class tx_timtab_widgets_Latestcomments implements tx_timtab_widget_Interface {
 			$checkPid = ' AND pid IN (' . $pidList . ') ';
 		}
 		$confWidget = $configuration['widgets.']['latestComments.'];
+
+		$max = $referenz->pi_getFFvalue($referenz->cObj->data['pi_flexform'], 'max', 'configuration');
+		if (!empty($max)) {
+			$confWidget['max'] = $max;
+		}
 		$max = $this->cObj->stdWrap($confWidget['max'], $confWidget['max.']);
+
 		$showTrackbacks = $this->cObj->stdWrap($confWidget['showTrackbacks'], $confWidget['showTrackbacks.']);
 
 		$trackbacksWhere = '';

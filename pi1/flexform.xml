@@ -14,6 +14,7 @@
 					<widget>
 						<TCEforms>
 							<label>LLL:EXT:timtab/pi1/locallang.xml:tx_timtab_flexforms_widgets</label>
+							<onChange>reload</onChange>
 							<config>
 								<type>select</type>
 								<itemsProcFunc>EXT:timtab/lib/class.tx_timtab_flexform.php:tx_timtab_Flexform->getWidgets</itemsProcFunc>

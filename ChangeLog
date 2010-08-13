@@ -1,3 +1,6 @@
+2010-08-13  Timo Webler <timo.webler@dkd.de>
+	* add dynamic flexform configuration for widgets
+
 2010-08-12  Timo Webler <timo.webler@dkd.de>
 	* refactoring widget system
 	* refactoring calendar widget. remove eID script .use now page type

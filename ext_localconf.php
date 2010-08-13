@@ -80,6 +80,9 @@ $TYPO3_CONF_VARS['EXTCONF']['comments']['closeCommentsAfter']['timtab'] =
 $TYPO3_CONF_VARS['EXTCONF']['comments']['comments_getComments']['timtab'] =
 	'EXT:timtab/lib/hooks/class.tx_timtab_hooks_comments.php:&tx_timtab_hooks_Comments->getComments';
 
+$TYPO3_CONF_VARS['SC_OPTIONS']['t3lib/class.t3lib_befunc.php']['getFlexFormDSClass'][] =
+	'EXT:timtab/lib/hooks/class.tx_timtab_hooks_befunc.php:&tx_timtab_hooks_BeFunc';
+
 
 // Registering build-in widgets
 $TYPO3_CONF_VARS['EXTCONF']['timtab']['renderWidgets']['blogroll'] = array(
@@ -88,11 +91,12 @@ $TYPO3_CONF_VARS['EXTCONF']['timtab']['renderWidgets']['blogroll'] = array(
 );
 $TYPO3_CONF_VARS['EXTCONF']['timtab']['renderWidgets']['latestcomments'] = array(
 	'label' => 'LLL:EXT:timtab/locallang.xml:latestcomments_title',
-	'class' => 'EXT:timtab/widgets/latestcomments/class.tx_timtab_widgets_latestcomments.php:&tx_timtab_widgets_Latestcomments'
+	'class' => 'EXT:timtab/widgets/latestcomments/class.tx_timtab_widgets_latestcomments.php:&tx_timtab_widgets_Latestcomments',
+	'flexform' => 'EXT:timtab/widgets/latestcomments/flexform.xml'
 );
 $TYPO3_CONF_VARS['EXTCONF']['timtab']['renderWidgets']['calendar'] = array(
 	'label' => 'LLL:EXT:timtab/locallang.xml:calendar_title',
-	'class' => 'EXT:timtab/widgets/calendar/class.tx_timtab_widgets_calendar.php:&tx_timtab_widgets_Calendar'
+	'class' => 'EXT:timtab/widgets/calendar/class.tx_timtab_widgets_calendar.php:&tx_timtab_widgets_Calendar',
 );
 $TYPO3_CONF_VARS['EXTCONF']['timtab']['renderWidgets']['catmenu'] =  array(
 	'label' => 'LLL:EXT:timtab/locallang.xml:catmenu_title',

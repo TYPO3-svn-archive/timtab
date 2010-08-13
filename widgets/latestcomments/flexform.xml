@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3DataStructure>
+	<meta>
+		<langDisable>1</langDisable>
+	</meta>
+	<sheets>
+		<configuration>
+			<ROOT>
+				<TCEforms>
+					<sheetTitle>LLL:EXT:timtab/pi1/locallang.xml:tx_timtab_flexforms_tabs_configuration</sheetTitle>
+				</TCEforms>
+				<type>array</type>
+				<el>
+					<max>
+						<TCEforms>
+							<label>LLL:EXT:timtab/pi1/locallang.xml:tx_timtab_flexforms_maxValues</label>
+							<config>
+								<type>input</type>
+								<eval>int,trim</eval>
+							</config>
+						</TCEforms>
+					</max>
+				</el>
+			</ROOT>
+		</configuration>
+	</sheets>
+</T3DataStructure>

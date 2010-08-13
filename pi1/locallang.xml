@@ -13,10 +13,14 @@
 		<languageKey index="default" type="array">
 			<label index="tx_timtab_flexforms_tabs_general">Timtab Widgets</label>
 			<label index="tx_timtab_flexforms_widgets">Available widgets</label>
+			<label index="tx_timtab_flexforms_tabs_configuration">Available configuration</label>
+			<label index="tx_timtab_flexforms_maxValues">max items</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="tx_timtab_flexforms_tabs_general">Timtab Widgets</label>
 			<label index="tx_timtab_flexforms_widgets">Verfügbare Widgets</label>
+			<label index="tx_timtab_flexforms_tabs_configuration">Verfügbare Konfiguration</label>
+			<label index="tx_timtab_flexforms_maxValues">Maximale Anzahl</label>
 		</languageKey>
 	</data>
 </T3locallang>
