@@ -182,7 +182,8 @@ t3lib_extMgm::addPlugin(
 	'list_type'
 );
 
-if (TYPO3_MODE == 'BE') {
+	// add only in TYPO3 verison <= 4.2
+if (TYPO3_MODE == 'BE' && !t3lib_div::compat_version('4.3')) {
 	$TBE_MODULES_EXT['xMOD_db_new_content_el']['addElClasses']['tx_timtab_pi1_wizicon'] =
 		t3lib_extMgm::extPath($_EXTKEY) . 'pi1/class.tx_timtab_pi1_wizicon.php';
 }

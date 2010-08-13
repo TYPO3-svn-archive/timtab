@@ -37,14 +37,6 @@ if (!defined('TYPO3_MODE')) {
 	die ('Access denied.');
 }
 
-//get EXT path
-$pathTimtab = t3lib_extMgm::extPath('timtab');
-
-if (TYPO3_MODE == 'BE') {
-	require_once($pathTimtab . 'lib/class.tx_timtab_be.php');
-}
-
-
 //presetting userTS
 t3lib_extMgm::addUserTSConfig('
 	options.saveDocNew.tx_timtab_blogroll = 1
@@ -59,13 +51,24 @@ $TYPO3_CONF_VARS['EXTCONF']['cms']['db_layout']['addTables']['tx_timtab_blogroll
 	'icon' => TRUE
 );
 
+$timtabRelPath = t3lib_extMgm::extRelPath('timtab');
+
 t3lib_extMgm::addPageTSConfig('
 	mod.wizards.newContentElement.wizardItems {
 		timtab {
 			header = LLL:EXT:timtab/locallang.xml:pi1_title
 			elements {
+				widget {
+					icon = ' . $timtabRelPath . 'res/gfx/ce_wiz.gif
+					title = LLL:EXT:timtab/locallang.xml:pi1_title
+					description = LLL:EXT:timtab/locallang.xml:pi1_plus_wiz_description
+					tt_content_defValues {
+						CType = list
+						list_type = timtab_pi1
+					}
+				}
 				catmenu {
-					icon = ../typo3conf/ext/timtab/res/gfx/ce_wiz_catmenu.gif
+					icon = ' . $timtabRelPath . 'res/gfx/ce_wiz_catmenu.gif
 					title = LLL:EXT:timtab/locallang.xml:catmenu_title
 					description = LLL:EXT:timtab/locallang.xml:catmenu_description
 					tt_content_defValues {
@@ -87,7 +90,7 @@ t3lib_extMgm::addPageTSConfig('
 					}
 				}
 				latestcomments {
-					icon = ../typo3conf/ext/timtab/res/gfx/ce_wiz_latestcomments.gif
+					icon = ' . $timtabRelPath . 'res/gfx/ce_wiz_latestcomments.gif
 					title = LLL:EXT:timtab/locallang.xml:latestcomments_title
 					description = LLL:EXT:timtab/locallang.xml:latestcomments_description
 					tt_content_defValues {
@@ -109,7 +112,7 @@ t3lib_extMgm::addPageTSConfig('
 					}
 				}
 				blogroll {
-					icon = ../typo3conf/ext/timtab/res/gfx/ce_wiz_blogroll.gif
+					icon = ' . $timtabRelPath . 'res/gfx/ce_wiz_blogroll.gif
 					title = LLL:EXT:timtab/locallang.xml:blogroll_title
 					description = LLL:EXT:timtab/locallang.xml:blogroll_description
 					tt_content_defValues {
@@ -131,7 +134,7 @@ t3lib_extMgm::addPageTSConfig('
 					}
 				}
 				calendar {
-					icon = ../typo3conf/ext/timtab/res/gfx/ce_wiz_calendar.gif
+					icon = ' . $timtabRelPath . 'res/gfx/ce_wiz_calendar.gif
 					title = LLL:EXT:timtab/locallang.xml:calendar_title
 					description = LLL:EXT:timtab/locallang.xml:calendar_description
 					tt_content_defValues {
@@ -153,7 +156,7 @@ t3lib_extMgm::addPageTSConfig('
 					}
 				}
 			}
-			show = catmenu,latestcomments,blogroll,calendar
+			show = widget,catmenu,latestcomments,blogroll,calendar
 		}
 	}
 ');
@@ -170,7 +173,7 @@ $TYPO3_CONF_VARS['SC_OPTIONS']['ext/realurl/class.tx_realurl_autoconfgen.php']['
 $TYPO3_CONF_VARS['EXTCONF']['tt_news']['extraItemMarkerHook'][]  = 'EXT:timtab/lib/hooks/class.tx_timtab_hooks_ttnews.php:&tx_timtab_hooks_Ttnews';
 
 // Hook for postprocessing record after saving in be
-$TYPO3_CONF_VARS['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = 'tx_timtab_Be';
+$TYPO3_CONF_VARS['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = 'EXT:timtab/lib/class.tx_timtab_be.php:&tx_timtab_Be';
 
 //Hook for closing comments
 $TYPO3_CONF_VARS['EXTCONF']['comments']['closeCommentsAfter']['timtab'] =
