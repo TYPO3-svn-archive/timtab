@@ -51,7 +51,7 @@ class tx_timtab_hooks_BeFunc {
 		$flexformValue = $flexformValue['data']['sDEF']['lDEF']['widget']['vDEF'];
 
 		if (!empty($flexformValue) && is_string($flexformValue)) {
-			$widgetConfig = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['timtab']['renderWidgets'][$flexformValue];
+			$widgetConfig = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['timtab']['widgets'][$flexformValue];
 			if (!empty($widgetConfig) && !empty($widgetConfig['flexform'])) {
 				$file = t3lib_div::getFileAbsFileName($widgetConfig['flexform']);
 				if ($file && @is_file($file)) {

@@ -41,8 +41,8 @@ class tx_timtab_Flexform {
 	 * @return	array
 	 */
 	public function getWidgets($config, t3lib_TCEforms $tca) {
-		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['timtab']['renderWidgets'])) {
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['timtab']['renderWidgets'] as $type => $configuration) {
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['timtab']['widgets'])) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['timtab']['widgets'] as $type => $configuration) {
 				$config['items'][] = array(
 					$tca->sL($configuration['label']),
 					$type

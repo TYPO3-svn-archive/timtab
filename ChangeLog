@@ -1,6 +1,7 @@
 2010-08-19  Ingo Renner  <ingo@typo3.org>
 
 	* FIX fixed the ChangeLog
+	* CHG renamed "renderWidgets" to just "widgets"
 
 2010-08-13  Timo Webler  <timo.webler@dkd.de>
 
