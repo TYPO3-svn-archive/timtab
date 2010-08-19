@@ -90,7 +90,7 @@ class tx_timtab_pi1 extends tslib_pibase {
 		$pidList = $this->pi_getPidList($pidList, $recursive);
 		$content = '';
 		// process hooks, intern widgets are also hooks for now
-		$widgetConfiguration = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['timtab']['renderWidgets'][$widgetType];
+		$widgetConfiguration = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['timtab']['widgets'][$widgetType];
 		if (is_array($widgetConfiguration)) {
 
 			$widget = t3lib_div::getUserObj($widgetConfiguration['class'], 'user_', TRUE);
