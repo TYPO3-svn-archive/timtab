@@ -22,24 +22,15 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-/**
- * class.tx_timtab_hook_ttnews.php
- *
- * @package TYPO3
- * @subpackage tx_timtab
- * @author Lina Wolf <2010@lotypo3.de>
- * @author Timo Webler <timo.webler@dkd.de>
- * @version $Id:$
- */
-
 $pathTimtab = t3lib_extMgm::extPath('timtab');
 require_once($pathTimtab . 'lib/class.tx_timtab_trackback.php');
+
 
 /**
  * Implements hooks for tt_news to create additional markers
  *
  * @package TYPO3
- * @subpackage tx_timtab
+ * @subpackage timtab
  * @author Lina Wolf <2010@lotypo3.de>
  * @author Timo Webler <timo.webler@dkd.de>
  */
