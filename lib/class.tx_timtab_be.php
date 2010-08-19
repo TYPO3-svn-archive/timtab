@@ -23,17 +23,6 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-/**
- * class.tx_timtab_be.php
- *
- * @package TYPO3
- * @subpackage tx_timtab
- * @author Ingo Renner <typo3@ingo-renner.com>
- * @author Lina Wolf <2010@lotypo3.de>
- * @author Timo Webler <timo.webler@dkd.de>
- * @version $Id$
- */
-
 $pathTimtab = t3lib_extMgm::extPath('timtab');
 if (!defined('PATH_tslib')) {
 	define('PATH_tslib', t3lib_extMgm::extPath('cms') . 'tslib/');
@@ -51,11 +40,12 @@ require_once(PATH_tslib . 'class.tslib_fe.php');
 $TT = t3lib_div::makeInstance('t3lib_timeTrack');
 $TT->start();
 
+
 /**
  * class which implements methods to connect to hooks in TCEmain for processinng of trackbacks
  *
  * @package TYPO3
- * @subpackage tx_timtab
+ * @subpackage timtab
  * @author Ingo Renner <typo3@ingo-renner.com>
  * @author Lina Wolf <2010@lotypo3.de>
  * @author Timo Webler <timo.webler@dkd.de>
