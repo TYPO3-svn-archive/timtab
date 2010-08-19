@@ -23,30 +23,21 @@
 ***************************************************************/
 
 /**
- * flexform helper class
+ * Flexforms helper class
  *
- * @package TYPO3
- * @subpackage tx_timtab
  * @author	Timo Webler <timo.webler@dkd.de>
+ * @package TYPO3
+ * @subpackage timtab
  * @version $Id$
- */
-
-/**
- * flexform helper class
- *
- * @package TYPO3
- * @subpackage tx_timtab
- * @author	Timo Webler <timo.webler@dkd.de>
  */
 class tx_timtab_Flexform {
 
-
 	/**
-	 * get the available widgets for timtab
+	 * Gets the available widgets for TIMTAB
 	 *
-	 * @param array $config Konfiguration
-	 * @param t3lib_TCEforms $tca t3lib_TCEforms 	instance
-	 * @return array
+	 * @param	array	Configuration
+	 * @param	t3lib_TCEforms	instance of t3lib_TCEforms
+	 * @return	array
 	 */
 	public function getWidgets($config, t3lib_TCEforms $tca) {
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['timtab']['renderWidgets'])) {
@@ -63,4 +54,5 @@ class tx_timtab_Flexform {
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/timtab/lib/class.tx_timtab_flexform.php']) {
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/timtab/lib/class.tx_timtab_flexform.php']);
 }
+
 ?>
