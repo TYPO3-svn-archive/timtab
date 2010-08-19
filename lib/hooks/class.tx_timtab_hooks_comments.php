@@ -23,20 +23,10 @@
 ***************************************************************/
 
 /**
- * class.tx_timtab_hook_comments.php
- *
- * @package TYPO3
- * @subpackage tx_timtab
- * @author Lina Wolf <2010@lotypo3.de>
- * @author Timo Webler <timo.webler@dkd.de>
- * @version $Id:$
- */
-
-/**
  * Implements hooks for tt_news to create additional markers
  *
  * @package TYPO3
- * @subpackage tx_timtab
+ * @subpackage timtab
  * @author Lina Wolf <2010@lotypo3.de>
  * @author Timo Webler <timo.webler@dkd.de>
  */
