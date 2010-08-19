@@ -21,23 +21,15 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
-/**
- * class.tx_timtab_lib.php
- *
- * @package TYPO3
- * @subpackage tx_timtab
- * @author Ingo Renner <typo3@ingo-renner.com>
- * @author Timo Webler <timo.webler@dkd.de>
- * @version $Id$
- */
 
 require_once(PATH_t3lib . 'class.t3lib_tcemain.php');
+
 
 /**
  * contains general purpose functions
  *
  * @package TYPO3
- * @subpackage tx_timtab
+ * @subpackage timtab
  * @author Ingo Renner <typo3@ingo-renner.com>
  * @author Timo Webler <timo.webler@dkd.de>
  * @version $Id$
