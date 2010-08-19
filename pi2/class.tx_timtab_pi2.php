@@ -23,19 +23,6 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-/**
- * Plugin 'webservices' for the 'TIMTAB' extension.
- *
- * @package TYPO3
- * @subpackage tx_timtab
- * @author	Ingo Renner <typo3@ingo-renner.com>
- * @author	Ingo Schommer <me@chillu.com>
- * @author	Werner Trunk
- * @author	Lina Wolf <2010@lotypo3.de>
- * @author	Timo Webler <timo.webler@dkd.de>
- * @version $Id$
- */
-
 define('TYPE_TRACKBACK', 1);
 define('TYPE_PINGBACK', 2);
 define('TYPE_TRACKBACK_SPAM', 3);
@@ -45,11 +32,12 @@ require_once(PATH_tslib . 'class.tslib_pibase.php');
 require_once($pathTimtab . 'pi2/class.tx_timtab_pi2_xmlrpcserver.php');
 require_once($pathTimtab . 'lib/class.tx_timtab_trackback.php');
 
+
 /**
  * Plugin 'webservices' for the 'TIMTAB' extension.
  *
  * @package TYPO3
- * @subpackage tx_timtab
+ * @subpackage timtab
  * @author	Ingo Renner <typo3@ingo-renner.com>
  * @author	Ingo Schommer <me@chillu.com>
  * @author	Werner Trunk

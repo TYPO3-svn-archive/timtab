@@ -22,16 +22,6 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-/**
- * Widget 'lastest comments' for the 'TIMTAB' extension.
- *
- * @package TYPO3
- * @subpackage tx_timtab
- * @author	Lina Wolf <2010@lotypo3.de>
- * @author	Timo Webler <timo.webler@dkd.de>
- * @version $Id$
- */
-
 $pathTimtab = t3lib_extMgm::extPath('timtab');
 require_once($pathTimtab . 'widgets/interface.tx_timtab_widget_interface.php');
 require_once($pathTimtab . 'lib/class.tx_timtab_lib.php');
@@ -40,7 +30,7 @@ require_once($pathTimtab . 'lib/class.tx_timtab_lib.php');
  * Widget 'lastest comments' for the 'TIMTAB' extension.
  *
  * @package TYPO3
- * @subpackage tx_timtab
+ * @subpackage timtab
  * @author	Lina Wolf <2010@lotypo3.de>
  * @author	Timo Webler <timo.webler@dkd.de>
  * @version $Id$

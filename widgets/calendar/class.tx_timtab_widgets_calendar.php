@@ -22,28 +22,17 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-/**
- * Plugin 'calendar' for the 'TIMTAB' extension.
- * Most code shamlesly taken from wordpress ;-)
- * Code based on Code of Ingo Renner from timtab v. 0.5, pi3
- *
- * @package TYPO3
- * @subpackage tx_timtab
- * @author Lina Wold <2010@lotypo3.de>
- * @author	Timo Webler <timo.webler@dkd.de>
- * @version $Id:$
- */
-
 require_once(PATH_tslib . 'class.tslib_pibase.php');
 require_once(t3lib_extMgm::extPath('timtab', 'widgets/interface.tx_timtab_widget_interface.php'));
 
+
 /**
- * Plugin 'calendar' for the 'TIMTAB' extension.
+ * Plugin 'calendar' for the TIMTAB extension.
  * Most code shamlesly taken from wordpress ;-)
  * Code based on Code of Ingo Renner from timtab v. 0.5, pi3
  *
  * @package TYPO3
- * @subpackage tx_timtab
+ * @subpackage timtab
  * @author Lina Wold <2010@lotypo3.de>
  * @author	Timo Webler <timo.webler@dkd.de>
  */

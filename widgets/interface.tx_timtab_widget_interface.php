@@ -22,22 +22,14 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-/**
- * interface for widgets
- *
- * @package TYPO3
- * @subpackage tx_timtab
- * @author	Timo Webler <timo.webler@dkd.de>
- * @version $Id:$
- */
 
 /**
  * interface for widgets
  *
  * @package TYPO3
- * @subpackage tx_timtab
+ * @subpackage timtab
  * @author	Timo Webler <timo.webler@dkd.de>
- * @version $Id:$
+ * @version $Id$
  */
 interface tx_timtab_widget_Interface {
 
@@ -51,4 +43,5 @@ interface tx_timtab_widget_Interface {
 	 */
 	public function render(array $configuration, $pidList, tx_timtab_pi1 $referenz);
 }
+
 ?>

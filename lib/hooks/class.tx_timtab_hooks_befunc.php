@@ -22,20 +22,12 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-/**
- * class.tx_timtab_hooks_befunc.php
- *
- * @package TYPO3
- * @subpackage tx_timtab
- * @author Timo Webler <timo.webler@dkd.de>
- * @version $Id$
- */
 
 /**
- * Implements hooks for t3lib_befunc
+ * Implements hooks for t3lib_BEfunc
  *
  * @package TYPO3
- * @subpackage tx_timtab
+ * @subpackage timtab
  * @author Timo Webler <timo.webler@dkd.de>
  */
 class tx_timtab_hooks_BeFunc {

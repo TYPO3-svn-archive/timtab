@@ -26,16 +26,7 @@
  * realurl autoconfiguration class
  *
  * @package TYPO3
- * @subpackage tx_timtab
- * @author	Lina Wolf <2010@lotypo3.de>
- * @version $Id$
- */
-
-/**
- * realurl autoconfiguration class
- *
- * @package TYPO3
- * @subpackage tx_timtab
+ * @subpackage timtab
  * @author	Lina Wolf <2010@lotypo3.de>
  * @version $Id$
  */

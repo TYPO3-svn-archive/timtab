@@ -22,25 +22,15 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-/**
- * Widget 'blogroll' for the 'TIMTAB' extension.
- * based on code from Ingo Renner
- *
- * @package TYPO3
- * @subpackage tx_timtab
- * @author	Lina Wolf <2010@lotypo3.de>
- * @author	Timo Webler <timo.webler@dkd.de>
- * @version $Id:$
- */
-
 require_once(t3lib_extMgm::extPath('timtab', 'widgets/interface.tx_timtab_widget_interface.php'));
 
+
 /**
- * Widget 'blogroll' for the 'TIMTAB' extension.
+ * Blogroll widget for the TIMTAB extension.
  * based on code from Ingo Renner
  *
  * @package TYPO3
- * @subpackage tx_timtab
+ * @subpackage timtab
  * @author	Lina Wolf <2010@lotypo3.de>
  * @author	Timo Webler <timo.webler@dkd.de>
  */

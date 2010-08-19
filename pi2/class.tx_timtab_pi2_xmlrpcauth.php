@@ -22,26 +22,17 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-/**
- * Authentification class for the XML-RPC Server
- *
- * @package TYPO3
- * @subpackage tx_timtab
- * @author    Ingo Renner <typo3@ingo-renner.com>
- * @author Timo Webler <timo.webler@dkd.de>
- * @version $Id$
- */
-
 require_once(PATH_t3lib . 'class.t3lib_userauth.php');
 require_once(PATH_t3lib . 'class.t3lib_userauthgroup.php');
 require_once(PATH_t3lib . 'class.t3lib_beuserauth.php');
 
+
 /**
  * Authentification class for the XML-RPC Server
  *
  * @package TYPO3
- * @subpackage tx_timtab
- * @author    Ingo Renner <typo3@ingo-renner.com>
+ * @subpackage timtab
+ * @author Ingo Renner <typo3@ingo-renner.com>
  * @author Timo Webler <timo.webler@dkd.de>
  * @version $Id$
  */

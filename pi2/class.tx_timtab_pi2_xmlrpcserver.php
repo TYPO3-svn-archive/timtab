@@ -23,18 +23,6 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-/**
- * XML-RPC Server for the TIMTAB extension
- *
- * @package TYPO3
- * @subpackage tx_timtab
- * @author Ingo Renner <typo3@ingo-renner.com>
- * @author Ingo Schommer <me@chillu.com>
- * @author Werner Trunk
- * @author Timo Webler <timo.webler@dkd.de>
- * @version $Id$
- */
-
 $pathTimtab = t3lib_extMgm::extPath('timtab');
 require_once($pathTimtab . '3rdparty/lib.ixr.php');
 require_once($pathTimtab . 'lib/class.tx_timtab_lib.php');
@@ -44,11 +32,12 @@ require_once(PATH_t3lib . 'class.t3lib_tcemain.php');
 require_once(PATH_t3lib . 'class.t3lib_befunc.php');
 require_once(PATH_t3lib . 'class.t3lib_parsehtml_proc.php');
 
+
 /**
  * XML-RPC Server for the TIMTAB extension
  *
  * @package TYPO3
- * @subpackage tx_timtab
+ * @subpackage timtab
  * @author Ingo Renner <typo3@ingo-renner.com>
  * @author Ingo Schommer <me@chillu.com>
  * @author Werner Trunk

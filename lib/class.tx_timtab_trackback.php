@@ -22,30 +22,19 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-/**
- * Trackback class for the TIMTAB extension, the majority of the code
- * is originaly taken from PHP TrackBack,
- * see: http://phptrackback.sourceforge.net
- *
- * @package TYPO3
- * @subpackage tx_timtab
- * @author	Ingo Renner <typo3@ingo-renner.com>
- * @author Timo Webler <timo.webler@dkd.de>
- * @version $Id$
- */
-
 $pathTimtab = t3lib_extMgm::extPath('timtab');
 require_once($pathTimtab . 'lib/class.tx_timtab_lib.php');
 require_once(PATH_tslib . 'class.tslib_content.php');
 require_once(PATH_t3lib . 'class.t3lib_div.php');
 
+
 /**
  * Trackback class for the TIMTAB extension, the majority of the code
  * is originaly taken from PHP TrackBack,
  * see: http://phptrackback.sourceforge.net
  *
  * @package TYPO3
- * @subpackage tx_timtab
+ * @subpackage timtab
  * @author	Ingo Renner <typo3@ingo-renner.com>
  * @author Timo Webler <timo.webler@dkd.de>
  */

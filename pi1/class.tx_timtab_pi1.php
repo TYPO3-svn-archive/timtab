@@ -21,23 +21,15 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
-/**
- * Plugin 'widgets' for the 'TIMTAB' extension.
- *
- * @package TYPO3
- * @subpackage tx_timtab
- * @author	Lina Wolf <2010@lotypo3.de>
- * @author	Timo Webler <timo.webler@dkd.de>
- * @version $Id$
- */
 
 require_once(PATH_tslib . 'class.tslib_pibase.php');
 
+
 /**
  * Plugin 'widgets' for the 'TIMTAB' extension.
  *
  * @package TYPO3
- * @subpackage tx_timtab
+ * @subpackage timtab
  * @author	Lina Wolf <2010@lotypo3.de>
  * @author	Timo Webler <timo.webler@dkd.de>
  * @version $Id$

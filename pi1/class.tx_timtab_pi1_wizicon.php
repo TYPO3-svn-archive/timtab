@@ -26,18 +26,7 @@
  * Class that adds the wizard icon.
  *
  * @package TYPO3
- * @subpackage tx_timtab
- * @author	Ingo Renner <typo3@ingo-renner.com>
- * @author	Timo Webler <timo.webler@dkd.de>
- * @version $Id$
- */
-
-
-/**
- * Class that adds the wizard icon.
- *
- * @package TYPO3
- * @subpackage tx_timtab
+ * @subpackage timtab
  * @author	Ingo Renner <typo3@ingo-renner.com>
  * @author	Timo We  $Id$bler <timo.webler@dkd.de>
  */
