@@ -24,7 +24,7 @@
 
 
 /**
- * interface for widgets
+ * Widget rendering inteface
  *
  * @package TYPO3
  * @subpackage timtab
@@ -33,15 +33,17 @@
  */
 interface tx_timtab_widget_Interface {
 
+	// FIXME this interface doesn't look like good OOP, by the parameters of the method it should rather be an abstract class
+
 	/**
-	 * render the widget
+	 * Renders the widget
 	 *
-	 * @param array $configuration plugin configuration
-	 * @param string $pidList pid list
-	 * @param tx_timtab_pi1 $referenz plugin object
-	 * @return string
+	 * @param	array	Plugin configuration
+	 * @param	string	pid list
+	 * @param	tx_timtab_pi1	Plugin object
+	 * @return	string
 	 */
-	public function render(array $configuration, $pidList, tx_timtab_pi1 $referenz);
+	public function render(array $configuration, $pidList, tx_timtab_pi1 $reference);
 }
 
 ?>
