@@ -21,21 +21,13 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
-/**
- * HMENU base category menu
- *
- * @package TYPO3
- * @subpackage tx_timtab
- * @author	Lina Wolf <2010@lotypo3.de>
- * @author	Timo Webler <timo.webler@dkd.de>
- * @version $Id$
- */
+
 
 /**
  * HMENU base category menu
  *
  * @package TYPO3
- * @subpackage tx_timtab
+ * @subpackage timtab
  * @author	Lina Wolf <2010@lotypo3.de>
  * @author	Timo Webler <timo.webler@dkd.de>
  */
