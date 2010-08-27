@@ -50,6 +50,20 @@ class tx_timtab_Flexform {
 			}
 		}
 	}
+
+	/**
+	 * gets the localized label of a widget
+	 *
+	 * @param string $widgetType identifier of the widget
+	 * @return string lable of the widget
+	 */
+	public function getWidgetLabel($widgetType) {
+		$label = '';
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['timtab']['widgets'][$widgetType])) {
+			$label = $GLOBALS['LANG']->sL($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['timtab']['widgets'][$widgetType]['label']);
+		}
+		return $label;
+	}
 }
 
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/timtab/lib/class.tx_timtab_flexform.php']) {

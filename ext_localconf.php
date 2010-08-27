@@ -136,6 +136,10 @@ t3lib_extMgm::addPItoST43($_EXTKEY, 'pi2/class.tx_timtab_pi2.php', '_pi2', 'list
 $TYPO3_CONF_VARS['SC_OPTIONS']['ext/realurl/class.tx_realurl_autoconfgen.php']['extensionConfiguration']['timtab']
 	= 'EXT:timtab/res/class.tx_timtab_realurlautoconf.php:tx_timtab_Realurlautoconf->generateUrlWithDate';
 
+// Hook for backend view of widgets in page module	
+$TYPO3_CONF_VARS['SC_OPTIONS']['cms/layout/class.tx_cms_layout.php']['list_type_Info']['timtab_pi1'][] =
+	'EXT:timtab/lib/hooks/class.tx_timtab_hooks_ttcontent.php:&tx_timtab_hooks_Ttcontent->getPreviewInfo'; 
+
 // Hook for creating additional tt_news markers
 $TYPO3_CONF_VARS['EXTCONF']['tt_news']['extraItemMarkerHook'][]  = 'EXT:timtab/lib/hooks/class.tx_timtab_hooks_ttnews.php:&tx_timtab_hooks_Ttnews';
 
