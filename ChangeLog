@@ -1,3 +1,6 @@
+2010-08-27  Timo Webler <timo.webler@dkd.de>
+	* FIX #9318: Typo + Duplication in locallang file
+
 2010-08-19  Ingo Renner  <ingo@typo3.org>
 
 	* FIX fixed the ChangeLog
@@ -254,4 +257,3 @@
 2005-04-08  Ingo Renner  <typo3@ingo-renner.com>
 
 	* ADD added Gravatar Support, see http://www.gravatar.com
-	

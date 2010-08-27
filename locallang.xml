@@ -18,7 +18,7 @@
 			<label index="calendar_description">Add a small calendar which highlights the days where you have made some posts.</label>
 			<label index="latestcomments_title">Latest comments</label>
 			<label index="latestcomments_description">Show the latest comments.</label>
-			<label index="catmenu_title">Timtab kategory menu</label>
+			<label index="catmenu_title">Timtab category menu</label>
 			<label index="catmenu_description">Show a HMENU-based menu of categories with number of posts.</label>
 
 			<!-- The rest seem to be text for the frontend TODO: Move -->
@@ -50,6 +50,7 @@
 
 			<!-- Localisation for Widgets, Backend -->
 			<label index="pi1_title">Timtab Widgets</label>
+			<label index="pi1_plus_wiz_description">Einen Timtab Widget in die Seite einfügen.</label>
 			<label index="blogroll_title">Blogroll</label>
 			<label index="blogroll_description">Einen Blogroll in die Seite einfügen.</label>
 			<label index="calendar_title">Kalender</label>
@@ -58,9 +59,6 @@
 			<label index="latestcomments_description">Die letzten Kommentare anzeigen.</label>
 			<label index="catmenu_title">Timtab Kategoriemenü</label>
 			<label index="catmenu_description">Ein HMENU-basiertes Kategoriemenü mit Anzahl der Nachrichten pro Kategorie</label>
-
-			<label index="pi1_title">Blogroll</label>
-			<label index="pi1_plus_wiz_description">Einen Blogroll in die Seite einfügen.</label>
 
 			<label index="pi3_title">Kalender</label>
 			<label index="pi3_plus_wiz_description">Fügt einen Kalender ein, der die Tage hervorhebt an denen Posts erstellt wurden.</label>
