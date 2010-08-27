@@ -46,8 +46,12 @@ class tx_timtab_hooks_BeFunc {
 		if ($table != 'tt_content'|| $row['list_type'] != 'timtab_pi1' || empty($row['pi_flexform'])) {
 			return;
 		}
-		$row['pi_flexform'] = trim($row['pi_flexform']);
-		$flexformValue = t3lib_div::xml2array($row['pi_flexform']);
+		if (is_array($row['pi_flexform'])) {
+			$flexformValue = $row['pi_flexform'];
+		} else {
+			$row['pi_flexform'] = trim($row['pi_flexform']);
+			$flexformValue = t3lib_div::xml2array($row['pi_flexform']);
+		}
 		$flexformValue = $flexformValue['data']['sDEF']['lDEF']['widget']['vDEF'];
 
 		if (!empty($flexformValue) && is_string($flexformValue)) {

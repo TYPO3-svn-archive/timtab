@@ -1,5 +1,6 @@
 2010-08-27  Timo Webler <timo.webler@dkd.de>
 	* FIX #9318: Typo + Duplication in locallang file
+	* FIX #9317: Error when saving widgets
 
 2010-08-19  Ingo Renner  <ingo@typo3.org>
 
